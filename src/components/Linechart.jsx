@@ -9,7 +9,7 @@ export default function LineChartHero({chartData}) {
       className="h-50 shrink-1"
       data={chartData}
       index="date"
-      categories={['SemiAnalysis', 'The Pragmatic Engineer']}
+      categories={['female', 'male']}
       colors={['indigo', 'rose']}
       valueFormatter={dataFormatter}
       yAxisWidth={120}
