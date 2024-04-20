@@ -3,6 +3,7 @@ import Header from "./components/Header"
 import Navigation from "./components/Navigation"
 import '../index.css'
 import { BarChartHero } from "./components/BarchartHero"
+import TableHero from "./components/TableHero"
 
 
 function App() {
@@ -59,13 +60,13 @@ function App() {
     },
     {
       date: 'Nov 22',
-      SemiAnalysis: 2954,
-      'The Pragmatic Engineer': 3848,
+      female: 2954,
+      'male': 3848,
     },
     {
       date: 'Dec 22',
-      SemiAnalysis: 3239,
-      'The Pragmatic Engineer': 3736,
+      female: 3239,
+      'male': 3736,
     },
   ]
   
@@ -77,6 +78,7 @@ function App() {
         <Navigation/>
         <LineChart chartData={chartData} />
         <BarChartHero/>
+        <TableHero data ={chartData}/>
      </div>
      
 
