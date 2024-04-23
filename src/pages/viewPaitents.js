@@ -157,7 +157,7 @@ const columns = [
     field: 'age',
     headerName: 'Age',
     type: 'number',
-    minWidth: 40,
+    minWidth: 60,
     flex: 1,
     editable: false,
   },
@@ -182,7 +182,7 @@ const columns = [
     field: 'Medicine',
     headerName: 'Medicine',
     sortable: false,
-    minWidth: 100,
+    minWidth: 80,
     flex: 1,
     renderCell:renderMedicine
   },
@@ -199,7 +199,7 @@ const columns = [
     type:"date",
     headerName: 'Last apt.date',
     sortable: true,
-    minWidth: 160,
+    minWidth: 140,
     valueGetter:strTODate,
     flex: 1,
   },
@@ -208,7 +208,7 @@ const columns = [
     type:"date",
     headerName: 'Next apt.date',
     sortable: true,
-    minWidth: 160,
+    minWidth: 140,
     valueGetter:strTODate,
     flex: 1,
   },
@@ -220,7 +220,7 @@ const columns = [
 
   return (
     <div className={props.className} style={props.style}>
-    <DataTable data={data} className={" w-full h-full"} />
+    <DataTable data={data} pageSize={9} className={" w-full h-full"} />
     </div>
   );
 }
