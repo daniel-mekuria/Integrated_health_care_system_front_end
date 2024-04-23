@@ -131,6 +131,7 @@ function strTODate(date){
       { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
       { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
       { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+      
 
     ];
     
@@ -220,7 +221,7 @@ const columns = [
 
   return (
     <div className={props.className} style={props.style}>
-    <DataTable data={data} className={" w-full h-full"} />
+    <DataTable data={data} pageSize={5} className={" w-full h-full"} />
     </div>
   );
 }

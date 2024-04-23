@@ -1,26 +1,78 @@
-import logo from './logo.svg';
-import './App.css';
-import ViewPatients from './pages/viewPaitents';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
+import React, { useState } from 'react';
+import './index.css';
+
+import { Layout, Input,Space } from 'antd';
+import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
+
+import ViewPaitents from './pages/viewPaitents';
+import Navigation from './components/Navigation';
 import Login from './pages/login';
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
 
-function App() {
+
+const {  Content, Sider } = Layout;
+
+
+
+
+const App = () => {
+
   return (
-    <div className="App">
-     <Login/>
-    </div>
+
+<Router>
+          <Routes>
+         
+          
+          <Route path="/login" element={<Login/>} />;
+          
+          <Route
+            path="*"
+            element={
+<Layout className='w-screen h-screen bg-white'>
+      <Sider theme='light'
+      width={"fit-content"}
+      className='bg-white '>
+        <Navigation/>
+
+
+      
+       
+       
+      </Sider>
+     
+       
+        <Content 
+        className='px-5 pt-10 pb-5'
+        >
+          <Space direction='vertical'>
+
+          <Routes>
+         
+          
+          <Route path="/paitents" element={<ViewPaitents className="w-full h-fit" />} />;
+
+          <Route
+            path="*"
+            element={
+              <h1 style={{position:'relative',left:'15rem',top:'4rem'}}>404 Path doesn't exist</h1>
+            }
+          ></Route>
+        </Routes>
+          </Space>
+         
+        </Content>
+    </Layout>
+
+            }
+          
+          ></Route>
+          
+
+        </Routes>
+        </Router>
+
+            
   );
-}
+};
 
 export default App;

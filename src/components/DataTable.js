@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import TextField from '@mui/material/TextField';
 
 import IconButton from '@mui/material/IconButton';
+
 import { DataGrid, GridToolbarFilterButton } from '@mui/x-data-grid';
 import ClearIcon from '@mui/icons-material/Clear';
 import Button from '@mui/material/Button';
@@ -82,12 +83,11 @@ const columns = props.data.columns;
   };
 
 
-
   return (
     <div  className={props.className} style={props.style} >
      
       <div className="w-full h-full " >
-        <DataGrid 
+        <DataGrid  autoHeight 
 
 onRowSelectionModelChange={(ids) => {
   const selectedIDs = new Set(ids);
@@ -119,7 +119,7 @@ checkboxSelection
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 5,
+                pageSize: props.pageSize?props.pageSize:10,
               
               },
             },

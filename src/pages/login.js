@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useRef } from "react";
 import "tailwindcss/tailwind.css";
 import { Button } from "@mui/material";
 import PersonIcon from '@mui/icons-material/Person';
@@ -14,16 +14,22 @@ const Login = () => {
   return (
     <div className='flex items-center justify-center w-screen h-screen'>
       <img src={bejingimg} alt="no img" className="absolute top-[0%] left-[0%] w-full h-full" />
-    <div className="bg-[rgba(255,255,255,0.5)] backdrop-blur-md rounded-2xl p-4 w-fit h-fit" >
-        <p className="font-manrope text-[2rem] font-medium text-gray-600">{isLoginvisible?"Welcome back":"Register"}</p>
+    <div className=" flex flex-col space-y-4 bg-[rgba(255,255,255,0.5)] justify-center backdrop-blur-md rounded-2xl p-4 w-fit h-fit" >
+        <p className="font-manrope text-[2rem] self-center mb-8 font-medium text-gray-600">{isLoginvisible?"Welcome back":"Register"}</p>
 
         <div className="flex">
         <p className="font-sans text-black-600">{isLoginvisible?"Don't have an account":"Already registered"}</p>
-        <Button  style={{ textTransform: 'none' }} className="font-sans relative top-[2px]"
+        <Button  style={{ textTransform: 'none' }} className=" relative font-sans -top-[3px]"
 
         size="medium"
         variant="text"
-         onClick={() => setIsLoginvisible(!isLoginvisible)}
+         onClick={() => {
+          document.activeElement.blur();
+
+
+          setIsLoginvisible(!isLoginvisible)
+        
+        }}
       >
         Click here..
         </Button>
@@ -50,8 +56,8 @@ const Login = () => {
         type="password"
         
         />
-        <div className="py-7 ">
-        <Button  
+        <div className="flex self-center justify-center py-7">
+        <Button   
         variant="contained"
         className="w-40 "
         type="submit"
@@ -95,7 +101,7 @@ const Login = () => {
         
         />
         
-        <div className="py-7 ">
+        <div className="flex self-center justify-center py-7">
         <Button  
         variant="contained"
         className="w-40 "
