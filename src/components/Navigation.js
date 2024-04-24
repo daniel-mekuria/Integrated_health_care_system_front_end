@@ -6,7 +6,7 @@ import Header from './Header';
 
 const Navigation = () => {
   return (
-    <div className="h-full py-4 mx-2 mt-0 text-black w-72">
+    <div className="w-64 h-full py-4 mx-2 mt-0 text-black">
       <div className="h-[99%] px-4 py-2 bg-white rounded-lg shadow-lg">
       <Header />
 

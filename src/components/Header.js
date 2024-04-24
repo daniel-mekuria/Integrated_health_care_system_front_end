@@ -3,8 +3,12 @@ import React from 'react';
 const Header = () => {
   return (
     <header className="p-4">
-      <h1 className="text-2xl text-green-600 font-bold">Beijing Hospital</h1>
-      <a href=""><button className="bg-green-800 text-white py-2 px-4 rounded-md mt-4">+ New Report</button></a>
+                  <a href="/home" className="flex items-center hover:text-green-700">
+              
+              <h1 className="text-2xl font-bold text-green-600">Beijing Hospital</h1>
+            </a>
+
+      <a href="/reports"><button className="px-4 py-2 mt-4 text-white bg-green-800 rounded-md">+ New Report</button></a>
     </header>
   );
 };
