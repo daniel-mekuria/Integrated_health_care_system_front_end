@@ -4,6 +4,10 @@ import Navigation from "./components/Navigation"
 import '../index.css'
 import { BarChartHero } from "./components/BarchartHero"
 import TableHero from "./components/TableHero"
+import PatinetProfile from "./pages/patinetProfile"
+
+
+
 
 
 function App() {
@@ -72,16 +76,15 @@ function App() {
   
 
   return (
-    <div className="container">
+    <div className="container ">
      <Header/>
      <div className="dashboard">
         <Navigation/>
-        <LineChart chartData={chartData} />
-        <BarChartHero/>
-        <TableHero data ={chartData}/>
+        <PatinetProfile className="self-center"/>
+       
      </div>
      
-
+      
     </div>
   )
 }
