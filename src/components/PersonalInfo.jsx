@@ -4,7 +4,7 @@ function PersonalDetails({ fullName, sex, dateEligible, dateOfBirth, patientAddr
   return (
     <div className="bg-white rounded-lg  overflow-hidden">
       <div className="px-6 ">
-        <h2 className="text-2xl font-bold text-gray-800 text-center">Personal Details</h2>
+        <h3 className="text-2xl font-medium text-gray-800 text-center">Personal Details</h3>
       </div>
       <div className="flex flex-wrap px-6 pt-4">
         <div className="w-full md:w-1/4">

@@ -3,6 +3,8 @@ import PersonCard from '../components/PersonalCard'
 import MedicationTable from '../components/MedicationTable';
 import fakeData from '../components/fakeData';
 import PersonalInfo from '../components/PersonalInfo';
+import Tabs from '../components/Tabs';
+import Tab from '../components/Tab';
 
 const personData = {
     name: 'Peter Viscaal',
@@ -29,17 +31,21 @@ const personData = {
 
 const PatinetProfile = () => {
   return (
-    <div className='flex flex-col '>
-        <div className="card">
-            <PersonalInfo  {...sampleData}/>
-        </div>
-        <div className="table">
-            
-            <MedicationTable data = {fakeData}/>
-        </div>
-        
+    <div className="container mx-auto">
+    <h1 className="text-2xl font-bold mb-4">Patient Profile</h1>
+    <Tabs>
+      <Tab title="Personal Info">
+        <PersonalInfo {...sampleData}/>
+      </Tab>
+      <Tab title="Medication Table">
+        <MedicationTable data={fakeData} />
+      </Tab>
+      {/* <Tab title="Third Tab">
+        <p>This is the content of the third tab.</p>
+      </Tab> */}
+    </Tabs>
+  </div>
 
-    </div>
   )
 }
 

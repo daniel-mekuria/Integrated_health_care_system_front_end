@@ -2,11 +2,11 @@ import React from 'react';
 
 function MedicationTable({ data }) {
   return (
-    <div className="pr-5">
+    <div className="pl-5">
 
    
     <table className="min-w-full shadow-md w-auto divide-y divide-gray-200">
-      <caption className="text-xl font-bold mb-4">Used Drugs History</caption>
+      <caption className="text-xl font-bold text-center mb-4">Used Drugs History</caption>
       <thead className="bg-gray-50">
         <tr>
           <th scope="col" className="px-5 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Brand Name</th>
