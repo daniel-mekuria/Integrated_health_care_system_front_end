@@ -17,12 +17,12 @@ import Header from "./Header";
 
 const Navigation = () => {
   return (
-    <div className="w-64 h-full py-4 mx-2 mt-0 text-black">
-      <div className="h-[99%] px-4 py-2 bg-white rounded-lg shadow-lg">
+    <div className="w-64 py-4 mx-2 mt-0 text-black">
+      <div className="h-fit px-4 py-2 bg-white rounded-lg shadow-lg">
         <Header />
 
-        <ul className="space-y-4">
-          <li>
+        <ul className="space-y-4 text-lg ml-5">
+          <li> 
             <a href="#" className="flex items-center hover:text-green-700">
               <FontAwesomeIcon className="mr-2" icon={faCircleDot} />
               Overview
@@ -87,7 +87,7 @@ const Navigation = () => {
           </li>
         </ul>
 
-        <div className="py-4 border-t border-gray-200">
+        <div className="py-4 border-t border-gray-200 mt-20">
           <div className="text-sm text-gray-600">Profile</div>
           <div className="flex items-center mt-2">
             <img
