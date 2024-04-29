@@ -15,7 +15,8 @@ export default {
     extend: {
       colors: {
         // light mode
-        green:'#166534',
+        green:'#047857',
+        lightGreen:'#C1FBEA',
         tremor: {
           brand: {
             faint: colors.blue[50],

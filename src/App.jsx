@@ -5,6 +5,7 @@ import '../index.css'
 import { BarChartHero } from "./components/BarchartHero"
 import TableHero from "./components/TableHero"
 import PatinetProfile from "./pages/patinetProfile"
+import RegistrationPage from "./pages/Registration"
 
 
 
@@ -77,12 +78,17 @@ function App() {
 
   return (
     <div className="container ">
-     <Header/>
+     
      <div className="dashboard">
+      <div>
+        <Header/>
         <Navigation/>
+      </div>
+        
         <PatinetProfile className="self-center"/>
-       
+       {/* <RegistrationPage/> */}
      </div>
+
      
       
     </div>

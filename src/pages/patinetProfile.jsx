@@ -31,13 +31,13 @@ const personData = {
 
 const PatinetProfile = () => {
   return (
-    <div className="container mx-auto">
+    <div className="container py-16 mx-auto">
     <h1 className="text-2xl font-bold mb-4">Patient Profile</h1>
     <Tabs>
       <Tab title="Personal Info">
         <PersonalInfo {...sampleData}/>
       </Tab>
-      <Tab title="Medication Table">
+      <Tab title="Medication History">
         <MedicationTable data={fakeData} />
       </Tab>
       {/* <Tab title="Third Tab">
