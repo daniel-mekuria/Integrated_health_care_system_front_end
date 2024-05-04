@@ -5,7 +5,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import Input from '@mui/joy/Input';
 import bejingimg from '../assets/bejing.png'
-import useHttpRequest from "../components/httpRequest";
+import httpRequest from "../components/httpRequest";
 import { useNavigate } from "react-router-dom";
 import { GetCookie, SetCookie } from "../components/cookies";
 import { ToastContainer, toast } from 'react-toastify';
@@ -15,7 +15,6 @@ import { LoadingButton } from "@mui/lab";
 
 const Login = (props) => {
   const navigate=useNavigate()
-  const httpRequest=useHttpRequest();
   
   const [isLoginvisible, setIsLoginvisible] = useState(true);
   const [loginLoading, setLoginLoading] = useState(false);
@@ -56,7 +55,8 @@ const Login = (props) => {
             event.preventDefault()
             console.log("afa")
             setLoginLoading(true)
-            const result= await httpRequest("https://integrated-healthcare-system.onrender.com/v1/user/login",{
+            console.log(process.env.REACT_APP_BASE_URL)
+            const result= await httpRequest(process.env.REACT_APP_BASE_URL+"/v1/user/login",{
               "username":event.target.username.value,
               "password":event.target.password.value,
           },"post")  
@@ -65,6 +65,11 @@ const Login = (props) => {
           
             SetCookie("accessToken",result.accessToken);
             SetCookie("refreshToken",result.refreshToken);
+           
+            SetCookie("user",JSON.stringify( { "id": result.id,
+            "name": result.targetName,
+            "role": result.role,}));
+
             navigate("/")
             setLoginLoading(false)
 
