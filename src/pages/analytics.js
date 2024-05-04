@@ -11,8 +11,8 @@ import RadioGroup from '@mui/joy/RadioGroup';
 import ExportForm from '../components/exportForm';
 import { BarChart, PieChart } from '@mui/x-charts';
 
-function Analytics(props) {
-    const [graphType, setGraptype] = useState("Line")
+function  Analytics  (props) {
+    const [graphType, setGraptype] =  useState("Line")
     const [xData, setXData] = useState({ name: "fd" })
     const [yData, setYData] = useState({})
 

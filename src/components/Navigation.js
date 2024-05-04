@@ -12,10 +12,12 @@ import {
   faCircleDot,
   faArrowRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
-import avatarImage from "../assets/image.png";
-import Header from "./Header";
+import PersonIcon from '@mui/icons-material/Person';import Header from "./Header";
+import { GetCookie, RemoveCookie, SetCookie } from "./cookies";
 
 const Navigation = () => {
+
+  const user =GetCookie("user")?JSON.parse(GetCookie("user")):{"name":null}
   return (
     <div className="w-64 h-full py-4 mx-2 mt-0 text-black">
       <div className="h-[99%] px-4 py-2 bg-white rounded-lg shadow-lg">
@@ -90,14 +92,12 @@ const Navigation = () => {
         <div className="py-4 border-t border-gray-200">
           <div className="text-sm text-gray-600">Profile</div>
           <div className="flex items-center mt-2">
-            <img
-              src={avatarImage}
-              alt="Bisrat Mekonnen"
+            <PersonIcon
+              
               className="w-8 h-8 rounded-full"
             />
             <div className="ml-2">
-              <p className="font-medium">Bisrat Mekonnen</p>
-              <p className="text-xs text-gray-500">doctor123@gmail.com</p>
+              <p className="font-medium">{user.name}</p>
             </div>
           </div>
         </div>
@@ -105,6 +105,11 @@ const Navigation = () => {
         <div className="mt-0">
           <a
             href="/login"
+            onClick={()=>{
+              RemoveCookie("accessToken")
+              RemoveCookie("refreshToken")
+              RemoveCookie("user")
+            }}
             className="block px-4 py-2 font-bold text-black bg-gray-100 rounded-md hover:bg-gray-200"
           >
             <FontAwesomeIcon className="mr-2" icon={faArrowRightFromBracket} />

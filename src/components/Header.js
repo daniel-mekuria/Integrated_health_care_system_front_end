@@ -4,7 +4,7 @@ const Header = () => {
   return (
     <header className="p-4">
       <a href="/" className="flex items-center hover:text-green-700">
-        <h1 className="text-2xl font-bold text-green-600">Tirunesh Beijing Hospital</h1>
+        <h1 className="text-2xl font-bold text-green-600">TB Hospital</h1>
       </a>
 
       <a href="/reports">

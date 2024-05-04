@@ -31,20 +31,17 @@ async function makeRequest(url, headers = {}, data = {}, method = "get") {
     return toReturn;
 }
 
-function useHttpRequest(url, data, method = "get") {
-    const navigate = useNavigate();
+async function httpRequest(url, data, method = "get") {
 
-return (
-    async (url, data, method )=>{
 
     while (true) {
 
-        const AcessToken = GetCookie("acessToken")
+        const AccessToken = GetCookie("accessToken")
         const RefreshToken = GetCookie("refreshToken")
        
         const headers = {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer' +AcessToken
+            'Authorization': 'Bearer ' +AccessToken
 
         }
 
@@ -64,24 +61,30 @@ return (
                 "token": RefreshToken
 
             }
-            response = makeRequest(url, headers, data, "post")
-            if (response == null) {
-                return null
-            }
-            else if (response.status == 401) {
-                navigate("/login")
-                return null
+            response = await makeRequest(process.env.REACT_APP_BASE_URL+"/v1/refresh", headers, data, "post")
+            
+             if (response.status == 401) {
+                window.location.href = "/login";
+                return(null)
 
             }
             else if (response.status == 200) {
+
                 let resData = await response.json()
 
                 SetCookie("accessToken", resData.accessToken)
                 continue
             }
-            else
+            else if (response == null) {
+
+                return null
+            }
+            else{
                 return null
 
+
+
+            }
         }
         else if (response.status == 200) {
             let resData= await response.json()
@@ -93,10 +96,10 @@ return (
 
 
     }
-    }
-)
+    
+
    
 
 }
 
-export default useHttpRequest;
+export default httpRequest;
