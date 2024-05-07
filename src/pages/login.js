@@ -53,7 +53,6 @@ const Login = (props) => {
       <div className={`absolute w-full h-full transition-all  ease-in-out ${isLoginvisible ? "translate-x-0 duration-700" : "-translate-x-full duration-500"}`}   >
         <form className="space-y-7" onSubmit={async (event)=>{
             event.preventDefault()
-            console.log("afa")
             setLoginLoading(true)
             console.log(process.env.REACT_APP_BASE_URL)
             const result= await httpRequest(process.env.REACT_APP_BASE_URL+"/v1/user/login",{

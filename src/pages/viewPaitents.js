@@ -137,19 +137,20 @@ async function GetPaitents() {
 
 }
 function strTODate(date) {
+  
 
   return new Date(date)
 }
 
 function ViewPaitents(props) {
 
-  const navigate=useNavigate()
+  const navigate = useNavigate()
 
-
+const x=httpRequest()
   const { data, isLoading, error } = useAsyncData(GetPaitents);
-  
 
- 
+
+
   const columns = [
     { field: 'atr No', headerName: 'Atr No', minWidth: 90 },
     {
@@ -175,7 +176,7 @@ function ViewPaitents(props) {
       editable: false,
     },
 
-   
+
     {
       field: 'PhoneNumber',
       headerName: 'Phone number',
@@ -226,17 +227,18 @@ function ViewPaitents(props) {
 
 
 
-let tableData = { "columns": columns, "rows": data }
+  let tableData = { "columns": columns, "rows": data }
 
-  if (isLoading||error) {
+  if (isLoading || error) {
     return (
-     <LoadingSpinners size={3} className={"w-full h-full"}/>
+      <LoadingSpinners size={3} className={"w-full h-full"} />
     )
   }
 
 
   return (
     <div className={props.className} style={props.style}>
+     
       <DataTable data={tableData} pageSize={9} className={" w-full h-full"} />
     </div>
   );
