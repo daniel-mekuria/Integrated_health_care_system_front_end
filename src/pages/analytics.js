@@ -9,14 +9,21 @@ import dayjs from 'dayjs';
 
 import RadioGroup from '@mui/joy/RadioGroup';
 import ExportForm from '../components/exportForm';
-import { BarChart, PieChart } from '@mui/x-charts';
+import { PieChart } from '@mui/x-charts';
+import Barchart from '../components/barchart';
 
-function  Analytics  (props) {
-    const [graphType, setGraptype] =  useState("Line")
-    const [xData, setXData] = useState({ name: "fd" })
+function Analytics(props) {
+
+    let dataset = [{ x: 1, y: 4, Z: 45 }, { x: 2, y: 41, Z: 45 }, { x: 3, y: 11, Z: 45 }, { x: 6, y: 18, Z: 45 }, { x: 9, y: 41 }, { x: 11, y: 45 },]
+
+    const [graphType, setGraptype] = useState("Line")
+    const [xData, setXData] = useState({ name: "time" })
     const [yData, setYData] = useState({})
 
     const [timeScale, setTimeScale] = useState("Day")
+    const [startDate, setstartDate] = useState()
+    const [endDate, setendDate] = useState()
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isXModalOpen, setIsXModalOpen] = useState(false);
     const [isYModalOpen, setIsYModalOpen] = useState(false);
@@ -50,7 +57,7 @@ function  Analytics  (props) {
                             rules={[{ required: true }]}
                         >
                             <Select placeholder="Please select an option" options={[
-                                { value:"Time", label:"Time"}
+                                { value: "Time", label: "Time" }
 
                             ]} >
 
@@ -187,9 +194,15 @@ function  Analytics  (props) {
                         <div className='flex mb-3 space-x-2'>
 
                             <DatePicker
+                                onChange={(x,y) => {
+                                    setstartDate(y)
+                                }}
                                 maxDate={dayjs()}
                                 placeholder="Start date" />
                             <DatePicker
+                             onChange={(x,y) => {
+                                setendDate(y)
+                            }}
                                 maxDate={dayjs()}
 
                                 placeholder="End date" />
@@ -198,19 +211,21 @@ function  Analytics  (props) {
 
 
                 </div>
+                
                 <div className='w-[70%] border-2 border-solid rounded-xl'>
+                   
                     {
 
 
 
                         graphType == "Line" ? (
                             <LineChart
-                                xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
-                                series={[
-                                    {
-                                        data: [2, 5.5, 2, 8.5, 1.5, 5],
-                                    },
-                                ]}
+
+                                xAxis={[{ dataKey: 'x' }]}
+                                series={[{ dataKey: 'y', label: "X" }, { dataKey: 'Z', label: "z" }]}
+
+
+                                dataset={dataset}
                             />
                         ) : null
 
@@ -222,9 +237,7 @@ function  Analytics  (props) {
 
 
                         graphType == "Bar" ? (
-                            <BarChart
-                                xAxis={[{ scaleType: 'band', data: ['group A', 'group B', 'group C'] }]}
-                                series={[{ data: [4, 3, 5] }, { data: [1, 6, 3] }, { data: [2, 5, 6] }]}
+                            <Barchart x={xData.name}   y={yData} startDate ={startDate?startDate:dayjs()} endDate={endDate?endDate:dayjs()} timeScale={timeScale}
 
                             />
                         ) : null
