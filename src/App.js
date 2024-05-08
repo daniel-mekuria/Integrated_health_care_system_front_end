@@ -10,6 +10,7 @@ import Login from "./pages/login";
 import Dashboard from "./pages/dashboard";
 import Emergency_Drug_Dispensal from "./pages/Emergency_Drug_Dispensal";
 import Analytics from "./pages/analytics";
+import PDDTF from "./pages/PDDTF";
 import { GetCookie } from "./components/cookies";
 
 const { Content, Sider } = Layout;
@@ -64,8 +65,11 @@ const App_ = () => {
                   <Route
                     path="/analytics"
                     element={<Analytics />}
-                  />
-                  ;
+                  />;
+                  <Route
+                    path="/monitorpatients"
+                    element={<PDDTF/>}
+                    />
                   <Route
                     path="*"
                     element={

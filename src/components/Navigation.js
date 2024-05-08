@@ -19,8 +19,8 @@ const Navigation = () => {
 
   const user =GetCookie("user")?JSON.parse(GetCookie("user")):{"name":null}
   return (
-    <div className="w-64 h-full py-4 mx-2 mt-0 text-black">
-      <div className="h-[99%] px-4 py-2 bg-white rounded-lg shadow-lg">
+    <div className="w-64 h-full py-4 mx-2 mt-0 text-black text-lg">
+      <div className="px-4 py-2 bg-white rounded-lg shadow-lg">
         <Header />
 
         <ul className="space-y-4">
@@ -58,7 +58,7 @@ const Navigation = () => {
             </a>
           </li>
           <li>
-            <a href="#" className="flex items-center hover:text-green-700">
+            <a href="/monitorpatients" className="flex items-center hover:text-green-700">
               <FontAwesomeIcon className="mr-2" icon={faDesktop} />
               Monitor Patients
             </a>
