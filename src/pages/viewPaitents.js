@@ -147,7 +147,7 @@ function ViewPaitents(props) {
   const navigate = useNavigate()
 
 const x=httpRequest()
-  const { data, isLoading, error } = useAsyncData(GetPaitents);
+  const { data, isLoading, error } = useAsyncData(GetPaitents,[]);
 
 
 
