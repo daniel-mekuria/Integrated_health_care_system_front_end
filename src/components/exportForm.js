@@ -22,7 +22,65 @@ import { countEntries, countEntriesbydate } from './statUtils';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import LoadingSpinners from './loadingSpinners';
-import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
+import * as ExcelJS from 'exceljs';
+
+
+const exportToExcel = (data, fileName="new_report.xlsx") => {
+  // Create a new workbook
+  const wb = new ExcelJS.Workbook();
+
+  // Iterate over each table in the data
+  data.forEach((tableData, index) => {
+    // Truncate the title to 31 characters (Excel's limit is 31)
+    const title = (index+","+tableData.title).substring(0, 31);
+
+    // Add a new worksheet with the truncated title
+    const ws = wb.addWorksheet(title);
+
+    const titleRow = ws.addRow([tableData.title]);
+
+    // Change the font size and color of the title
+    titleRow.eachCell((cell) => {
+      cell.font = {
+        size: 14,
+        color: { argb: '808080' }
+      };
+    });
+
+    // Add an empty row for spacing
+    ws.addRow([]);
+
+    // Define the columns
+    const columns = tableData.data.column.map((colName) => {
+      return {name: colName, filterButton: true};
+    });
+
+    // Add the table to the worksheet
+    ws.addTable({
+      name: `MyTable${index}`,
+      ref: 'A3',
+      headerRow: true,
+      totalsRow: false,
+      style: {
+        theme: 'TableStyleMedium2',
+        showRowStripes: true,
+      },
+      columns: columns,
+      rows: tableData.data.row,
+    });
+  });
+
+  // Write the workbook to a buffer
+  wb.xlsx.writeBuffer().then((buffer) => {
+    const blob = new Blob([buffer]);
+    saveAs(blob, fileName);
+  });
+};
+
+/* Helper function to convert string to array buffer */
+
+
 
 const exportToPdf = (data,fileName="new_report.pdf") => {
   const doc = new jsPDF();
@@ -46,43 +104,7 @@ const exportToPdf = (data,fileName="new_report.pdf") => {
 };
 
 
-const exportToExcel = async (data,fileName="new_report.xlsx") => {
-  const wb = new ExcelJS.Workbook();
-  
-  data.forEach((table, index) => {
-    const { title, data: { column, row } } = table;
-    let sheetName = title.length > 31 ? title.slice(0, 31) : title; // Ensure the sheet name does not exceed 31 characters
-    const ws = wb.addWorksheet(sheetName);
-    
-    // Add the title
-    ws.addRow([title]);
-    
-    // Add the column headers
-    ws.addRow(column);
-    
-    // Add the data
-    row.forEach((rowData) => {
-      ws.addRow(rowData);
-    });
-    
-    // Create a table for the data
-    ws.addTable({
-      name: `${sheetName}Table`,
-      ref: 'A2',
-      headerRow: true,
-      totalsRow: false,
-      style: {
-        theme: 'TableStyleMedium2',
-        showRowStripes: true,
-      },
-      columns: column.map((col) => ({ name: col, filterButton: true })),
-      rows: row,
-    });
-  });
-  
-  // Write to file
-  await wb.xlsx.writeFile(fileName);
-};
+
 
 
 function transformData(x, y) {
