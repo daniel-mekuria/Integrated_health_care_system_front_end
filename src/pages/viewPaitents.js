@@ -16,7 +16,9 @@ import httpRequest from "../components/httpRequest";
 import useAsyncData from "../components/useAsyncData";
 import LoadingSpinners from "../components/loadingSpinners";
 import { useNavigate } from "react-router-dom";
-
+import AddPaitent from "./addpaitent";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -118,7 +120,7 @@ function renderStatus(params) {
 async function GetPaitents() {
   let atrPaitents = [];
   const allPaitents = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/patient/allAtrPatients")
-  console.log(allPaitents)
+
   allPaitents.patients.forEach(async paitent => {
     const today = new Date();
     const birthDate = new Date(paitent.birthDate)
@@ -145,14 +147,17 @@ function strTODate(date) {
 function ViewPaitents(props) {
 
   const navigate = useNavigate()
+  const [isAddModalOpen,setIsAddModalOpen] =useState(false)
+  const [update,setUpdate] =useState()
+
 
 const x=httpRequest()
-  const { data, isLoading, error } = useAsyncData(GetPaitents,[]);
+  const { data, isLoading, error } = useAsyncData(GetPaitents,[update]);
 
 
 
   const columns = [
-    { field: 'atr No', headerName: 'Atr No', minWidth: 90 },
+    { field: 'id', headerName: 'Atr No', minWidth: 90 },
     {
       field: 'firstName',
       headerName: 'First name',
@@ -238,8 +243,23 @@ const x=httpRequest()
 
   return (
     <div className={props.className} style={props.style}>
+      <AddPaitent isAddModalOpen={isAddModalOpen} toast={toast} setIsAddModalOpen={setIsAddModalOpen} setUpdate={setUpdate} />
      
-      <DataTable data={tableData} pageSize={9} className={" w-full h-full"} />
+      <DataTable data={tableData} pageSize={9} setIsAddModalOpen={setIsAddModalOpen} className={" w-full h-full"} />
+
+
+      <ToastContainer
+                    position="top-center"
+                    autoClose={2000}
+                    limit={2}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
     </div>
   );
 }

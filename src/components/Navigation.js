@@ -58,7 +58,7 @@ const Navigation = () => {
             </a>
           </li>
           <li>
-            <a href="/monitor" className="flex items-center hover:text-green-700">
+            <a href="#" className="flex items-center hover:text-green-700">
               <FontAwesomeIcon className="mr-2" icon={faDesktop} />
               Monitor Patients
             </a>

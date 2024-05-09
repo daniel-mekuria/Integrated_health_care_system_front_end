@@ -7,7 +7,7 @@ const Header = () => {
         <h1 className="text-2xl font-bold text-green-600">TB Hospital</h1>
       </a>
 
-      <a href="/newreports">
+      <a href="/reports">
         <button className="px-4 py-2 mt-4 text-white bg-green-800 rounded-md">
           + New Report
         </button>

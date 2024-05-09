@@ -11,7 +11,8 @@ import Dashboard from "./pages/dashboard";
 import Emergency_Drug_Dispensal from "./pages/Emergency_Drug_Dispensal";
 import Analytics from "./pages/analytics";
 import { GetCookie } from "./components/cookies";
-import PatientProfile from "./pages/patinetProfile"
+import AddPaitent from "./pages/addpaitent";
+import PaitentDetail from "./pages/paitentDetail";
 
 const { Content, Sider } = Layout;
 
@@ -58,18 +59,21 @@ const App_ = () => {
                     element={<ViewPaitents className="w-full h-fit" />}
                   />
                   <Route path="/" element={<Dashboard />} />;
-                  
                   <Route
                     path="/pharmacy"
                     element={<Emergency_Drug_Dispensal />}
                   />
                   <Route
-                    path="/monitor"
-                    element={<PatientProfile />}
-                  />
-                  <Route
                     path="/analytics"
                     element={<Analytics />}
+                  />
+                  <Route
+                    path="/addpaitent"
+                    element={<AddPaitent />}
+                  />
+                  <Route
+                    path="/paitentdetail"
+                    element={<PaitentDetail />}
                   />
                   ;
                   <Route
