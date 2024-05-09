@@ -1,7 +1,6 @@
-// useAsyncCustomHook.js
 import { useState, useEffect } from 'react';
 
-const useAsyncData = asyncFunction => {
+const useAsyncData = (asyncFunction, dependencies) => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,9 +18,10 @@ const useAsyncData = asyncFunction => {
     };
 
     fetchData();
-  }, [asyncFunction]);
+  }, dependencies); // Run useEffect whenever the dependencies change
 
   return { data, isLoading, error };
 };
+
 
 export default useAsyncData;

@@ -1,4 +1,4 @@
-import { BarChart, LineChart } from "@mui/x-charts"
+import { BarChart, LineChart, PieChart } from "@mui/x-charts"
 import { countEntries, countEntriesbydate, countTotalEntries, countTotalEntriesbydate } from "./statUtils"
 import useAsyncData from "./useAsyncData"
 import httpRequest from "./httpRequest"
@@ -103,7 +103,13 @@ const dsd = [{
 }
 ]
 
-
+function totalsum(arr) {
+    let sum = 0;
+    for(let i = 0; i < arr.length; i++) {
+        sum += arr[i];
+    }
+    return sum;
+}
 function generateData(data,x, y, startDate, endDate, timeScale = null) {
     if (x == "time") {
         return (countEntriesbydate(data, startDate, endDate, timeScale, y))
@@ -136,7 +142,7 @@ async function fetchdata(){
     }
 }
 
-function Barchart(props) {
+function Piechart(props) {
     let rawData=[]
     set=props.set
     
@@ -153,21 +159,30 @@ function Barchart(props) {
     xData = [{ scaleType: 'band', data: result.x }]
     yData=result.y
 
-}
-if (xData[0].data.length !== yData[0].data.length){
+    yData = [
+        {
+            data: yData.map((x)=>{
+return({ value:totalsum(x.data) , label: x.label })
+            })
+        },
+    ]
 
-    xData = []
-    yData = []
+    console.log(yData)
 }
+
+
+
+
+
 
     return (
-        <BarChart
-            xAxis={ xData}
+        <PieChart
             series={yData}
 
         />
+        
     )
 
 }
 
-export default Barchart
+export default Piechart
