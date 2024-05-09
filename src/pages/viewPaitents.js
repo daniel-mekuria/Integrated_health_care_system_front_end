@@ -118,7 +118,7 @@ function renderStatus(params) {
 async function GetPaitents() {
   let atrPaitents = [];
   const allPaitents = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/patient/allAtrPatients")
-
+  console.log(allPaitents)
   allPaitents.patients.forEach(async paitent => {
     const today = new Date();
     const birthDate = new Date(paitent.birthDate)
