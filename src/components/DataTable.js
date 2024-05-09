@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TextField from '@mui/material/TextField';
+import { useNavigate } from 'react-router-dom';
+
 
 import IconButton from '@mui/material/IconButton';
 
@@ -32,7 +34,7 @@ function QuickSearchToolbar(props) {
           ),
         }}
       />
-      <Button variant="outlined" style={{marginLeft: 'auto'}} startIcon={<AddIcon />}>
+      <Button onClick={props.onAdd} variant="outlined" style={{marginLeft: 'auto'}} startIcon={<AddIcon />}>
         New
         </Button>
 
@@ -50,6 +52,7 @@ function QuickSearchToolbar(props) {
 
 
  function DataTable( props) {
+  const navigate=useNavigate()
   const [platform, setPlatform] = useState([]);
   
   const [rows, setRows] = useState([]);
@@ -88,14 +91,16 @@ const columns = props.data.columns;
      
       <div className="w-full h-full " >
         <DataGrid  autoHeight 
+        
 
 onRowSelectionModelChange={(ids) => {
   const selectedIDs = new Set(ids);
   let foundData = rows.find(item => item.id === ids[0]);
 
-console.log(foundData);
+  navigate('/paitentdetail',{state:{atrNo:foundData.id}});
+
 }}
-checkboxSelection
+        checkboxSelection
         disableRowSelectionOnClick
         disableDensitySelector
         disableMultipleRowSelection
@@ -109,9 +114,13 @@ checkboxSelection
             value: searchText,
             onChange: (event) => requestSearch(event.target.value),
             clearSearch: () => requestSearch(''),
+            onAdd: ()=> { 
+              if(props.setIsAddModalOpen)
+              props.setIsAddModalOpen(true)
+            
+            }
           },
         }}
-
 
 
           rows={rows}
