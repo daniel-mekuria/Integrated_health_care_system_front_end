@@ -11,14 +11,20 @@ import RadioGroup from '@mui/joy/RadioGroup';
 import ExportForm from '../components/exportForm';
 import { PieChart } from '@mui/x-charts';
 import Barchart from '../components/barchart';
+import Linechart from '../components/linechart';
+import Piechart from '../components/piechart';
 
 function Analytics(props) {
 
     let dataset = [{ x: 1, y: 4, Z: 45 }, { x: 2, y: 41, Z: 45 }, { x: 3, y: 11, Z: 45 }, { x: 6, y: 18, Z: 45 }, { x: 9, y: 41 }, { x: 11, y: 45 },]
 
     const [graphType, setGraptype] = useState("Line")
-    const [xData, setXData] = useState({ name: "time" })
-    const [yData, setYData] = useState({})
+    const [xData, setXData] = useState()
+    const [yData, setYData] = useState()
+    const [optionName, setoptionName] = useState()
+
+    const [dataSet, setdataSet] = useState()
+
 
     const [timeScale, setTimeScale] = useState("Day")
     const [startDate, setstartDate] = useState()
@@ -26,10 +32,55 @@ function Analytics(props) {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isXModalOpen, setIsXModalOpen] = useState(false);
-    const [isYModalOpen, setIsYModalOpen] = useState(false);
 
     const xFormRef = useRef();
-    const yFormRef = useRef();
+
+    const options = {
+
+
+        Bar: [
+            { x: "time", y: "sex", name: "added paitent by sex vs time ", set: "paitents" },
+            { x: "time", y: "birthDate", name: "added paitent by age vs time ", set: "paitents" },
+            { x: "time", y: "severityLevel", name: "added paitent by severity vs time ", set: "paitents" },
+
+            { x: "sex", y: "birthDate", name: "added paitent by age vs sex ", set: "paitents" },
+
+            { x: "sex", y: "severityLevel", name: "added paitent by severity vs sex ", set: "paitents" },
+            { x: "birthDate", y: "severityLevel", name: "added paitent by severity vs age ", set: "paitents" },
+
+
+
+
+
+        ],
+        Line: [
+            { x: "time", y: "sex", name: "total paitent by sex vs time ", set: "paitents" },
+            { x: "time", y: "birthDate", name: "total paitent by age vs time ", set: "paitents" },
+            { x: "time", y: "severityLevel", name: "total paitent by severity vs time ", set: "paitents" },
+
+
+
+
+
+        ]
+        ,
+        Pie: [
+            { x: "time", y: "sex", name: "total paitent by sex ", set: "paitents" },
+            { x: "time", y: "birthDate", name: "total paitent by age ", set: "paitents" },
+            { x: "time", y: "severityLevel", name: "total paitent by severity ", set: "paitents" },
+
+
+
+
+
+
+        ]
+
+
+    }
+
+
+
 
 
     return (
@@ -38,8 +89,9 @@ function Analytics(props) {
                 destroyOnClose
                 onOk={() => {
                     xFormRef.current.submit()
+                    setIsXModalOpen(false)
                 }}
-                title={(graphType != "Pie" ? "Select data set For the X axis" : "Select data set")}
+                title={(graphType != "Pie" ? "Select data set " : "Select data set")}
                 centered
 
                 open={isXModalOpen}
@@ -50,16 +102,32 @@ function Analytics(props) {
             >
                 <div className='p-4'>
                     <Form
+                        onFinish={(x) => {
+
+                            let option= options[graphType][x.select]
+                            setXData(option.x)
+                            setYData(option.y)
+                            setdataSet(option.set)
+                            setoptionName(option.name)
+                            console.log(x.select)
+
+                        }}
                         ref={xFormRef}
                     >
                         <Form.Item
                             name="select"
                             rules={[{ required: true }]}
                         >
-                            <Select placeholder="Please select an option" options={[
-                                { value: "Time", label: "Time" }
 
-                            ]} >
+                            
+                            <Select placeholder="Please select an option" 
+                            options={options[graphType].map((op,index) => (
+
+                                { value:index, label: op.name }                                
+                                ))}
+                            
+                            
+                            >
 
                                 {/* Add more options as needed */}
                             </Select>
@@ -71,26 +139,7 @@ function Analytics(props) {
 
 
             </Modal>
-            <Modal
-                onOk={() => {
-                    yFormRef.current.requestSubmit()
-                }}
-                centered
-
-                open={isYModalOpen}
-                onCancel={() => {
-                    setIsYModalOpen(false)
-                }}
-
-            >
-                <div>
-                    dssd
-                </div>
-
-
-
-
-            </Modal>
+           
 
             <ExportForm isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
             <div className='flex w-full'>
@@ -147,7 +196,7 @@ function Analytics(props) {
 
                         </div>
                     </div>
-                    <div className={'space-y-2 ' + (graphType != "Pie" ? ' visible' : " hidden")}>
+                    <div className={'space-y-2 ' + ((graphType != "Pie"&&xData=="time") ? ' visible' : " hidden")}>
                         <p className='font-sans font-semibold text-gray-500 text-[1rem] '>Time Scale</p>
                         <div className='flex mb-3'>
                             <RadioGroup
@@ -194,15 +243,15 @@ function Analytics(props) {
                         <div className='flex mb-3 space-x-2'>
 
                             <DatePicker
-                                onChange={(x,y) => {
+                                onChange={(x, y) => {
                                     setstartDate(y)
                                 }}
                                 maxDate={dayjs()}
                                 placeholder="Start date" />
                             <DatePicker
-                             onChange={(x,y) => {
-                                setendDate(y)
-                            }}
+                                onChange={(x, y) => {
+                                    setendDate(y)
+                                }}
                                 maxDate={dayjs()}
 
                                 placeholder="End date" />
@@ -211,21 +260,16 @@ function Analytics(props) {
 
 
                 </div>
-                
+
                 <div className='w-[70%] border-2 border-solid rounded-xl'>
-                   
+
                     {
 
 
 
                         graphType == "Line" ? (
-                            <LineChart
+                            <Linechart x={xData} y={yData} startDate={startDate ? startDate : dayjs()} endDate={endDate ? endDate : dayjs()} timeScale={timeScale} set={dataSet}
 
-                                xAxis={[{ dataKey: 'x' }]}
-                                series={[{ dataKey: 'y', label: "X" }, { dataKey: 'Z', label: "z" }]}
-
-
-                                dataset={dataset}
                             />
                         ) : null
 
@@ -237,7 +281,7 @@ function Analytics(props) {
 
 
                         graphType == "Bar" ? (
-                            <Barchart x={xData.name}   y={yData} startDate ={startDate?startDate:dayjs()} endDate={endDate?endDate:dayjs()} timeScale={timeScale}
+                            <Barchart x={xData} y={yData} startDate={startDate ? startDate : dayjs()} endDate={endDate ? endDate : dayjs()} timeScale={timeScale} set={dataSet}
 
                             />
                         ) : null
@@ -249,16 +293,7 @@ function Analytics(props) {
 
 
                         graphType == "Pie" ? (
-                            <PieChart
-                                series={[
-                                    {
-                                        data: [
-                                            { id: 0, value: 10, label: 'series A' },
-                                            { id: 1, value: 15, label: 'series B' },
-                                            { id: 2, value: 20, label: 'series C' },
-                                        ],
-                                    },
-                                ]}
+                           <Piechart x={xData} y={yData} startDate={startDate ? startDate : dayjs()} endDate={endDate ? endDate : dayjs()} timeScale={timeScale} set={dataSet}
 
                             />
                         ) : null
@@ -275,18 +310,18 @@ function Analytics(props) {
                         Data sets
                     </p>
                 </div>
-                <div className='flex  space-x-10 h-[90%]'>
+                <div className='flex relative  left-[30%]space-x-10 h-[90%]'>
                     <div className=' bg-gray-100  h-full p-2 space-y-2 flex flex-col rounded-xl w-[30%]'>
                         <div className='flex justify-center'>
                             <p className='font-sans text-lg font-semibold text-gray-700 '>
-                                {(graphType != "Pie" ? "X-axis" : " Set")}
+                                {(graphType != "Pie" ? "Set" : " Set")}
                             </p>
                         </div>
                         <div className='flex flex-col space-y-2 overflow-scroll scrollbar-hide'>
                             {
 
 
-                                (xData == null) ?
+                                (optionName == null) ?
 
                                     <Button onClick={() => (setIsXModalOpen(true))} color='success' variant='outlined' className=' !border-dashed !border-[3px] !border-green-400 h-[90%]  rounded-xl w-full'>
                                         <div className='relative flex flex-col -top-6'>
@@ -303,9 +338,11 @@ function Analytics(props) {
                                     </Button>
                                     : <Card hoverable >
                                         <div className='flex'>
-                                            <p> {xData.name}</p>
+                                            <p> {optionName}</p>
                                             <Button onClick={() => {
+                                                setoptionName(null);
                                                 setXData(null);
+                                                setYData(null);
                                             }} className='!ml-auto' color='error'>
                                                 X
                                             </Button>
@@ -319,67 +356,7 @@ function Analytics(props) {
                         </div>
 
                     </div>
-                    <div className={' bg-gray-100  h-full p-2 space-y-2 flex flex-col rounded-xl w-[30%] ' + (graphType != "Pie" ? ' visible' : " hidden")}>
-                        <div className='flex justify-center'>
-                            <p className='font-sans text-lg font-semibold text-gray-700 '>
-                                Y-axis
-                            </p>
-                        </div>
-                        <div className='flex flex-col space-y-2 overflow-scroll scrollbar-hide'>
-                            <Card hoverable >
-                                <div className='flex'>
-                                    <p>Paitent Id</p>
-                                    <Button className='!ml-auto' color='error'>
-                                        X
-                                    </Button>
-                                </div>
-                            </Card>                        <Card hoverable >
-                                <div className='flex'>
-                                    <p>Paitent Id</p>
-                                    <Button className='!ml-auto' color='error'>
-                                        X
-                                    </Button>
-                                </div>
-                            </Card>
-                            <Card hoverable >
-                                <div className='flex'>
-                                    <p>Paitent Id</p>
-                                    <Button className='!ml-auto' color='error'>
-                                        X
-                                    </Button>
-                                </div>
-                            </Card>
-                            <Card hoverable >
-                                <div className='flex'>
-                                    <p>Paitent Id</p>
-                                    <Button className='!ml-auto' color='error'>
-                                        X
-                                    </Button>
-                                </div>
-                            </Card>                            <Card hoverable >
-                                <div className='flex'>
-                                    <p>Paitent Id</p>
-                                    <Button className='!ml-auto' color='error'>
-                                        X
-                                    </Button>
-                                </div>
-                            </Card>                     </div>
 
-                    </div>
-
-                    <Button onClick={() => (setIsYModalOpen(true))} color='success' variant='outlined' className={' !border-dashed !border-[3px] !border-green-400 h-full  rounded-xl w-[15%] ' + (graphType != "Pie" ? ' !visible' : " !hidden")} >
-                        <div className='relative flex flex-col -top-6'>
-                            <p className=' text-green-400 font-sans text-[6rem]'>
-                                +
-                            </p>
-                            <p className=' relative -top-6 text-green-400 font-sans text-[1rem]'>
-                                Add
-                            </p>
-                            <p className='  relative -top-6 text-green-400 font-sans text-[1rem]'>
-                                New Dataset
-                            </p>
-                        </div>
-                    </Button>
                 </div>
 
             </div>

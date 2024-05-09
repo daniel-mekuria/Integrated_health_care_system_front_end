@@ -136,7 +136,7 @@ async function fetchdata(){
     }
 }
 
-function Barchart(props) {
+function Linechart(props) {
     let rawData=[]
     set=props.set
     
@@ -161,7 +161,7 @@ if (xData[0].data.length !== yData[0].data.length){
 }
 
     return (
-        <BarChart
+        <LineChart
             xAxis={ xData}
             series={yData}
 
@@ -170,4 +170,4 @@ if (xData[0].data.length !== yData[0].data.length){
 
 }
 
-export default Barchart
+export default Linechart
