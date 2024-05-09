@@ -84,7 +84,7 @@ function Analytics(props) {
 
 
     return (
-        <div className={props.className + 'flex flex-col w-full h-full space-y-8'} style={props.style}>
+        <div className={props.className + 'flex flex-col w-full h-full space-y-4'} style={props.style}>
             <Modal
                 destroyOnClose
                 onOk={() => {
@@ -162,7 +162,15 @@ function Analytics(props) {
                                 name="alignment"
                                 variant="plain"
                                 value={graphType}
-                                onChange={(event) => setGraptype(event.target.value)}
+                                onChange={(event) => {
+                                    
+                                    setGraptype(event.target.value)
+                                    setdataSet(null)
+                                    setoptionName(null)
+                                    setXData(null)
+                                    
+                                }
+                                }
                             >
                                 {['Line', 'Bar', 'Pie'].map((type) => (
 
