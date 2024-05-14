@@ -10,13 +10,13 @@ import Box from '@mui/material/Box';
 import InfoIcon from '@mui/icons-material/Info';
 import { jsxs as _jsxs } from "react/jsx-runtime";
 
+import dayjs from 'dayjs';
 
 import DataTable from "../components/DataTable";
 import httpRequest from "../components/httpRequest";
 import useAsyncData from "../components/useAsyncData";
 import LoadingSpinners from "../components/loadingSpinners";
 import { useNavigate } from "react-router-dom";
-import AddPaitent from "./addpaitent";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -117,24 +117,22 @@ function renderStatus(params) {
 
 
 
-async function GetPaitents() {
-  let atrPaitents = [];
-  const allPaitents = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/patient/allAtrPatients")
+async function GetHistory(id="663a7d42d9dfeea5fdd27d4e") {
+  let visits = [];
+  const allvisits = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/visit/getPatientVisits/"+id)
+  
 
-  allPaitents.patients.forEach(async paitent => {
-    const today = new Date();
-    const birthDate = new Date(paitent.birthDate)
-    const age = today.getFullYear() - birthDate.getFullYear() - (today.getMonth() < birthDate.getMonth() || (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate()));
+  allvisits.visitHistories.forEach(async visit => {
+    
+    let NewVisit={...visit}
+    NewVisit.id=visit._id
+    NewVisit.onTime=visit.onTime?"Yes":"No"
 
 
-    atrPaitents.push({
-      id: paitent.atrNumber, lastName: (paitent.fullName).split(" ")[1], firstName: (paitent.fullName).split(" ")[0], age: age, PhoneNumber: paitent.phoneNumber, onTime: "No", Medicine: "cod(codine)", LastAptDate: "10/12/2020", NextAptDate: "10/12/2020"
-    },
-
-    )
+    visits.push(  NewVisit  )
   });
-
-  return atrPaitents
+console.log(visits)
+  return visits
 
 
 }
@@ -144,56 +142,39 @@ function strTODate(date) {
   return new Date(date)
 }
 
-function ViewPaitents(props) {
+function ViewHistory(props) {
 
   const navigate = useNavigate()
   const [isAddModalOpen,setIsAddModalOpen] =useState(false)
-  const [update,setUpdate] =useState()
 
 
 const x=httpRequest()
-  const { data, isLoading, error } = useAsyncData(GetPaitents,[update]);
+  const { data, isLoading, error } = useAsyncData(GetHistory,[]);
 
 
 
   const columns = [
-    { field: 'id', headerName: 'Atr No', minWidth: 90 },
+   
     {
-      field: 'firstName',
-      headerName: 'First name',
+      field: 'user',
+      headerName: 'Physician',
       minWidth: 100,
       flex: 1,
       editable: false,
     },
+    
+  
     {
-      field: 'lastName',
-      headerName: 'Last name',
-      minWidth: 100,
-      flex: 1,
-      editable: false,
-    },
-    {
-      field: 'age',
-      headerName: 'Age',
-      type: 'number',
-      minWidth: 60,
-      flex: 1,
-      editable: false,
-    },
-
-
-    {
-      field: 'PhoneNumber',
-      headerName: 'Phone number',
-      minWidth: 120,
-      flex: 1,
-      editable: false,
-    },
-
-
-    {
-      field: 'Medicine',
+      field: 'drug',
       headerName: 'Medicine',
+      sortable: false,
+      minWidth: 80,
+      flex: 1,
+      renderCell: renderMedicine
+    },
+    {
+      field: 'otherMedicine',
+      headerName: 'Other medicine',
       sortable: false,
       minWidth: 80,
       flex: 1,
@@ -208,16 +189,16 @@ const x=httpRequest()
       renderCell: renderStatus
     },
     {
-      field: 'LastAptDate',
+      field: 'visitDate',
       type: "date",
-      headerName: 'Last apt.date',
+      headerName: 'Visit date',
       sortable: true,
       minWidth: 140,
       valueGetter: strTODate,
       flex: 1,
     },
     {
-      field: 'NextAptDate',
+      field: 'nextAppointmentDate',
       type: "date",
       headerName: 'Next apt.date',
       sortable: true,
@@ -228,10 +209,26 @@ const x=httpRequest()
   ];
 
 
+  
 
 
-
-
+let rows=[
+    {
+        "_id": "663a7ebed9dfeea5fdd27d6e",
+        "user": "662538d6145fa9526ee24a85",
+        "patient": "663a7d42d9dfeea5fdd27d4e",
+        "drug": "66391e1aff4447a4c49949cb",
+        "otherDrug": [
+            "Panadol",
+            "parastamol"
+        ],
+        "pillNumber": 30,
+        "visitDate": "05 / Apr / 2024",
+        "onTime": true,
+        "nextAppointmentDate": "05 / May / 2024",
+        "__v": 0
+    }
+]
   let tableData = { "columns": columns, "rows": data }
 
   if (isLoading || error) {
@@ -243,9 +240,8 @@ const x=httpRequest()
 
   return (
     <div className={props.className} style={props.style}>
-      <AddPaitent isAddModalOpen={isAddModalOpen} toast={toast} setIsAddModalOpen={setIsAddModalOpen} setUpdate={setUpdate} />
      
-      <DataTable addNew data={tableData} pageSize={9} setIsAddModalOpen={setIsAddModalOpen} className={" w-full h-full"} />
+      <DataTable  getRowId={(row) => console.log} data={tableData} pageSize={9}  className={" w-full h-full"} />
 
 
       <ToastContainer
@@ -264,4 +260,4 @@ const x=httpRequest()
   );
 }
 
-export default ViewPaitents;
+export default ViewHistory;
