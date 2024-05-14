@@ -34,10 +34,10 @@ function QuickSearchToolbar(props) {
           ),
         }}
       />
-      <Button onClick={props.onAdd} variant="outlined" style={{marginLeft: 'auto'}} startIcon={<AddIcon />}>
+     { props.addNew?<Button onClick={props.onAdd} variant="outlined" style={{marginLeft: 'auto'}} startIcon={<AddIcon />}>
         New
-        </Button>
-
+        </Button>:null
+}
 
     </div>
   );
@@ -118,7 +118,8 @@ onRowSelectionModelChange={(ids) => {
               if(props.setIsAddModalOpen)
               props.setIsAddModalOpen(true)
             
-            }
+            },
+            addNew:props.addNew
           },
         }}
 

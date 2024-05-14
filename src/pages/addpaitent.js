@@ -30,7 +30,6 @@ async function addPaitent(paitent) {
 
 
 
-    let atrPaitents = [];
     let res = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/patient/atrRegister", paitent, "post")
     if (res)
         return 1
