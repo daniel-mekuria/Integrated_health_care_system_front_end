@@ -68,7 +68,7 @@ async function httpRequest(url, data, method = "get") {
                 return(null)
 
             }
-            else if (response.status == 200) {
+            else if (response.status <300 && response.status >=200) {
 
                 let resData = await response.json()
 
@@ -86,7 +86,7 @@ async function httpRequest(url, data, method = "get") {
 
             }
         }
-        else if (response.status == 200) {
+        else if (response.status <300 && response.status >=200) {
             let resData= await response.json()
             return resData
         }

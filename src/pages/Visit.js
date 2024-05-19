@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import axios from "axios";
+import httpRequest from "../components/httpRequest";
 
 const Visit = () => {
   const [formData, setFormData] = useState({
     atrNumber: "",
-    patientName: "",
+    userId: "",
     drug: [],
     otherDrug: "",
     pillNumber: 0,
@@ -29,11 +29,16 @@ const Visit = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const response = await axios.post("https://integrated-healthcare-system.onrender.com/v1/visit/createVisitHistory", formData);
-      console.log(response.data.message); // Handle success message
+      const response = await httpRequest(
+        process.env.REACT_APP_BASE_URL + "/v1/visit/createVisitHistory",
+        formData,
+        "post"
+      );
+      console.log(response);
     } catch (error) {
-      console.error(error); // Handle error
+      console.error(error);
     }
   };
 
@@ -71,16 +76,16 @@ const Visit = () => {
 
           <div className="mb-4">
             <label
-              htmlFor="patientName"
+              htmlFor="userId"
               className="block text-lg font-medium text-gray-700"
             >
               User Id
             </label>
             <input
               type="text"
-              id="patientName"
-              name="patientName"
-              value={formData.patientName}
+              id="userId"
+              name="userId"
+              value={formData.userId}
               onChange={handleChange}
               className="border rounded p-2 w-96 outline-none focus:border-blue-500"
             />
