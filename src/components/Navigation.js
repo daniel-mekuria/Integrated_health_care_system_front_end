@@ -76,7 +76,7 @@ const Navigation = () => {
             </a>
           </li>
           <li>
-            <a href="#" className="flex items-center hover:text-green-700">
+            <a href="/pddtf" className="flex items-center hover:text-green-700">
               <FontAwesomeIcon className="mr-2" icon={faBell} />
               Notifications
             </a>

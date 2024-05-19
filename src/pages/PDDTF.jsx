@@ -7,6 +7,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Typography,
   Button,
 } from "@mui/material";
 
@@ -138,27 +139,32 @@ const PDDTF = () => {
           <div className="">
             <div className="flex flex-row gap-52">
               <div className="flex flex-col">
-                <label htmlFor="date ">Date</label>
-                <input
-                  type="date"
+                <TextField
                   id="date"
-                  className="border rounded w-96 p-2 outline-none focus:border-blue-500"
+                  label="Date"
+                  type="date"
+                  variant="outlined"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  sx={{ width: "20rem", p: 1 }}
                 />
               </div>
               <div className="flex flex-col">
-                <label htmlFor="">Prescription Number</label>
-                <input
-                  type="text"
-                  placeholder="prescription number"
+                <TextField
                   id="prescription_number"
-                  className="border rounded p-2 w-96 outline-none focus:border-blue-500"
+                  label="Prescription Number"
+                  placeholder="prescription number"
+                  type="text"
+                  variant="outlined"
+                  sx={{ width: "20rem", p: 1 }}
                 />
               </div>
             </div>
 
-            <div className="flex flex-row gap-24">
+            <div className="flex flex-row gap-15">
               <div className="flex flex-col h">
-                <h3>Reason to Revisit</h3>
+                <Typography variant="subtitle1">Reason to Revisit</Typography>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -169,7 +175,6 @@ const PDDTF = () => {
                   }
                   label="Start"
                 />
-
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -180,7 +185,6 @@ const PDDTF = () => {
                   }
                   label="Refill"
                 />
-
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -193,30 +197,32 @@ const PDDTF = () => {
                 />
               </div>
 
-              <div className="flex flex-col ">
-                <label htmlFor="">Weight</label>
-                <input
-                  type="text"
-                  placeholder="weight"
+              <div className="flex flex-col ml-10 ">
+                <TextField
                   id="weight"
-                  className="border rounded p-2 outline-none focus:border-blue-500"
+                  label="Weight"
+                  placeholder="weight"
+                  type="text"
+                  variant="outlined"
+                  sx={{ width: "20rem", p: 1 }}
                 />
               </div>
 
-              <div className="flex flex-col ml-28">
-                <label htmlFor="">Month of supply </label>
-                <input
-                  type="text"
+              <div className="flex flex-col ml-10">
+                <TextField
                   id="month_of_supply"
+                  label="Month of supply"
                   placeholder="month of supply"
-                  className="border rounded p-2 outline-none focus:border-blue-500"
+                  type="text"
+                  variant="outlined"
+                  sx={{ width: "20rem", p: 1 }}
                 />
               </div>
             </div>
 
             <div className="flex flex-row gap-20">
               <div className="flex flex-col gap-0">
-                <h3>In/Out Patient</h3>
+                <Typography variant="subtitle1">In/Out Patient</Typography>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -227,7 +233,6 @@ const PDDTF = () => {
                   }
                   label="Start"
                 />
-
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -241,12 +246,13 @@ const PDDTF = () => {
               </div>
 
               <div className="flex flex-col">
-                <label htmlFor="">Prescription Name</label>
-                <input
-                  type="text"
+                <TextField
                   id="prescription_name"
+                  label="Prescription Name"
                   placeholder="prescription name"
-                  className="border rounded p-2 outline-none focus:border-blue-500"
+                  type="text"
+                  variant="outlined"
+                  sx={{ width: "20rem", p: 1 }}
                 />
               </div>
 
@@ -301,9 +307,8 @@ const PDDTF = () => {
               </div>
             </div>
 
-            <div className="flex flex-row gap-20">
+            <div className="flex flex-row gap-10">
               <div className="flex flex-col">
-                <h2 className="font-bold">Drug one</h2>
                 <h3>Drug Name</h3>
 
                 <FormControl>
@@ -371,272 +376,78 @@ const PDDTF = () => {
                     </div>
                   </Select>
                 </FormControl>
-
-                <div className="flex flex-col">
-                  <label htmlFor="">strength </label>
-                  <input
-                    type="text"
-                    id="strength"
-                    placeholder="strength"
-                    className="border rounded p-2 outline-none focus:border-blue-500"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label htmlFor="">Quality </label>
-                  <input
-                    type="text"
-                    id="Quality"
-                    placeholder="Quality"
-                    className="border rounded p-2 outline-none focus:border-blue-500"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label htmlFor="">Brand </label>
-                  <input
-                    type="text"
-                    id="Brand"
-                    placeholder="brand"
-                    className="border rounded p-2 outline-none focus:border-blue-500"
-                  />
-                </div>
+              </div>
+              <div className="flex flex-col">
+                <TextField
+                  id="strength"
+                  label="Strength"
+                  placeholder="strength"
+                  type="text"
+                  variant="outlined"
+                  sx={{ width: "10rem", p: 1 }}
+                />
               </div>
 
               <div className="flex flex-col">
-                <h2 className="font-bold">Drug two</h2>
-                <h3>Drug Name</h3>
-                <FormControl>
-                  <InputLabel>Select Options</InputLabel>
-                  <Select
-                    multiple
-                    value={Object.keys(options2).filter((key) => options2[key])}
-                    onChange={handleOptionChange2}
-                    renderValue={(selected) => {
-                      const drugNames = {
-                        option1: "TDF/3TC/DTG",
-                        option2: "TDF/3TC/DTG 600",
-                        option3: "TDF/3TC/DTG 400",
-                        option4: "ZDV/3TC/DTG",
-                      };
-                      return selected
-                        .map((value) => drugNames[value])
-                        .join(", ");
-                    }}
-                    className="w-72"
-                  >
-                    <MenuItem value="option1">
-                      <Checkbox
-                        checked={options.option1}
-                        onChange={handleOptionChange}
-                        name="option1"
-                      />
-                      TDF/3TC/DTG
-                    </MenuItem>
-                    <MenuItem value="option2">
-                      <Checkbox
-                        checked={options.option2}
-                        onChange={handleOptionChange}
-                        name="option2"
-                      />
-                      TDF/3TC/DTG 600
-                    </MenuItem>
-                    <MenuItem value="option3">
-                      <Checkbox
-                        checked={options.option3}
-                        onChange={handleOptionChange}
-                        name="option3"
-                      />
-                      TDF/3TC/DTG 400
-                    </MenuItem>
-                    <MenuItem value="option4">
-                      <Checkbox
-                        checked={options.option4}
-                        onChange={handleOptionChange}
-                        name="option4"
-                      />
-                      ZDV/3TC/DTG
-                    </MenuItem>
-                    <div className="flex flex-row">
-                      <MenuItem>
-                        <Button variant="contained" onClick={handleApply}>
-                          Apply
-                        </Button>
-                      </MenuItem>
-                      <MenuItem>
-                        <Button variant="contained" onClick={handleClear}>
-                          Clear
-                        </Button>
-                      </MenuItem>
-                    </div>
-                  </Select>
-                </FormControl>
-                <div className="flex flex-col">
-                  <label htmlFor="">strength </label>
-                  <input
-                    type="text"
-                    id="strength"
-                    placeholder="strength"
-                    className="border rounded p-2 outline-none focus:border-blue-500"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label htmlFor="">Quality </label>
-                  <input
-                    type="text"
-                    id="Quality"
-                    placeholder="Quality"
-                    className="border rounded p-2 outline-none focus:border-blue-500"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label htmlFor="">Brand </label>
-                  <input
-                    type="text"
-                    id="Brand"
-                    placeholder="brand"
-                    className="border rounded p-2 outline-none focus:border-blue-500"
-                  />
-                </div>
+                <TextField
+                  id="Quality"
+                  label="Quality"
+                  placeholder="Quality"
+                  type="text"
+                  variant="outlined"
+                  sx={{ width: "10rem", p: 1 }}
+                />
               </div>
 
               <div className="flex flex-col">
-                <h2 className="font-bold">Drug three</h2>
-                <h3>Drug Name </h3>
-                <FormControl>
-                  <InputLabel>Select Options</InputLabel>
-                  <Select
-                    multiple
-                    value={Object.keys(options3).filter((key) => options3[key])}
-                    onChange={handleOptionChange3}
-                    renderValue={(selected) => {
-                      const drugNames = {
-                        option1: "TDF/3TC/DTG",
-                        option2: "TDF/3TC/DTG 600",
-                        option3: "TDF/3TC/DTG 400",
-                        option4: "ZDV/3TC/DTG",
-                      };
-                      return selected
-                        .map((value) => drugNames[value])
-                        .join(", ");
-                    }}
-                    className="w-72"
-                  >
-                    <MenuItem value="option1" className="h-10">
-                      <Checkbox
-                        checked={options.option1}
-                        onChange={handleOptionChange}
-                        name="option1"
-                      />
-                      TDF/3TC/DTG
-                    </MenuItem>
-                    <MenuItem value="option2">
-                      <Checkbox
-                        checked={options.option2}
-                        onChange={handleOptionChange}
-                        name="option2"
-                      />
-                      TDF/3TC/DTG 600
-                    </MenuItem>
-                    <MenuItem value="option3">
-                      <Checkbox
-                        checked={options.option3}
-                        onChange={handleOptionChange}
-                        name="option3"
-                      />
-                      TDF/3TC/DTG 400
-                    </MenuItem>
-                    <MenuItem value="option4">
-                      <Checkbox
-                        checked={options.option4}
-                        onChange={handleOptionChange}
-                        name="option4"
-                      />
-                      ZDV/3TC/DTG
-                    </MenuItem>
-                    <div className="flex flex-row">
-                      <MenuItem>
-                        <Button variant="contained" onClick={handleApply}>
-                          Apply
-                        </Button>
-                      </MenuItem>
-                      <MenuItem>
-                        <Button variant="contained" onClick={handleClear}>
-                          Clear
-                        </Button>
-                      </MenuItem>
-                    </div>
-                  </Select>
-                </FormControl>
-                <div className="flex flex-col">
-                  <label htmlFor="">strength </label>
-                  <input
-                    type="text"
-                    id="strength"
-                    placeholder="strength"
-                    className="border rounded p-2 outline-none focus:border-blue-500"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label htmlFor="">Quality </label>
-                  <input
-                    type="text"
-                    id="Quality"
-                    placeholder="Quality"
-                    className="border rounded p-2 outline-none focus:border-blue-500"
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label htmlFor="">Brand </label>
-                  <input
-                    type="text"
-                    id="Brand"
-                    placeholder="brand"
-                    className="border rounded p-2 outline-none focus:border-blue-500"
-                  />
-                </div>
+                <TextField
+                  id="Brand"
+                  label="Brand"
+                  placeholder="brand"
+                  type="text"
+                  variant="outlined"
+                  sx={{ width: "10rem", p: 1 }}
+                />
               </div>
             </div>
 
             <div className="flex flex-row gap-20">
               <div className="flex flex-col">
                 <div className="flex flex-col pt-6">
-                  <label htmlFor="">
-                    Service Delivery(Other, ASM, FTR,CAG,etc){" "}
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="strength"
+                  <TextField
                     id="service_delivery"
-                    className="border rounded p-2 outline-none focus:border-blue-500"
+                    label="Service Delivery (Other, ASM, FTR, CAG, etc)"
+                    placeholder="strength"
+                    type="text"
+                    variant="outlined"
+                    sx={{ width: "24rem", p: 1 }}
                   />
                 </div>
               </div>
               <div className="flex flex-col pt-6">
-                <label htmlFor="">Other Drugs dispensed</label>
-                <input
-                  type="text"
-                  placeholder="Drug dispensed"
+                <TextField
                   id="other_drug_dispensed"
-                  className="border rounded p-2 outline-none focus:border-blue-500"
+                  label="Other Drugs dispensed"
+                  placeholder="Drug dispensed"
+                  type="text"
+                  variant="outlined"
+                  sx={{ width: "24rem", p: 1 }}
                 />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-row justify-center ">
-          <h2 className="font-bold">Next Appointment</h2>
-        </div>
-        <div className="flex flex-row justify-center ">
-          <input
-            type="date"
+        <div className="flex flex-row justify-center m-5">
+          <TextField
             id="nextapt"
-            className="border rounded w-96 p-2 outline-none focus:border-blue-500"
+            label="Next Appointment"
+            type="date"
+            variant="outlined"
+            sx={{ width: "24rem", p: 1 }}
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
         </div>
         <div className="flex flex-row justify-center mt-5">
