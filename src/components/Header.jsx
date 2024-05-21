@@ -1,14 +1,17 @@
-import React from 'react'
-import './header.css'
+// src/components/Header.js
+import React from 'react';
+import { FaBell, FaCog } from 'react-icons/fa';
 
 const Header = () => {
   return (
-    <header>
-      <h1 className='logo'>Beijing Hospital</h1>
-      <button className='btn1'>+ New Report</button>
-   
+    <header className="bg-white shadow-md p-4 flex justify-between items-center">
+      <h1 className="text-xl">Bed Management System</h1>
+      <div className="flex items-center">
+        <FaBell className="mx-4 text-gray-600" />
+        <FaCog className="text-gray-600" />
+      </div>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
