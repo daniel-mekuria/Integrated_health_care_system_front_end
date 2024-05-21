@@ -1,106 +1,125 @@
-import React from 'react'
-import './navigation.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserMd } from '@fortawesome/free-solid-svg-icons';
-import {faChartSimple} from '@fortawesome/free-solid-svg-icons';
-import {faBell} from '@fortawesome/free-solid-svg-icons';
-import {faHospitalUser} from '@fortawesome/free-solid-svg-icons';
-import {faGear} from '@fortawesome/free-solid-svg-icons';
-import {faDesktop} from '@fortawesome/free-solid-svg-icons';
-import {faPrescriptionBottleMedical} from '@fortawesome/free-solid-svg-icons';
-import {faFlaskVial} from '@fortawesome/free-solid-svg-icons';
-import {faCircleDot} from '@fortawesome/free-solid-svg-icons';
-import {faArrowRightFromBracket} from '@fortawesome/free-solid-svg-icons';
-import avatarImage from '../assets/image.png'; // Import the image
-
-
-
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import AHeader from "./AHeader";
+import {
+  faUserMd,
+  faChartSimple,
+  faBell,
+  faHospitalUser,
+  faGear,
+  faDesktop,
+  faPrescriptionBottleMedical,
+  faFlaskVial,
+  faCircleDot,
+  faArrowRightFromBracket,
+} from "@fortawesome/free-solid-svg-icons";
+import PersonIcon from '@mui/icons-material/Person';import Header from "./Header";
+import { GetCookie, RemoveCookie, SetCookie } from "./cookies";
 
 const Navigation = () => {
+
+  const user =GetCookie("user")?JSON.parse(GetCookie("user")):{"name":null}
   return (
-    <div>
-        <nav>
-            <ul className='nav_link'>
-                <li>
-                  <a href="#">
-                  <FontAwesomeIcon className='icon' icon={faCircleDot} />
-                    Overview
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                  <FontAwesomeIcon className='icon' icon={faFlaskVial} />
-                    Laboratory
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                  <FontAwesomeIcon className='icon' icon={faPrescriptionBottleMedical} />
-                    Pharmacy
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                  <FontAwesomeIcon className='icon' icon={faHospitalUser} />
-                    Patient
-                  </a>
-                  </li>
-                <li>
-                  <a href="#">
-                  <FontAwesomeIcon className='icon' icon={faDesktop} />
-                    Monitor Patients
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                  <FontAwesomeIcon className='icon' icon={faChartSimple} />
-                    Analytics
-                  </a>
-                </li>
-                <li> 
-                  <a href="#">
-                    <FontAwesomeIcon className='icon' icon={faUserMd} />
-                    Doctor
-                  </a>
-                  </li>
-                <li>
-                  <a href="#">
-                  <FontAwesomeIcon className='icon' icon={faBell} />
-                    Notifications
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <FontAwesomeIcon className='icon' icon={faGear} />
-                    Settings
-                  </a>
-                </li>
-            </ul>
+    <div className="w-64 h-full py-4 mx-2 mt-0 text-black">
+      <div className="h-[99%] px-4 py-2 bg-white rounded-lg shadow-lg">
+        <AHeader />
 
-            <div className='title-profile'>
-              <h4>profile</h4>
-            </div>
-            
-            <div className="profile">
-              <img src={avatarImage} alt="Bisrat Mekonnen" />
-              <div>
-                <p className='name'>Bisrat Mekonnen</p>
-                <p className='email'>doctor123@gmail.com</p>
-              </div>
+        <ul className="space-y-4">
+          <li>
+            <a href="#" className="flex items-center hover:text-green-700">
+              <FontAwesomeIcon className="mr-2" icon={faCircleDot} />
+              Overview
+            </a>
+          </li>
+          <li>
+            <a href="#" className="flex items-center hover:text-green-700">
+              <FontAwesomeIcon className="mr-2" icon={faFlaskVial} />
+              Laboratory
+            </a>
+          </li>
+          <li>
+            <a
+              href="/pharmacy"
+              className="flex items-center hover:text-green-700"
+            >
+              <FontAwesomeIcon
+                className="mr-2"
+                icon={faPrescriptionBottleMedical}
+              />
+              Pharmacy
+            </a>
+          </li>
+          <li>
+            <a
+              href="/paitents"
+              className="flex items-center hover:text-green-700"
+            >
+              <FontAwesomeIcon className="mr-2" icon={faHospitalUser} />
+              Patient
+            </a>
+          </li>
+          <li>
+            <a href="#" className="flex items-center hover:text-green-700">
+              <FontAwesomeIcon className="mr-2" icon={faDesktop} />
+              Monitor Patients
+            </a>
+          </li>
+          <li>
+            <a href="/analytics" className="flex items-center hover:text-green-700">
+              <FontAwesomeIcon className="mr-2" icon={faChartSimple} />
+              Analytics
+            </a>
+          </li>
+          <li>
+            <a href="#" className="flex items-center hover:text-green-700">
+              <FontAwesomeIcon className="mr-2" icon={faUserMd} />
+              Doctor
+            </a>
+          </li>
+          <li>
+            <a href="#" className="flex items-center hover:text-green-700">
+              <FontAwesomeIcon className="mr-2" icon={faBell} />
+              Notifications
+            </a>
+          </li>
+          <li>
+            <a href="#" className="flex items-center hover:text-green-700">
+              <FontAwesomeIcon className="mr-2" icon={faGear} />
+              Settings
+            </a>
+          </li>
+        </ul>
+
+        <div className="py-4 border-t border-gray-200">
+          <div className="text-sm text-gray-600">Profile</div>
+          <div className="flex items-center mt-2">
+            <PersonIcon
               
+              className="w-8 h-8 rounded-full"
+            />
+            <div className="ml-2">
+              <p className="font-medium">{user.name}</p>
             </div>
-            <div >
-              <a href="">
-              <button className='logout'>
-              <FontAwesomeIcon className='icon' icon={faArrowRightFromBracket} />
-                Logout
-              </button>
-              </a>
-            </div>
+          </div>
+        </div>
 
-        </nav>
+        <div className="mt-0">
+          <a
+            href="/login"
+            onClick={()=>{
+              RemoveCookie("accessToken")
+              RemoveCookie("refreshToken")
+              RemoveCookie("user")
+            }}
+            className="block px-4 py-2 font-bold text-black bg-gray-100 rounded-md hover:bg-gray-200"
+          >
+            <FontAwesomeIcon className="mr-2" icon={faArrowRightFromBracket} />
+            Logout
+          </a>
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Navigation
+export default Navigation;
