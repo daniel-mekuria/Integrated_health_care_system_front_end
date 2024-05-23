@@ -117,27 +117,29 @@ function renderStatus(params) {
 
 
 
-async function GetHistory(id="663a7d42d9dfeea5fdd27d4e") {
+async function GetHistory(id) {
   let visits = [];
-  const allvisits = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/visit/getPatientVisits/"+id)
-  
+  const allvisits = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/visit/getPatientVisits/" + id)
+
 
   allvisits.visitHistories.forEach(async visit => {
-    
-    let NewVisit={...visit}
-    NewVisit.id=visit._id
-    NewVisit.onTime=visit.onTime?"Yes":"No"
+
+    let NewVisit = { ...visit }
+    NewVisit.id = visit._id
+    NewVisit.onTime = visit.onTime ? "Yes" : "No"
+    NewVisit.user = visit.user.name
+    NewVisit.drug = visit.drug.drugName + `(dose:${visit.drug.dose} , amount:${visit.drug.amount} )`
 
 
-    visits.push(  NewVisit  )
+
+    visits.push(NewVisit)
   });
-console.log(visits)
   return visits
 
 
 }
 function strTODate(date) {
-  
+
 
   return new Date(date)
 }
@@ -145,16 +147,18 @@ function strTODate(date) {
 function ViewHistory(props) {
 
   const navigate = useNavigate()
-  const [isAddModalOpen,setIsAddModalOpen] =useState(false)
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
 
 
-const x=httpRequest()
-  const { data, isLoading, error } = useAsyncData(GetHistory,[]);
+  const x = httpRequest()
+  const { data, isLoading, error } = useAsyncData(async () => {
+    return await GetHistory(props.paitent._id)
+  }, []);
 
 
 
   const columns = [
-   
+
     {
       field: 'user',
       headerName: 'Physician',
@@ -162,8 +166,8 @@ const x=httpRequest()
       flex: 1,
       editable: false,
     },
-    
-  
+
+
     {
       field: 'drug',
       headerName: 'Medicine',
@@ -173,7 +177,7 @@ const x=httpRequest()
       renderCell: renderMedicine
     },
     {
-      field: 'otherMedicine',
+      field: 'otherDrug',
       headerName: 'Other medicine',
       sortable: false,
       minWidth: 80,
@@ -209,26 +213,12 @@ const x=httpRequest()
   ];
 
 
-  
 
 
-let rows=[
-    {
-        "_id": "663a7ebed9dfeea5fdd27d6e",
-        "user": "662538d6145fa9526ee24a85",
-        "patient": "663a7d42d9dfeea5fdd27d4e",
-        "drug": "66391e1aff4447a4c49949cb",
-        "otherDrug": [
-            "Panadol",
-            "parastamol"
-        ],
-        "pillNumber": 30,
-        "visitDate": "05 / Apr / 2024",
-        "onTime": true,
-        "nextAppointmentDate": "05 / May / 2024",
-        "__v": 0
-    }
-]
+
+  let rows = [
+
+  ]
   let tableData = { "columns": columns, "rows": data }
 
   if (isLoading || error) {
@@ -237,25 +227,42 @@ let rows=[
     )
   }
 
-
   return (
     <div className={props.className} style={props.style}>
-     
-      <DataTable  getRowId={(row) => console.log} data={tableData} pageSize={9}  className={" w-full h-full"} />
+      <div className="flex flex-col space-y-3">
 
+        <div className='flex space-x-1'>
+          <p className='text-sm font-medium text-gray-500'> Visit history of : </p>
+          <p className='text-sm text-gray-900'> {props.paitent.fullName}</p>
+
+        </div>
+        <div className='flex space-x-1'>
+          <p className='text-sm font-medium text-gray-500'> ATR NO : </p>
+          <p className='text-sm text-gray-900'> {props.paitent.id}</p>
+        </div>
+
+
+        <DataTable tableProps={{
+          checkboxSelection: false,
+          disableRowSelectionOnClick: true,
+          disableDensitySelector: true,
+          disableMultipleRowSelection: true,
+          disableColumnSelector: true
+        }} data={tableData} pageSize={7} className={" w-full h-full"} />
+      </div>
 
       <ToastContainer
-                    position="top-center"
-                    autoClose={2000}
-                    limit={2}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                />
+        position="top-center"
+        autoClose={2000}
+        limit={2}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 }

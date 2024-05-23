@@ -10,8 +10,9 @@ import dayjs from 'dayjs';
 import { useLocation } from 'react-router-dom';
 
 import { Tabs } from 'antd';
-import ViewHistory from "../components/visitHistory";
-import NewVIsit from "../components/newVisit";
+import UpComingAppointments from "../components/upcomingAppointments";
+import MissedAppointments from "../components/missedAppointments";
+
 
 
 
@@ -38,7 +39,7 @@ const getAge = (birthDate) => {
   return age;
 }
 
-async function GetPaitents(no) {
+async function GetPaitents(no="T100") {
   let atrPaitents = [];
   let paitent = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/patient/atrPatient/" + no)
   paitent = paitent.patient
@@ -95,13 +96,6 @@ function PersonalDetail(props) {
 
 
 
-function VisitHistory(props) {
-  return (
-    <div className={props.className} style={props.style}>
-
-      dasd
-    </div>)
-}
 
 
 function NewVisit(props) {
@@ -362,13 +356,10 @@ function NewVisit(props) {
 
 
 
-function PaitentDetail(props) {
+function MonitorPaitents(props) {
 
 
-  let location = useLocation();
-  let foundData= location.state.foundData
-  console.log(foundData)
-  let atrNo = foundData.id;
+  
 
   const onChange = (key) => {
     console.log(key);
@@ -377,19 +368,16 @@ function PaitentDetail(props) {
   const items = [
     {
       key: '1',
-      label: 'Personal Details',
-      children: <PersonalDetail atrNo={atrNo} />
+      label: 'Up coming appointments',
+      children:<UpComingAppointments/>
     },
     {
       key: '2',
-      label: 'History',
-      children: <ViewHistory  paitent={foundData} />,
+      label: 'Missed appointments',
+      children: <MissedAppointments/>
+      ,
     },
-    {
-      key: '3',
-      label: 'New visit',
-      children: <NewVIsit paitent={foundData} />,
-    },
+   
   ];
 
 
@@ -406,4 +394,4 @@ function PaitentDetail(props) {
 
 
 
-export default PaitentDetail;
+export default MonitorPaitents;

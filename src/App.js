@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./index.css";
 
-import { Layout, Input, Space } from "antd";
+import { Layout, Input, Space, ConfigProvider } from "antd";
 import { BrowserRouter as Router, Route, Link, Routes, useNavigate } from "react-router-dom";
 
 import ViewPaitents from "./pages/viewPaitents";
@@ -13,6 +13,13 @@ import Analytics from "./pages/analytics";
 import { GetCookie } from "./components/cookies";
 import AddPaitent from "./pages/addpaitent";
 import PaitentDetail from "./pages/paitentDetail";
+import MonitorPaitents from "./pages/monitorPaitents";
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const { Content, Sider } = Layout;
 
@@ -21,14 +28,40 @@ const App = () => {
 
 
   return (
+    <ConfigProvider
+    theme={{
+      token: {
+        // Seed Token
+        colorPrimary: '#00A86B',
+
+        // Alias Token
+      },
+    }}
+  >
       <Router>
         
       <App_/>
       </Router>
+      <ToastContainer
+position="top-center"
+autoClose={2000}
+limit={2}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+/>
+      </ConfigProvider>
     );
   };
 
 const App_ = () => {
+ 
+
+  
   const navigate = useNavigate();
 
   
@@ -61,6 +94,10 @@ const App_ = () => {
                   <Route
                     path="/pharmacy"
                     element={<Emergency_Drug_Dispensal />}
+                  />
+                  <Route
+                    path="/monitor"
+                    element={<MonitorPaitents />}
                   />
                   <Route
                     path="/analytics"
