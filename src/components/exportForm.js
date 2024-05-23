@@ -26,14 +26,14 @@ import { saveAs } from 'file-saver';
 import * as ExcelJS from 'exceljs';
 
 
-const exportToExcel = (data, fileName="new_report.xlsx") => {
+const exportToExcel = (data, fileName = "new_report.xlsx") => {
   // Create a new workbook
   const wb = new ExcelJS.Workbook();
 
   // Iterate over each table in the data
   data.forEach((tableData, index) => {
     // Truncate the title to 31 characters (Excel's limit is 31)
-    const title = (index+","+tableData.title).substring(0, 31);
+    const title = (index + "," + tableData.title).substring(0, 31);
 
     // Add a new worksheet with the truncated title
     const ws = wb.addWorksheet(title);
@@ -53,7 +53,7 @@ const exportToExcel = (data, fileName="new_report.xlsx") => {
 
     // Define the columns
     const columns = tableData.data.column.map((colName) => {
-      return {name: colName, filterButton: true};
+      return { name: colName, filterButton: true };
     });
 
     // Add the table to the worksheet
@@ -78,20 +78,19 @@ const exportToExcel = (data, fileName="new_report.xlsx") => {
   });
 };
 
-/* Helper function to convert string to array buffer */
 
 
 
-const exportToPdf = (data,fileName="new_report.pdf") => {
+const exportToPdf = (data, fileName = "new_report.pdf") => {
   const doc = new jsPDF();
   let startY = 10;
-  
+
   data.forEach((table, index) => {
     const { title, data: { column, row } } = table;
-    autoTable(doc, { 
-      head: [column], 
-      body: row, 
-      startY: startY 
+    autoTable(doc, {
+      head: [column],
+      body: row,
+      startY: startY
     });
     const finalY = doc.autoTable.previous.finalY; // Get the final Y coordinate of the table
     doc.setTextColor(100); // Set the text color to a lighter shade
@@ -99,7 +98,7 @@ const exportToPdf = (data,fileName="new_report.pdf") => {
     doc.text(`Table: ${title}`, 10, finalY + 10); // Position the title at the bottom of the table
     startY = finalY + 30; // Update the starting Y coordinate for the next table
   });
-  
+
   doc.save(fileName);
 };
 
@@ -136,11 +135,10 @@ async function fetchdata(set) {
 
 
 async function getTable(option, startDate, endDate, timeScale = null) {
-  // { x: "time", y: "sex", name: "added paitent by sex vs time ", set: "paitents" }
-  // { column: ["id", "sex"], row: [["10", "12"], ["sd", "5"]] }} title={"sex list"} 
+
   let rawdata = await fetchdata(option.set)
   let count
-  if (rawdata==null){
+  if (rawdata == null) {
     return null
   }
 
@@ -276,9 +274,9 @@ function ExportForm(props) {
 
 
   const handleOk = () => {
-    tablesList.length>0?setIsExportModalOpen(true):toast.error("No table to export");
+    tablesList.length > 0 ? setIsExportModalOpen(true) : toast.error("No table to export");
 
-    
+
   };
 
   const handleCancel = () => {
@@ -289,380 +287,373 @@ function ExportForm(props) {
   };
   return (
     <div>
-    <Modal open={props.isModalOpen}
+      <Modal open={props.isModalOpen}
 
 
-      keyboard={false}
-      maskClosable={false}
-      okText={"Export"}
-      footer={<div className='flex justify-end space-x-3'>
+        keyboard={false}
+        maskClosable={false}
+        okText={"Export"}
+        footer={<div className='flex justify-end space-x-3'>
 
-        <Popconfirm
+          <Popconfirm
+            title="Cancel the task"
+            description="Are you sure to Cancel?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={handleCancel}
+          >
+            <Button className='!rounded-xl' variant='outlined' color='error'>Cancel</Button>
+          </Popconfirm>
+          <Popconfirm
+            title="Export the task"
+            description="Are you sure to Export this task?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={handleOk}
+
+          >
+            <Button className='!rounded-xl' variant='contained'>Export</Button>
+          </Popconfirm>
+
+
+
+        </div>}
+        closeIcon={<Popconfirm
           title="Cancel the task"
           description="Are you sure to Cancel?"
           okText="Yes"
           cancelText="No"
           onConfirm={handleCancel}
-        >
-          <Button className='!rounded-xl' variant='outlined' color='error'>Cancel</Button>
-        </Popconfirm>
-        <Popconfirm
-          title="Export the task"
-          description="Are you sure to Export this task?"
-          okText="Yes"
-          cancelText="No"
-          onConfirm={handleOk}
+
 
         >
-          <Button className='!rounded-xl' variant='contained'>Export</Button>
-        </Popconfirm>
-
-
-
-      </div>}
-      closeIcon={<Popconfirm
-        title="Cancel the task"
-        description="Are you sure to Cancel?"
-        okText="Yes"
-        cancelText="No"
-        onConfirm={handleCancel}
-
-
-      >
-        X
-      </Popconfirm>}
-      centered
-      className='!w-[95vw]'
-
-    >
-
-
-      <Modal
-        destroyOnClose
-        onOk={() => {
-          tableFormRef.current.submit()
-        }}
-        title={("Select a table type")}
+          X
+        </Popconfirm>}
         centered
-
-        open={isTableModalOpen}
-        onCancel={() => {
-          setXData(null)
-          setIsTableModalOpen(false)
-        }}
+        className='!w-[95vw]'
 
       >
-        <div className='p-4'>
-          <Form
-            onFinish={async (x) => {
-
-              let newTable = await getTable(tableOptions[x.table], x.startDate, x.endDate, (xData === "time") ? x.timeScale : undefined)
-              
-               if(newTable){
-                 setTablesList(prevTablesList => [...prevTablesList, newTable]);
-               }
-
-              setIsTableModalOpen(false)
-              setXData(null)
 
 
+        <Modal
+          destroyOnClose
+          onOk={() => {
+            tableFormRef.current.submit()
+          }}
+          title={("Select a table type")}
+          centered
 
-            }}
-            ref={tableFormRef}
-          >
-            {
-              (xData == "time") ?
-                <div className={'space-y-2 ' + ((xData == "time") ? ' visible' : " hidden")}>
+          open={isTableModalOpen}
+          onCancel={() => {
+            setXData(null)
+            setIsTableModalOpen(false)
+          }}
 
-                  <p className='font-sans font-semibold text-gray-500 text-[1rem] '>Time Scale</p>
-                  <div className='flex mb-3'>
-                    <Form.Item
-                      name="timeScale"
-                      rules={[{ required: true }]}
-                    >
-                      <RadioGroup
-                      
-                        orientation="horizontal"
-                        aria-label="Alignment"
-                        name="alignment"
-                        variant="plain"
-                        onChange={(event) => setTimeScale(event.target.value)}
+        >
+          <div className='p-4'>
+            <Form
+              onFinish={async (x) => {
+
+                let newTable = await getTable(tableOptions[x.table], x.startDate, x.endDate, (xData === "time") ? x.timeScale : undefined)
+
+                if (newTable) {
+                  setTablesList(prevTablesList => [...prevTablesList, newTable]);
+                }
+
+                setIsTableModalOpen(false)
+                setXData(null)
+
+
+
+              }}
+              ref={tableFormRef}
+            >
+              {
+                (xData == "time") ?
+                  <div className={'space-y-2 ' + ((xData == "time") ? ' visible' : " hidden")}>
+
+                    <p className='font-sans font-semibold text-gray-500 text-[1rem] '>Time Scale</p>
+                    <div className='flex mb-3'>
+                      <Form.Item
+                        name="timeScale"
+                        rules={[{ required: true }]}
                       >
-                        {['Day', 'Month', 'Year'].map((type) => (
+                        <RadioGroup
 
-                          <div
-                            key={type}
-                            className='!relative  flex justify-center  p-2  ml-1 mr-3 '
-                          >
-                            <Radio
-                              className='p-1'
-                              value={type}
-                              disableIcon
-                              overlay
-                              label={
-                                type
-                              }
-                              variant={timeScale === type ? 'solid' : 'soft'}
-                              slotProps={{
+                          orientation="horizontal"
+                          aria-label="Alignment"
+                          name="alignment"
+                          variant="plain"
+                          onChange={(event) => setTimeScale(event.target.value)}
+                        >
+                          {['Day', 'Month', 'Year'].map((type) => (
 
-                                action: {
-
-                                  sx: { borderRadius: 10 },
+                            <div
+                              key={type}
+                              className='!relative  flex justify-center  p-2  ml-1 mr-3 '
+                            >
+                              <Radio
+                                className='p-1'
+                                value={type}
+                                disableIcon
+                                overlay
+                                label={
+                                  type
                                 }
-                              }}
-                            />
-                          </div>
+                                variant={timeScale === type ? 'solid' : 'soft'}
+                                slotProps={{
 
-                        ))}
+                                  action: {
 
-                      </RadioGroup>
-                    </Form.Item>
+                                    sx: { borderRadius: 10 },
+                                  }
+                                }}
+                              />
+                            </div>
 
+                          ))}
+
+                        </RadioGroup>
+                      </Form.Item>
+
+                    </div>
                   </div>
+                  : null
+              }
+
+
+              <div className={' space-y-2'}>
+                <p className='font-sans font-semibold text-gray-500 text-[1rem] '>Time Frame</p>
+                <div className='flex mb-3 space-x-2'>
+                  <Form.Item
+                    name="startDate"
+                    rules={[{ required: true }]}
+                  >
+                    <DatePicker
+
+                      maxDate={dayjs()}
+                      placeholder="Start date" />
+                  </Form.Item>
+                  <Form.Item
+                    name="endDate"
+                    rules={[{ required: true }]}
+                  >
+                    <DatePicker
+
+                      maxDate={dayjs()}
+
+                      placeholder="End date" />
+                  </Form.Item>
+
                 </div>
-                : null
-            }
+              </div>
 
+              <div className={'space-y-2 '}>
 
-            <div className={' space-y-2'}>
-              <p className='font-sans font-semibold text-gray-500 text-[1rem] '>Time Frame</p>
-              <div className='flex mb-3 space-x-2'>
+                <p className='font-sans font-semibold text-gray-500 text-[1rem] '>Table type</p>
+
                 <Form.Item
-                  name="startDate"
+                  name="table"
                   rules={[{ required: true }]}
                 >
-                  <DatePicker
+                  <Select placeholder="Please select a table"
+                    onChange={(x) => {
+                      if (tableOptions[x].x == "time")
+                        setXData("time")
+                      else
+                        setXData(null)
+                    }}
+                    options={tableOptions.map((op, index) => (
 
-                    maxDate={dayjs()}
-                    placeholder="Start date" />
+                      { value: index, label: op.name }
+                    ))}
+
+
+                  >
+
+                    {/* Add more options as needed */}
+                  </Select>
                 </Form.Item>
-                <Form.Item
-                  name="endDate"
-                  rules={[{ required: true }]}
-                >
-                  <DatePicker
-
-                    maxDate={dayjs()}
-
-                    placeholder="End date" />
-                </Form.Item>
 
               </div>
-            </div>
-
-            <div className={'space-y-2 '}>
-
-              <p className='font-sans font-semibold text-gray-500 text-[1rem] '>Table type</p>
-
-              <Form.Item
-                name="table"
-                rules={[{ required: true }]}
-              >
-                <Select placeholder="Please select a table"
-                  onChange={(x) => {
-                    if (tableOptions[x].x == "time")
-                      setXData("time")
-                    else
-                      setXData(null)
-                  }}
-                  options={tableOptions.map((op, index) => (
-
-                    { value: index, label: op.name }
-                  ))}
-
-
-                >
-
-                  {/* Add more options as needed */}
-                </Select>
-              </Form.Item>
-
-            </div>
-          </Form>
-        </div>
-
-
-
-
-      </Modal>
-      <Modal
-        destroyOnClose
-        onOk={() => {
-          exportFormRef.current.submit()
-        }}
-        title={("Select export settings")}
-        centered
-
-        open={isExportModalOpen}
-        onCancel={() => {
-          setXData(null)
-          setIsExportModalOpen(false)
-        }}
-
-      >
-        <div className='p-4'>
-          <Form
-            onFinish={async (x) => {
-
-              setIsLoadingModalOpen(true)
-             await (x.format==="Pdf")?exportToPdf(tablesList,x.fileName?x.fileName:undefined) :exportToExcel(tablesList,x.fileName?x.fileName:undefined)
-             setIsExportModalOpen(false)
-             setIsLoadingModalOpen(false)
-
- 
-
-
-
-
-            }}
-            ref={exportFormRef}
-          >
-           
-                <div className={'space-y-2 '}>
-
-                  <p className='font-sans font-semibold text-gray-500 text-[1rem] '>Format</p>
-                  <div className='flex mb-3'>
-                    <Form.Item
-                      name="format"
-                      rules={[{ required: true }]}
-                    >
-                      <RadioGroup
-                        orientation="horizontal"
-                        aria-label="Alignment"
-                        name="alignment"
-                        variant="plain"
-                        onChange={(event) => setTimeScale(event.target.value)}
-                      >
-                        {['Excel', 'Pdf'].map((type) => (
-
-                          <div
-                            key={type}
-                            className='!relative  flex justify-center  p-2  ml-1 mr-3 '
-                          >
-                            <Radio
-                              className='p-1'
-                              value={type}
-                              disableIcon
-                              overlay
-                              label={
-                                type
-                              }
-                              variant={timeScale === type ? 'solid' : 'soft'}
-                              slotProps={{
-
-                                action: {
-
-                                  sx: { borderRadius: 10 },
-                                }
-                              }}
-                            />
-                          </div>
-
-                        ))}
-
-                      </RadioGroup>
-                    </Form.Item>
-
-                  </div>
-                </div>
-                
-
-
-            <div className={' space-y-2'}>
-              <p className='font-sans font-semibold text-gray-500 text-[1rem] '>File name</p>
-              <div className='flex mb-3 space-x-2'>
-                <Form.Item
-                  name="fileName"
-                  rules={[{ required: false }]}
-                >
-                  <Input
-
-                    placeholder="File name (optional)" />
-                </Form.Item>
-               
-
-              </div>
-            </div>
-
-           
-          </Form>
-        </div>
-
-
-
-
-      </Modal>
-
-      <Modal
-      footer={<></>}
-      
-      closable={false}
-        destroyOnClose
-       open={isLoadingModalOpen}
-      >
-              <LoadingSpinners size={3} className={"w-full h-full"} />
-
-
-
-      </Modal>
-
-
-
-
-                  
-
-
-
-
-
-
-
-      <div style={props.style} className={props.className + ''}>
-        <div className='!pt-16 flex flex-col space-y-4 h-[80vh] overflow-scroll scrollbar-hide'>
-          {
-            tablesList.map((Table) => (
-              <div>
-
-              </div>
-            ))
-          }
-
-          <div className='flex-col space-y-3 '>
-            {
-              tablesList.length > 0 ? tablesList.map((table => {
-                return (
-                  <TableGen data={table.data} title={table.title} />
-
-                )
-              })) : 
-              <div className='flex justify-center p-3'>
-                <p className='font-sans font-semibold text-gray-500 text-[1rem] '>No tables</p>
-
-              </div>
-            }
-
+            </Form>
           </div>
-          <Divider />
-          <Button onClick={() => {
-            setIsTableModalOpen(true)
-          }} color='success' variant='outlined' > Add Table</Button>
+
+
+
+
+        </Modal>
+        <Modal
+          destroyOnClose
+          onOk={() => {
+            exportFormRef.current.submit()
+          }}
+          title={("Select export settings")}
+          centered
+
+          open={isExportModalOpen}
+          onCancel={() => {
+            setXData(null)
+            setIsExportModalOpen(false)
+          }}
+
+        >
+          <div className='p-4'>
+            <Form
+              onFinish={async (x) => {
+
+                setIsLoadingModalOpen(true)
+                await (x.format === "Pdf") ? exportToPdf(tablesList, x.fileName ? x.fileName : undefined) : exportToExcel(tablesList, x.fileName ? x.fileName : undefined)
+                setIsExportModalOpen(false)
+                setIsLoadingModalOpen(false)
+
+
+
+
+
+
+              }}
+              ref={exportFormRef}
+            >
+
+              <div className={'space-y-2 '}>
+
+                <p className='font-sans font-semibold text-gray-500 text-[1rem] '>Format</p>
+                <div className='flex mb-3'>
+                  <Form.Item
+                    name="format"
+                    rules={[{ required: true }]}
+                  >
+                    <RadioGroup
+                      orientation="horizontal"
+                      aria-label="Alignment"
+                      name="alignment"
+                      variant="plain"
+                      onChange={(event) => setTimeScale(event.target.value)}
+                    >
+                      {['Excel', 'Pdf'].map((type) => (
+
+                        <div
+                          key={type}
+                          className='!relative  flex justify-center  p-2  ml-1 mr-3 '
+                        >
+                          <Radio
+                            className='p-1'
+                            value={type}
+                            disableIcon
+                            overlay
+                            label={
+                              type
+                            }
+                            variant={timeScale === type ? 'solid' : 'soft'}
+                            slotProps={{
+
+                              action: {
+
+                                sx: { borderRadius: 10 },
+                              }
+                            }}
+                          />
+                        </div>
+
+                      ))}
+
+                    </RadioGroup>
+                  </Form.Item>
+
+                </div>
+              </div>
+
+
+
+              <div className={' space-y-2'}>
+                <p className='font-sans font-semibold text-gray-500 text-[1rem] '>File name</p>
+                <div className='flex mb-3 space-x-2'>
+                  <Form.Item
+                    name="fileName"
+                    rules={[{ required: false }]}
+                  >
+                    <Input
+
+                      placeholder="File name (optional)" />
+                  </Form.Item>
+
+
+                </div>
+              </div>
+
+
+            </Form>
+          </div>
+
+
+
+
+        </Modal>
+
+        <Modal
+          footer={<></>}
+
+          closable={false}
+          destroyOnClose
+          open={isLoadingModalOpen}
+        >
+          <LoadingSpinners size={3} className={"w-full h-full"} />
+
+
+
+        </Modal>
+
+
+
+
+
+
+
+
+
+
+
+
+        <div style={props.style} className={props.className + ''}>
+          <div className='!pt-16 flex flex-col space-y-4 h-[80vh] overflow-scroll scrollbar-hide'>
+           
+            <div className='flex-col space-y-3 '>
+              {
+                tablesList.length > 0 ? tablesList.map((table => {
+                  return (
+                    <TableGen data={table.data} title={table.title} />
+
+                  )
+                })) :
+                  <div className='flex justify-center p-3'>
+                    <p className='font-sans font-semibold text-gray-500 text-[1rem] '>No tables</p>
+
+                  </div>
+              }
+
+            </div>
+            <Divider />
+            <Button onClick={() => {
+              setIsTableModalOpen(true)
+            }} color='success' variant='outlined' > Add Table</Button>
+          </div>
+
         </div>
 
-      </div>
-      
-    </Modal>
-    <ToastContainer
-    position="top-center"
-    autoClose={2000}
-    limit={2}
-    hideProgressBar={false}
-    newestOnTop={false}
-    closeOnClick
-    rtl={false}
-    pauseOnFocusLoss
-    draggable
-    pauseOnHover
-    />
+      </Modal>
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        limit={2}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
 
   )

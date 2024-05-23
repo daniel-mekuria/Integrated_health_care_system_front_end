@@ -96,15 +96,15 @@ const columns = props.data.columns;
 onRowSelectionModelChange={(ids) => {
   const selectedIDs = new Set(ids);
   let foundData = rows.find(item => item.id === ids[0]);
-
-  navigate('/paitentdetail',{state:{atrNo:foundData.id}});
+if(props.onSelect)
+ props.onSelect(foundData)
 
 }}
-        checkboxSelection
-        disableRowSelectionOnClick
-        disableDensitySelector
-        disableMultipleRowSelection
-        disableColumnSelector
+        checkboxSelection={props.tableProps.checkboxSelection}
+        disableRowSelectionOnClick={props.tableProps.disableRowSelectionOnClick}
+        disableDensitySelector={props.tableProps.disableDensitySelector}
+        disableMultipleRowSelection={props.tableProps.disableMultipleRowSelection}
+        disableColumnSelector={props.tableProps.disableColumnSelector}
         
         slots={{ toolbar:props.toolBar?props.toolBar :QuickSearchToolbar }}
 

@@ -167,18 +167,7 @@ const Login = (props) => {
    
     </div>
     </div>
-    <ToastContainer
-position="top-center"
-autoClose={2000}
-limit={2}
-hideProgressBar={false}
-newestOnTop={false}
-closeOnClick
-rtl={false}
-pauseOnFocusLoss
-draggable
-pauseOnHover
-/>
+  
     </div>
 
   );

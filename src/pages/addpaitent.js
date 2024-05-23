@@ -7,7 +7,7 @@ import LoadingSpinners from "../components/loadingSpinners";
 import { useNavigate } from "react-router-dom";
 import { Button, Divider } from '@mui/material';
 
-import { Form, Modal, Popconfirm, DatePicker, Select, Input } from 'antd';
+import { Form, Modal, Popconfirm, DatePicker, Select, Input, Card } from 'antd';
 
 import dayjs from 'dayjs';
 import { LoadingButton } from "@mui/lab";
@@ -28,6 +28,7 @@ import { LoadingButton } from "@mui/lab";
 async function addPaitent(paitent) {
 
 
+console.log(paitent)
 
 
     let res = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/patient/atrRegister", paitent, "post")
@@ -60,7 +61,7 @@ function AddPaitent(props) {
     return (
         <Modal
         destroyOnClose
-        className="p-5 "
+        className="p-5 absolute top-[1vh] !w-[95vw] "
 
         title={"New Patient"}
 
@@ -104,7 +105,7 @@ function AddPaitent(props) {
 
             <div className={props.className } style={props.style}>
                
-               <div className="!p-5">
+               <div className="!p-5 !h-[75vh]">
                <Form
                     onFinish={async (x) => {
 
@@ -131,7 +132,10 @@ function AddPaitent(props) {
                 >
 
 
-                    <div className="flex space-x-5">
+                    <div className="flex flex-col space-y-5">
+                       <Card>
+                        <div className="grid grid-cols-6 gap-4">
+
                         <Form.Item
                             name="fullName"
                             rules={[{ required: true }]}
@@ -160,8 +164,15 @@ function AddPaitent(props) {
                                 placeholder="Phonenumber" />
 
                         </Form.Item>
-                    </div>
-                    <div className="flex space-x-5">
+                        <Form.Item
+                            name="weight"
+                            rules={[{ type:Number, required: true }]}
+                        >
+                            <Input
+
+                                placeholder="Weight on start" />
+
+                        </Form.Item>
 
                         <Form.Item
                             name="subCity"
@@ -190,8 +201,6 @@ function AddPaitent(props) {
                                 placeholder="House number" />
 
                         </Form.Item>
-                    </div>
-                    <div className="flex space-x-5">
 
                         <Form.Item
                             name="sex"
@@ -239,6 +248,67 @@ function AddPaitent(props) {
                                 placeholder=" ATR number (optional)" />
 
                         </Form.Item>
+                        </div>
+                       </Card>
+                       <Card>
+                        <div className="grid grid-cols-6 gap-4">
+
+                        <Form.Item
+                            name="supporterName"
+                            rules={[{ required: true }]}
+                        >
+                            <Input
+
+                                placeholder="Support person's name" />
+
+                        </Form.Item>
+                       
+
+                        <Form.Item
+                            name="supporterPhone"
+                            rules={[{ required: true }]}
+                        >
+                            <Input
+
+                                placeholder="Supporter's Phonenumber" />
+
+                        </Form.Item>
+                        
+
+                        <Form.Item
+                            name="supporterSubCity"
+                            rules={[{ required: true }]}
+                        >
+                            <Input
+
+                                placeholder="Support person's sub city" />
+
+                        </Form.Item>
+                        <Form.Item
+                            name="Supporterkebele"
+                            rules={[{ required: true }]}
+                        >
+                            <Input
+
+                                placeholder="Support person's Kebele" />
+
+                        </Form.Item>
+                        <Form.Item
+                            name="supporterHouseNumber"
+                            rules={[{ required: true }]}
+                        >
+                            <Input
+
+                                placeholder="Supporter's House number" />
+
+                        </Form.Item>
+
+                      
+
+
+                       
+                        </div>
+                       </Card>
 
 
                     </div>

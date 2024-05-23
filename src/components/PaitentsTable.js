@@ -204,7 +204,14 @@ function PaitentTable(props) {
 
   return (
     <div className={props.className} style={props.style}>
-      <DataTable data={data} pageSize={3} className={" w-full h-full"} />
+      <DataTable tableProps={{
+          checkboxSelection: false,
+          disableRowSelectionOnClick: true,
+          disableDensitySelector: true,
+          disableMultipleRowSelection: true,
+          disableColumnSelector: true
+        }}
+      data={data} pageSize={3} className={" w-full h-full"} />
     </div>
   );
 }

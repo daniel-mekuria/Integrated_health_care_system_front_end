@@ -10,13 +10,13 @@ import Box from '@mui/material/Box';
 import InfoIcon from '@mui/icons-material/Info';
 import { jsxs as _jsxs } from "react/jsx-runtime";
 
+import dayjs from 'dayjs';
 
 import DataTable from "../components/DataTable";
 import httpRequest from "../components/httpRequest";
 import useAsyncData from "../components/useAsyncData";
 import LoadingSpinners from "../components/loadingSpinners";
 import { useNavigate } from "react-router-dom";
-import AddPaitent from "./addpaitent";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -117,110 +117,61 @@ function renderStatus(params) {
 
 
 
-async function GetPaitents() {
-  let atrPaitents = [];
-  const allPaitents = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/patient/allAtrPatients")
+async function getAppointments() {
+  let visits = [];
+  const allvisits = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/visit/getPassedAppointments" )
+ visits=allvisits.patients
+visits.forEach(element => {
+  element.id=element.atrNumber
+});
 
-  allPaitents.patients.forEach(async paitent => {
-    const today = new Date();
-    const birthDate = new Date(paitent.birthDate)
-    const age = today.getFullYear() - birthDate.getFullYear() - (today.getMonth() < birthDate.getMonth() || (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate()));
+  console.log(visits)
 
+  return visits
 
-    atrPaitents.push({
-      _id:paitent._id,id: paitent.atrNumber, fullName:paitent.fullName, age: age, PhoneNumber: paitent.phoneNumber, onTime: "No", Medicine: "cod(codine)",  LastAptDate: paitent.visitDate, NextAptDate: paitent.nextAppointmentDate
-    },
-
-    )
-  });
-
-  return atrPaitents
 
 
 }
-
-
-
-
-
 function strTODate(date) {
-  
+
 
   return new Date(date)
 }
 
-function ViewPaitents(props) {
+function UpComingAppointments(props) {
 
   const navigate = useNavigate()
-  const [isAddModalOpen,setIsAddModalOpen] =useState(false)
-  const [update,setUpdate] =useState()
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
 
-  function handleSelect(foundData){
-    console.log(foundData)
-    navigate('/paitentdetail',{state:{foundData:foundData}});
-   }
 
-const x=httpRequest()
-  const { data, isLoading, error } = useAsyncData(GetPaitents,[update]);
+  const x = httpRequest()
+  const { data, isLoading, error } = useAsyncData(getAppointments, []);
 
 
 
   const columns = [
-    { field: 'id', headerName: 'Atr No', minWidth: 90 },
+
     {
       field: 'fullName',
-      headerName: 'Full name',
+      headerName: 'Paitent',
       minWidth: 100,
       flex: 1,
       editable: false,
     },
+
+
    
     {
-      field: 'age',
-      headerName: 'Age',
-      type: 'number',
-      minWidth: 60,
-      flex: 1,
-      editable: false,
-    },
-
-
-    {
-      field: 'PhoneNumber',
-      headerName: 'Phone number',
-      minWidth: 120,
-      flex: 1,
-      editable: false,
-    },
-
-
-    {
-      field: 'Medicine',
-      headerName: 'Medicine',
-      sortable: false,
-      minWidth: 80,
-      flex: 1,
-      renderCell: renderMedicine
-    },
-    {
-      field: 'onTime',
-      headerName: 'ontime',
-      sortable: true,
-      minWidth: 80,
-      flex: 1,
-      renderCell: renderStatus
-    },
-    {
-      field: 'LastAptDate',
+      field: 'visitDate',
       type: "date",
-      headerName: 'Last apt.date',
+      headerName: 'Visit date',
       sortable: true,
       minWidth: 140,
       valueGetter: strTODate,
       flex: 1,
     },
     {
-      field: 'NextAptDate',
+      field: 'nextAppointmentDate',
       type: "date",
       headerName: 'Next apt.date',
       sortable: true,
@@ -234,7 +185,9 @@ const x=httpRequest()
 
 
 
-
+  let rows = [
+    
+]
   let tableData = { "columns": columns, "rows": data }
 
   if (isLoading || error) {
@@ -243,32 +196,37 @@ const x=httpRequest()
     )
   }
 
-
+  function handleSelect(foundData){
+    console.log(foundData)
+    navigate('/paitentdetail',{state:{foundData:foundData}});
+   }
   return (
     <div className={props.className} style={props.style}>
-      <AddPaitent isAddModalOpen={isAddModalOpen} toast={toast} setIsAddModalOpen={setIsAddModalOpen} setUpdate={setUpdate} />
-     
-      <DataTable tableProps={{ checkboxSelection:true,
-        disableRowSelectionOnClick:true,
-        disableDensitySelector:true,
-        disableMultipleRowSelection:true,
-        disableColumnSelector:true}} onSelect={handleSelect} addNew data={tableData} pageSize={9} setIsAddModalOpen={setIsAddModalOpen} className={" w-full h-full"} />
+      
 
+
+        <DataTable tableProps={{
+          checkboxSelection: true,
+          disableRowSelectionOnClick: true,
+          disableDensitySelector: true,
+          disableMultipleRowSelection: true,
+          disableColumnSelector: true
+        }} data={tableData} pageSize={9}  onSelect={handleSelect}  className={" w-full h-full"} />
 
       <ToastContainer
-                    position="top-center"
-                    autoClose={2000}
-                    limit={2}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                />
+        position="top-center"
+        autoClose={2000}
+        limit={2}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 }
 
-export default ViewPaitents;
+export default UpComingAppointments;

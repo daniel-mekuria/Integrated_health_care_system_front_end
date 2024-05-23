@@ -1,12 +1,21 @@
+import { AddOutlined, Edit, EditNotifications, Note } from '@mui/icons-material';
+import { Button, Card } from 'antd';
 import dayjs from 'dayjs';
 
 
 function PaitentInfo(props) {
-  let fullName, sex, dateEligible, dateOfBirth, patientAddress, kebele, subCityWoreda, houseNo, supportSex, telephoneNo, weightOnStart, dateArtStarted, supportName, currentStat
   let data = props.data
   return (
     <div className={props.className} style={props.style}>
       <div className='flex flex-col space-y-5'>
+        <div className='flex justify-end'>
+        <Button icon={< Edit />} type='primary' >
+          Edit
+
+        </Button>
+        </div>
+      <Card  className='shadow-sm drop-shadow-sm'>
+
         <div className='flex flex-col space-y-6'>
           <div className='flex flex-col space-y-4'>
             <div className='flex justify-center'>
@@ -105,8 +114,9 @@ function PaitentInfo(props) {
           </div>
         </div>
 
+        </Card>
 
-
+        <Card className='shadow-sm drop-shadow-sm' >
         <div className='flex flex-col space-y-2'>
           <div className='flex flex-col space-y-2'>
             <div className='flex justify-center'>
@@ -126,6 +136,7 @@ function PaitentInfo(props) {
           </div>
         </div>
 
+        </Card>
 
       </div>
 
