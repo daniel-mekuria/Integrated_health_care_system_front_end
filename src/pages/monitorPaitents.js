@@ -9,7 +9,7 @@ import PaitentInfo from "../components/paitentInfo";
 import dayjs from 'dayjs';
 import { useLocation } from 'react-router-dom';
 
-import { Tabs } from 'antd';
+import { Badge, Tabs } from 'antd';
 import UpComingAppointments from "../components/upcomingAppointments";
 import MissedAppointments from "../components/missedAppointments";
 
@@ -39,7 +39,7 @@ const getAge = (birthDate) => {
   return age;
 }
 
-async function GetPaitents(no="T100") {
+async function GetPaitents(no = "T100") {
   let atrPaitents = [];
   let paitent = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/patient/atrPatient/" + no)
   paitent = paitent.patient
@@ -85,7 +85,7 @@ function PersonalDetail(props) {
   return (
     <div className={props.className} style={props.style}>
 
-      <PaitentInfo data={data}  className={" w-full h-full"} />
+      <PaitentInfo data={data} className={" w-full h-full"} />
     </div>
   );
 }
@@ -359,7 +359,8 @@ function NewVisit(props) {
 function MonitorPaitents(props) {
 
 
-  
+const [upcomingCount, setUpcomingCount]=useState(0)
+const [missedCount, setMissedCount]=useState(0)
 
   const onChange = (key) => {
     console.log(key);
@@ -368,16 +369,17 @@ function MonitorPaitents(props) {
   const items = [
     {
       key: '1',
-      label: 'Up coming appointments',
-      children:<UpComingAppointments/>
+      label: <Badge color="green"  showZero count={upcomingCount} offset={[10,0]}>
+        Up coming appointments </Badge>,
+      children: <UpComingAppointments setCount={setUpcomingCount} />
     },
     {
       key: '2',
-      label: 'Missed appointments',
-      children: <MissedAppointments/>
+      label:  <Badge color="green"  showZero count={missedCount} offset={[10,0]}>Missed appointments</Badge>,
+      children: <MissedAppointments setCount={setMissedCount}  />
       ,
     },
-   
+ 
   ];
 
 

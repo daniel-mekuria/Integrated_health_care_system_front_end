@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 
 
-import httpRequest from "../components/httpRequest";
-import useAsyncData from "../components/useAsyncData";
-import LoadingSpinners from "../components/loadingSpinners";
+import httpRequest from "./httpRequest";
+import useAsyncData from "./useAsyncData";
+import LoadingSpinners from "./loadingSpinners";
 import { useNavigate } from "react-router-dom";
 import { Button, Divider, MenuItem, TextField } from '@mui/material';
 
@@ -29,15 +29,16 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 
-async function addPaitent(patient) {
+async function editPaitent(patient, atrNumber) {
+
+    patient.patientStatus = patient.patientStatus.target ? patient.patientStatus.target.value : patient.patientStatus
+    patient.previousExposure = patient.previousExposure.target ? patient.previousExposure.target.value : patient.previousExposure
 
 
 
-
-
-    let res = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/patient/atrRegister", patient, "post")
+    let res = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/patient/updateAtrPatient/" + atrNumber, patient, "put")
     if (res)
-        return 1
+        return res.patient
     return 0
 
 
@@ -49,7 +50,7 @@ function strTODate(date) {
     return new Date(date)
 }
 
-function AddPaitent(props) {
+function EditPaitent(props) {
 
     const navigate = useNavigate()
 
@@ -59,18 +60,17 @@ function AddPaitent(props) {
 
     const [addLoading, setAddLoading] = useState(false)
 
-
-
-
+    let patient = props.data
 
     return (
         <Modal
             destroyOnClose
             className="p-5 absolute top-[1vh] !w-[95vw] "
 
-            title={"New Patient"}
 
-            open={props.isAddModalOpen}
+            title={"Edit Patient"}
+
+            open={props.isEditModalOpen}
 
 
             closable={false}
@@ -80,7 +80,9 @@ function AddPaitent(props) {
 
 
                     <Button onClick={() => {
-                        props.setIsAddModalOpen(false)
+                        props.setIsEditModalOpen(false)
+                        setPreviousARV(null)
+                        setAddLoading(false)
                     }}
 
 
@@ -100,7 +102,7 @@ function AddPaitent(props) {
                         }
                     >
 
-                        <span>Register</span>
+                        <span>Save</span>
                     </LoadingButton>
 
                 </div>
@@ -115,11 +117,11 @@ function AddPaitent(props) {
                         onFinish={async (x) => {
 
                             setAddLoading(true)
-                            const res = await addPaitent(x)
+                            const res = await editPaitent(x, patient.atrNumber)
                             setAddLoading(false)
                             if (res) {
-                                props.setIsAddModalOpen(false)
-                                props.saveNew()
+                                props.setIsEditModalOpen(false)
+                                props.saveEdit(res)
                             }
                             else {
                                 toast.error("Regstration failed");
@@ -137,6 +139,15 @@ function AddPaitent(props) {
 
 
                         <div className="flex flex-col space-y-5">
+                            <div className='flex space-x-1'>
+                                <p className='text-sm font-medium text-gray-500'> Edit Profile of : </p>
+                                <p className='text-sm text-gray-900'> {patient.fullName}</p>
+
+                            </div>
+                            <div className='flex space-x-1'>
+                                <p className='text-sm font-medium text-gray-500'> ATR NO : </p>
+                                <p className='text-sm text-gray-900'> {patient.atrNumber}</p>
+                            </div>
                             <Card>
                                 <p className="mb-6 text-[1.2rem] text-gray-600">Personal information</p>
 
@@ -145,7 +156,9 @@ function AddPaitent(props) {
 
 
                                     <Form.Item
+
                                         name="fullName"
+                                        initialValue={patient.fullName}
                                         rules={[{ required: true }]}
 
                                     >
@@ -158,6 +171,8 @@ function AddPaitent(props) {
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <Form.Item
                                             name="birthDate"
+                                            initialValue={dayjs(patient.birthDate)}
+
                                             rules={[{ required: true }]}
                                         >
                                             <DatePicker size="small" label={"Birth date"} />
@@ -171,6 +186,8 @@ function AddPaitent(props) {
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <Form.Item
                                             name="dateEligible"
+                                            initialValue={dayjs(patient.dateEligible)}
+
                                             rules={[{ required: true }]}
                                         >
                                             <DatePicker size="small" label={"Date eligible"} />
@@ -183,6 +200,8 @@ function AddPaitent(props) {
                                     </LocalizationProvider>
 
                                     <Form.Item
+                                        initialValue={patient.phoneNumber}
+
                                         name="phoneNumber"
                                         rules={[{ required: true }]}
                                     >
@@ -193,6 +212,9 @@ function AddPaitent(props) {
                                     </Form.Item>
                                     <Form.Item
                                         name="weight"
+                                        initialValue={patient.weight}
+
+
                                         rules={[{ type: Number, required: true }]}
                                     >
                                         <TextField size="small" label="Weight on start"
@@ -203,6 +225,8 @@ function AddPaitent(props) {
 
                                     <Form.Item
                                         name="subCity"
+                                        initialValue={patient.subCity}
+
                                         rules={[{ required: true }]}
                                     >
                                         <TextField size="small" label="sub city"
@@ -212,6 +236,8 @@ function AddPaitent(props) {
                                     </Form.Item>
                                     <Form.Item
                                         name="wereda"
+                                        initialValue={patient.wereda}
+
                                         rules={[{ required: true }]}
                                     >
                                         <TextField size="small" label="Wereda"
@@ -220,7 +246,10 @@ function AddPaitent(props) {
 
                                     </Form.Item>
                                     <Form.Item
+
                                         name="kebele"
+                                        initialValue={patient.kebele}
+
                                         rules={[{ required: true }]}
                                     >
                                         <TextField size="small" label="Kebele"
@@ -230,6 +259,8 @@ function AddPaitent(props) {
                                     </Form.Item>
                                     <Form.Item
                                         name="houseNumber"
+                                        initialValue={patient.houseNumber}
+
                                         rules={[{ required: true }]}
                                     >
                                         <TextField size="small" label="House number"
@@ -239,6 +270,8 @@ function AddPaitent(props) {
                                     </Form.Item>
 
                                     <Form.Item
+                                        initialValue={patient.sex}
+
                                         name="sex"
                                         rules={[{ required: true }]}
                                     >
@@ -266,6 +299,8 @@ function AddPaitent(props) {
 
                                     </Form.Item>
                                     <Form.Item
+                                        initialValue={patient.severityLevel}
+
                                         name="severityLevel"
                                         rules={[{ required: true }]}
                                     >
@@ -289,15 +324,7 @@ function AddPaitent(props) {
 
                                     </Form.Item>
 
-                                    <Form.Item
-                                        name="atrNumber"
 
-                                    >
-                                        <TextField size="small" label="ATR number (optional)"
-
-                                            placeholder=" ATR number (optional)" />
-
-                                    </Form.Item>
                                 </div>
                             </Card>
                             <Card>
@@ -308,6 +335,8 @@ function AddPaitent(props) {
 
 
                                         <Form.Item
+                                            initialValue={patient.supporterName}
+
                                             name="supporterName"
                                             rules={[{ required: true }]}
                                         >
@@ -319,6 +348,8 @@ function AddPaitent(props) {
 
 
                                         <Form.Item
+                                            initialValue={patient.supporterPhone}
+
                                             name="supporterPhone"
                                             rules={[{ required: true }]}
                                         >
@@ -330,6 +361,8 @@ function AddPaitent(props) {
 
 
                                         <Form.Item
+                                            initialValue={patient.supporterSubCity}
+
                                             name="supporterSubCity"
                                             rules={[{ required: true }]}
                                         >
@@ -339,7 +372,9 @@ function AddPaitent(props) {
 
                                         </Form.Item>
                                         <Form.Item
-                                            name="SupporterWereda"
+                                            initialValue={patient.supporterWereda}
+
+                                            name="supporterWereda"
                                             rules={[{ required: true }]}
                                         >
                                             <TextField size="small" label="Wereda"
@@ -348,7 +383,9 @@ function AddPaitent(props) {
 
                                         </Form.Item>
                                         <Form.Item
-                                            name="Supporterkebele"
+                                            initialValue={patient.supporterKebele}
+
+                                            name="supporterKebele"
                                             rules={[{ required: true }]}
                                         >
                                             <TextField size="small" label="Kebele"
@@ -357,6 +394,8 @@ function AddPaitent(props) {
 
                                         </Form.Item>
                                         <Form.Item
+                                            initialValue={patient.supporterHouseNumber}
+
                                             name="supporterHouseNumber"
                                             rules={[{ required: true }]}
                                         >
@@ -383,18 +422,21 @@ function AddPaitent(props) {
                                                     <p className="mb-3 text-[1rem] text-gray-600">Previous exposure to ARVs</p>
                                                 </label>
                                                 <Form.Item
+                                                    initialValue={patient.previousExposure}
+
                                                     name="previousExposure"
                                                     rules={[{ required: true }]}
                                                 >
 
                                                     <Radio.Group onChange={(x) => {
-                                                        setPreviousARV(x.target.value)
+
+                                                        setPreviousARV(x.currentTarget.value)
                                                     }} name="previousARVGroup">
                                                         <div className="flex flex-col">
 
                                                             <Radio size="sm" value="Naive" >Naive</Radio>
                                                             <Radio size="sm" value="Non-Naive">Non-Naive</Radio>
-                                                            </div>
+                                                        </div>
                                                     </Radio.Group>
 
                                                 </Form.Item>
@@ -402,7 +444,8 @@ function AddPaitent(props) {
                                             {
                                                 previousARV === "Non-Naive" ?
                                                     <Form.Item
-                                                        name="Non-NaiveRegimen"
+
+                                                        name="NonNaiveRegimen"
                                                         rules={[{ required: true }]}
                                                     >
                                                         <TextField size="small" label="Non-Naive regimen"
@@ -425,17 +468,19 @@ function AddPaitent(props) {
                                                 <p className="mb-3 text-[1rem] text-gray-600">Current status</p>
                                             </label>
                                             <Form.Item
-                                                name="PatientStatus"
+                                                initialValue={patient.patientStatus}
+
+                                                name="patientStatus"
                                                 rules={[{ required: true }]}
                                             >
 
                                                 <Radio.Group name="currentStatus">
-                                                <div className="flex flex-col">
+                                                    <div className="flex flex-col">
 
-                                                    <Radio size="sm" value="onActivereatment">On active treatment</Radio> 
-                                                    <Radio size="sm" value="stoppedByPhysician" >Stopped treatment by physician</Radio>
-                                                    <Radio size="sm" value="lostForFollowUp" >Lost for follow up</Radio>
-                                                    <Radio size="sm" value="deceased" >Deceased</Radio>
+                                                        <Radio size="sm" value="onActivereatment">On active treatment</Radio>
+                                                        <Radio size="sm" value="stoppedByPhysician" >Stopped treatment by physician</Radio>
+                                                        <Radio size="sm" value="lostForFollowUp" >Lost for follow up</Radio>
+                                                        <Radio size="sm" value="deceased" >Deceased</Radio>
                                                     </div>
                                                 </Radio.Group>
 
@@ -444,6 +489,8 @@ function AddPaitent(props) {
                                     </div>
                                     <div className="flex items-stretch w-full space-x-10">
                                         <Form.Item
+                                            initialValue={patient.sideEffect}
+
                                             className="w-full "
                                             name="sideEffect"
                                             rules={[{ required: false }]}
@@ -456,6 +503,8 @@ function AddPaitent(props) {
                                         </Form.Item>
 
                                         <Form.Item
+                                            initialValue={patient.concomitantDisease}
+
                                             className="w-full "
                                             name="concomitantDisease"
                                             rules={[{ required: false }]}
@@ -468,6 +517,8 @@ function AddPaitent(props) {
                                         </Form.Item>
 
                                         <Form.Item
+                                            initialValue={patient.additionalNote}
+
                                             className="w-full "
                                             name="additionalNote"
                                             rules={[{ required: false }]}
@@ -501,4 +552,4 @@ function AddPaitent(props) {
     );
 }
 
-export default AddPaitent;
+export default EditPaitent;

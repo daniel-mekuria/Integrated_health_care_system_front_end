@@ -200,6 +200,9 @@ function UpComingAppointments(props) {
     console.log(foundData)
     navigate('/paitentdetail',{state:{foundData:foundData}});
    }
+
+   props.setCount(data.length)
+
   return (
     <div className={props.className} style={props.style}>
       

@@ -12,7 +12,6 @@ function Dashboard(props) {
 
     <div className="flex h-screen">
       <div className="flex flex-col justify-start flex-1 ml-0 ">
-        <Buttons_Dashboard className="h-[calc(100vh - 100px)]" />
         {/* Adjust the value as needed */}
         <div className="flex flex-row mt-2 gap-2 h-[calc(100vh - 100px)]">
           {" "}

@@ -211,7 +211,7 @@ function PaitentTable(props) {
           disableMultipleRowSelection: true,
           disableColumnSelector: true
         }}
-      data={data} pageSize={3} className={" w-full h-full"} />
+      data={data} pageSize={5} className={" w-full h-full"} />
     </div>
   );
 }

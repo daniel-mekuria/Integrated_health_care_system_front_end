@@ -229,7 +229,7 @@ function ViewHistory(props) {
 
   return (
     <div className={props.className} style={props.style}>
-      <div className="flex flex-col space-y-3">
+      <div className="flex flex-col w-full space-y-3">
 
         <div className='flex space-x-1'>
           <p className='text-sm font-medium text-gray-500'> Visit history of : </p>

@@ -150,8 +150,8 @@ function countEntries(data, startDate, endDate, countField, categoryField = null
     return { x: countFieldValues, y: result };
 }
 function countTotalEntries(data, startDate, endDate, countField, categoryField = null) {
-    let start = dayjs(startDate);
-    let end = dayjs(endDate).add(1, 'day');
+    let start = startDate ? dayjs(startDate) : dayjs(0); // Unix Epoch if startDate is not provided
+    let end = endDate ? dayjs(endDate).add(1, 'day') : dayjs(); // Current date if endDate is not provided
     let result = [];
     let categories = {};
     let countFieldValues = [];
@@ -179,7 +179,7 @@ function countTotalEntries(data, startDate, endDate, countField, categoryField =
 
     data.forEach(item => {
         let createdAt = dayjs(item.createdAt);
-        if (createdAt.isAfter(start) && createdAt.isBefore(end)) {
+        if (createdAt.isAfter(start) && (end.isAfter(createdAt) || createdAt.isSame(end))) {
             let category = item[categoryField] || 'Uncategorized';
             let countValue = item[countField];
             if (categoryField === 'birthDate') category = getAgeGroup(category);
@@ -198,6 +198,7 @@ function countTotalEntries(data, startDate, endDate, countField, categoryField =
 
     return { x: countFieldValues, y: result };
 }
+
 
 
 export { countEntries,countTotalEntries, countEntriesbydate,countTotalEntriesbydate }

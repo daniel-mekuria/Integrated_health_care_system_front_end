@@ -1,5 +1,5 @@
-import { Button, Divider } from '@mui/material';
-import { Form, Modal, Popconfirm, DatePicker, Select, Input } from 'antd';
+import { Divider } from '@mui/material';
+import { Form, Modal, Popconfirm, DatePicker, Select, Input, Radio, Button } from 'antd';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -9,9 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import dayjs from 'dayjs';
 
-import Radio from '@mui/joy/Radio';
 
-import RadioGroup from '@mui/joy/RadioGroup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -294,7 +292,9 @@ function ExportForm(props) {
         maskClosable={false}
         okText={"Export"}
         footer={<div className='flex justify-end space-x-3'>
-
+          <Button type='primary' onClick={() => {
+            setIsTableModalOpen(true)
+          }} color='success' variant='outlined' > Add Table</Button>
           <Popconfirm
             title="Cancel the task"
             description="Are you sure to Cancel?"
@@ -378,42 +378,27 @@ function ExportForm(props) {
                         name="timeScale"
                         rules={[{ required: true }]}
                       >
-                        <RadioGroup
 
-                          orientation="horizontal"
-                          aria-label="Alignment"
-                          name="alignment"
-                          variant="plain"
+                        <Radio.Group
+                          buttonStyle='solid'
+                          className='space-x-3'
+                          value={timeScale}
                           onChange={(event) => setTimeScale(event.target.value)}
                         >
                           {['Day', 'Month', 'Year'].map((type) => (
 
-                            <div
+
+                            <Radio.Button
                               key={type}
-                              className='!relative  flex justify-center  p-2  ml-1 mr-3 '
-                            >
-                              <Radio
-                                className='p-1'
-                                value={type}
-                                disableIcon
-                                overlay
-                                label={
-                                  type
-                                }
-                                variant={timeScale === type ? 'solid' : 'soft'}
-                                slotProps={{
 
-                                  action: {
 
-                                    sx: { borderRadius: 10 },
-                                  }
-                                }}
-                              />
-                            </div>
+                              value={type}
+
+                            >{type}</Radio.Button>
 
                           ))}
 
-                        </RadioGroup>
+                        </Radio.Group>
                       </Form.Item>
 
                     </div>
@@ -503,7 +488,7 @@ function ExportForm(props) {
               onFinish={async (x) => {
 
                 setIsLoadingModalOpen(true)
-                await (x.format === "Pdf") ? exportToPdf(tablesList, x.fileName ? x.fileName : undefined) : exportToExcel(tablesList, x.fileName ? x.fileName : undefined)
+                await (x.format === "PDF") ? exportToPdf(tablesList, x.fileName ? x.fileName : undefined) : exportToExcel(tablesList, x.fileName ? x.fileName : undefined)
                 setIsExportModalOpen(false)
                 setIsLoadingModalOpen(false)
 
@@ -524,41 +509,26 @@ function ExportForm(props) {
                     name="format"
                     rules={[{ required: true }]}
                   >
-                    <RadioGroup
-                      orientation="horizontal"
-                      aria-label="Alignment"
-                      name="alignment"
-                      variant="plain"
-                      onChange={(event) => setTimeScale(event.target.value)}
+
+                    <Radio.Group
+                      buttonStyle='solid'
+                      className='space-x-3'
+                      value={timeScale}
                     >
-                      {['Excel', 'Pdf'].map((type) => (
+                      {['Excel', 'PDF',].map((type) => (
 
-                        <div
+
+                        <Radio.Button
                           key={type}
-                          className='!relative  flex justify-center  p-2  ml-1 mr-3 '
-                        >
-                          <Radio
-                            className='p-1'
-                            value={type}
-                            disableIcon
-                            overlay
-                            label={
-                              type
-                            }
-                            variant={timeScale === type ? 'solid' : 'soft'}
-                            slotProps={{
 
-                              action: {
 
-                                sx: { borderRadius: 10 },
-                              }
-                            }}
-                          />
-                        </div>
+                          value={type}
+
+                        >{type}</Radio.Button>
 
                       ))}
 
-                    </RadioGroup>
+                    </Radio.Group>
                   </Form.Item>
 
                 </div>
@@ -617,7 +587,7 @@ function ExportForm(props) {
 
         <div style={props.style} className={props.className + ''}>
           <div className='!pt-16 flex flex-col space-y-4 h-[80vh] overflow-scroll scrollbar-hide'>
-           
+
             <div className='flex-col space-y-3 '>
               {
                 tablesList.length > 0 ? tablesList.map((table => {
@@ -634,9 +604,7 @@ function ExportForm(props) {
 
             </div>
             <Divider />
-            <Button onClick={() => {
-              setIsTableModalOpen(true)
-            }} color='success' variant='outlined' > Add Table</Button>
+           
           </div>
 
         </div>
