@@ -261,7 +261,7 @@ const x=httpRequest()
         disableRowSelectionOnClick:true,
         disableDensitySelector:true,
         disableMultipleRowSelection:true,
-        disableColumnSelector:true}} onSelect={handleSelect} addNew data={tableData} pageSize={9} setIsAddModalOpen={setIsAddModalOpen} className={" w-full h-full"} />
+        disableColumnSelector:true}} onSelect={handleSelect} addNew data={tableData} pageSize={11} setIsAddModalOpen={setIsAddModalOpen} className={" w-full h-full"} />
 
 
       <ToastContainer
