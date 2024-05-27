@@ -1,13 +1,11 @@
 import { Button, Divider } from '@mui/material'
 import React, { useRef, useState } from 'react'
 import IosShareIcon from '@mui/icons-material/IosShare';
-import { Card, Form, Select } from "antd";
+import { Card, Form, Select, Radio } from "antd";
 import { LineChart } from '@mui/x-charts/LineChart';
-import Radio, { radioClasses } from '@mui/joy/Radio';
 import { DatePicker, Modal } from "antd/es";
 import dayjs from 'dayjs';
 
-import RadioGroup from '@mui/joy/RadioGroup';
 import ExportForm from '../components/exportForm';
 import { PieChart } from '@mui/x-charts';
 import Barchart from '../components/barchart';
@@ -104,7 +102,7 @@ function Analytics(props) {
                     <Form
                         onFinish={(x) => {
 
-                            let option= options[graphType][x.select]
+                            let option = options[graphType][x.select]
                             setXData(option.x)
                             setYData(option.y)
                             setdataSet(option.set)
@@ -119,14 +117,14 @@ function Analytics(props) {
                             rules={[{ required: true }]}
                         >
 
-                            
-                            <Select placeholder="Please select an option" 
-                            options={options[graphType].map((op,index) => (
 
-                                { value:index, label: op.name }                                
+                            <Select placeholder="Please select an option"
+                                options={options[graphType].map((op, index) => (
+
+                                    { value: index, label: op.name }
                                 ))}
-                            
-                            
+
+
                             >
 
                                 {/* Add more options as needed */}
@@ -139,7 +137,7 @@ function Analytics(props) {
 
 
             </Modal>
-           
+
 
             <ExportForm isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
             <div className='flex w-full'>
@@ -156,93 +154,61 @@ function Analytics(props) {
                     <div className='space-y-2'>
                         <p className='font-sans font-semibold text-gray-500 text-[1rem] '>Graph type</p>
                         <div className='flex mb-3'>
-                            <RadioGroup
-                                orientation="horizontal"
-                                aria-label="Alignment"
-                                name="alignment"
-                                variant="plain"
+
+                            <Radio.Group
+                                buttonStyle='solid'
+                                className='space-x-3'
                                 value={graphType}
                                 onChange={(event) => {
-                                    
+
                                     setGraptype(event.target.value)
                                     setdataSet(null)
                                     setoptionName(null)
                                     setXData(null)
-                                    
+
                                 }
                                 }
                             >
                                 {['Line', 'Bar', 'Pie'].map((type) => (
 
-                                    <div
+
+                                    <Radio.Button
                                         key={type}
-                                        className='!relative  flex justify-center  p-2  ml-1 mr-3 '
-                                    >
-                                        <Radio
-                                            className='p-1'
-                                            value={type}
-                                            disableIcon
-                                            overlay
-                                            label={
 
-                                                type
-                                            }
-                                            variant={graphType === type ? 'solid' : 'soft'}
-                                            slotProps={{
+                                        value={type}
 
-                                                action: {
 
-                                                    sx: { borderRadius: 10 },
-                                                }
-                                            }}
-                                        />
-                                    </div>
+                                    >{type}</Radio.Button>
 
                                 ))}
 
-                            </RadioGroup>
+                            </Radio.Group>
 
                         </div>
                     </div>
-                    <div className={'space-y-2 ' + ((graphType != "Pie"&&xData=="time") ? ' visible' : " hidden")}>
+                    <div className={'space-y-2 ' + ((graphType != "Pie" && xData == "time") ? ' visible' : " hidden")}>
                         <p className='font-sans font-semibold text-gray-500 text-[1rem] '>Time Scale</p>
                         <div className='flex mb-3'>
-                            <RadioGroup
-                                orientation="horizontal"
-                                aria-label="Alignment"
-                                name="alignment"
-                                variant="plain"
+                            <Radio.Group
+                                buttonStyle='solid'
+                                className='space-x-3'
                                 value={timeScale}
                                 onChange={(event) => setTimeScale(event.target.value)}
                             >
                                 {['Day', 'Month', 'Year'].map((type) => (
 
-                                    <div
-                                        key={type}
-                                        className='!relative  flex justify-center  p-2  ml-1 mr-3 '
-                                    >
-                                        <Radio
-                                            className='p-1'
+                                   
+                                        <Radio.Button
+                                            key={type}
+
+                                           
                                             value={type}
-                                            disableIcon
-                                            overlay
-                                            label={
-                                                type
-                                            }
-                                            variant={timeScale === type ? 'solid' : 'soft'}
-                                            slotProps={{
-
-                                                action: {
-
-                                                    sx: { borderRadius: 10 },
-                                                }
-                                            }}
-                                        />
-                                    </div>
+                                          
+                                        >{type}</Radio.Button>
 
                                 ))}
 
-                            </RadioGroup>
+                            </Radio.Group>
 
                         </div>
                     </div>
@@ -301,7 +267,7 @@ function Analytics(props) {
 
 
                         graphType == "Pie" ? (
-                           <Piechart x={xData} y={yData} startDate={startDate ? startDate : dayjs()} endDate={endDate ? endDate : dayjs()} timeScale={timeScale} set={dataSet}
+                            <Piechart x={xData} y={yData} startDate={startDate ? startDate : dayjs()} endDate={endDate ? endDate : dayjs()} timeScale={timeScale} set={dataSet}
 
                             />
                         ) : null

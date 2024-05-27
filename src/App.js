@@ -16,18 +16,40 @@ import PaitentDetail from "./pages/paitentDetail";
 import MonitorPaitents from "./pages/monitorPaitents";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Pharmacy from "./pages/pharmacy";
+import Test from "./pages/test";
+import ExportForm from "./components/exportForm";
+import BedManagement from "./pages/bedManagment";
 
 
 const { Content, Sider } = Layout;
 
 const App = () => {
+ 
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#00A86B', // Set your desired color here
+      }
+    },
+    shape: {
+      borderRadius: 8, // Set your desired border radius here
+    },
+    radius: {
+      sm: '4px', // Set your desired small radius here
+      md: '8px', // Set your desired medium radius here
+      lg: '16px', // Set your desired large radius here
+    },
+  });
   
 
 
   return (
+    <ThemeProvider theme={theme}>
     <ConfigProvider
     theme={{
       token: {
@@ -38,6 +60,7 @@ const App = () => {
       },
     }}
   >
+
       <Router>
         
       <App_/>
@@ -55,12 +78,14 @@ draggable
 pauseOnHover
 />
       </ConfigProvider>
+      </ThemeProvider>
     );
   };
 
 const App_ = () => {
  
-
+  const x= useTheme()
+console.log(x)
   
   const navigate = useNavigate();
 
@@ -79,30 +104,43 @@ const App_ = () => {
         <Route
           path="*"
           element={
-            <Layout className="w-screen h-screen bg-white">
-              <Sider theme="light" width={"fit-content"} className="bg-white ">
+            <Layout className="w-screen h-screen p-1 overflow-hidden font-sans bg-white ">
+              <Sider theme="light" width={"fit-content"} className="font-sans bg-white ">
                 <Navigation />
               </Sider>
 
-              <Content className="px-5 pt-10 pb-5">
+              <Content className="py-5 overflow-hidden font-sans px-7">
                 <Routes>
                   <Route
-                    path="/paitents"
-                    element={<ViewPaitents className="w-full h-fit" />}
+                    path="/patients"
+                    element={<ViewPaitents  />}
                   />
                   <Route path="/" element={<Dashboard />} />;
                   <Route
                     path="/pharmacy"
-                    element={<Emergency_Drug_Dispensal />}
+                    element={<Pharmacy />}
                   />
                   <Route
                     path="/monitor"
                     element={<MonitorPaitents />}
                   />
                   <Route
+                    path="/bed"
+                    element={<BedManagement />}
+                  />
+                  <Route
                     path="/analytics"
                     element={<Analytics />}
+                    
                   />
+                  <Route
+                    path="/reports"
+                    element={<ExportForm  isModalOpen setIsModalOpen={()=>{
+                      navigate("/")
+                    }}  />}
+                    
+                  />
+                  
                   <Route
                     path="/addpaitent"
                     element={<AddPaitent />}
@@ -110,6 +148,11 @@ const App_ = () => {
                   <Route
                     path="/paitentdetail"
                     element={<PaitentDetail />}
+                  />
+                  
+                  <Route
+                    path="/test"
+                    element={<Test />}
                   />
                   ;
                   <Route

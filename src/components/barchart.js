@@ -109,8 +109,10 @@ function generateData(data,x, y, startDate, endDate, timeScale = null) {
         return (countEntriesbydate(data, startDate, endDate, timeScale, y))
     }
     else {
-        return (countTotalEntries(data, startDate, endDate, x, y))
 
+        let fd= (countTotalEntries(data, startDate, endDate, x, y))
+console.log(fd)
+return fd
     }
 
 

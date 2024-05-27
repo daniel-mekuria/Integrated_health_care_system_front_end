@@ -12,9 +12,9 @@ import AddIcon from '@mui/icons-material/Add';
 
 function QuickSearchToolbar(props) {
   return (
-    <div className="flex px-6 py-2 justify-normal">
+    <div className="flex px-6 py-2 font-sans justify-normal">
       <GridToolbarFilterButton  />
-      <TextField className="relative left-5"
+      <TextField className="relative font-sans left-5"
         variant="standard"
 
         value={props.value}
@@ -87,11 +87,12 @@ const columns = props.data.columns;
 
 
   return (
-    <div  className={props.className} style={props.style} >
+    <div  className={ props.className}   style={props.style} >
      
-      <div className="w-full h-full " >
+      <div className="w-full h-full font-sans " >
         <DataGrid  autoHeight 
-        
+        className="font-sans"
+        sx={{ fontFamily: "Poppins" }}
 
 onRowSelectionModelChange={(ids) => {
   const selectedIDs = new Set(ids);

@@ -153,7 +153,16 @@ function ViewPaitents(props) {
 
   const navigate = useNavigate()
   const [isAddModalOpen,setIsAddModalOpen] =useState(false)
-  const [update,setUpdate] =useState()
+  const [update,setUpdate] =useState(false)
+
+   async function saveNew (){
+     toast.success(" Registered succesfuly");
+     setTimeout(() => {
+      setUpdate(!update)
+     }, 3000);
+
+    
+  }
 
   function handleSelect(foundData){
     console.log(foundData)
@@ -246,7 +255,7 @@ const x=httpRequest()
 
   return (
     <div className={props.className} style={props.style}>
-      <AddPaitent isAddModalOpen={isAddModalOpen} toast={toast} setIsAddModalOpen={setIsAddModalOpen} setUpdate={setUpdate} />
+      <AddPaitent isAddModalOpen={isAddModalOpen} setIsAddModalOpen={setIsAddModalOpen} saveNew={saveNew} />
      
       <DataTable tableProps={{ checkboxSelection:true,
         disableRowSelectionOnClick:true,

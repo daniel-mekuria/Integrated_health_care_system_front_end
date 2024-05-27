@@ -109,8 +109,8 @@ const StyledButton = styled(ButtonBase)(({ theme }) => ({
     },
 }));
 
-export default function AddDrug({value, onChange,options}) {
-    let labels=options
+export default function AddDrug({ value, onChange, options }) {
+    let labels = options
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [drugs, setdrugs] = React.useState([]);
     const [pendingdrugs, setPendingdrugs] = React.useState(null);
@@ -126,7 +126,7 @@ export default function AddDrug({value, onChange,options}) {
     };
 
     const handleClose = () => {
-    
+
         setPendingdrugs(null)
 
         if (anchorEl) {
@@ -135,15 +135,15 @@ export default function AddDrug({value, onChange,options}) {
         setAnchorEl(null);
     };
 
-  
-        
-       React.useEffect(()=>{
-        drugs.length>0?setinput(drugs):setinput(undefined);
-            if (typeof onChange === 'function') {
-                drugs.length>0?onChange(drugs):onChange();
-            
-            }
-       },[drugs])
+
+
+    React.useEffect(() => {
+        drugs.length > 0 ? setinput(drugs) : setinput(undefined);
+        if (typeof onChange === 'function') {
+            drugs.length > 0 ? onChange(drugs) : onChange();
+
+        }
+    }, [drugs])
 
     const removeItem = (id) => {
         setdrugs(drugs.filter(item => item.id !== id));
@@ -152,13 +152,13 @@ export default function AddDrug({value, onChange,options}) {
     const handleAdd = () => {
         console.log(pendingdrugs)
         if (pendingdrugs) {
-        
-            setdrugs(prevArray => [...prevArray, pendingdrugs]);
-           
-            
-            
 
-            
+            setdrugs(prevArray => [...prevArray, pendingdrugs]);
+
+
+
+
+
         }
         console.log(pendingdrugs)
         setPendingdrugs(null)
@@ -171,39 +171,40 @@ export default function AddDrug({value, onChange,options}) {
 
     const open = Boolean(anchorEl);
     const id = open ? 'github-label' : undefined;
-console.log(drugs)
+    console.log(drugs)
     return (
         <div className="p-2 overflow-hidden border rounded-lg max-h-[11rem] w-fit ">
-        <Box sx={{ width: 221, fontSize: 13 }}>
+            <Box sx={{ width: 221, fontSize: 13 }}>
                 <StyledButton disableRipple aria-describedby={id} onClick={handleClick}>
-                    <span>Drugs</span> {drugs.length?<p className='bg-green-500 text-white rounded-[50%] w-6 h-6  flex justify-center items-center'>{drugs.length}</p>:null}
+                    <span>Drugs</span> {drugs.length ? <p className='bg-green-500 text-white rounded-[50%] w-6 h-6  flex justify-center items-center'>{drugs.length}</p> : null}
                     <Add />
                 </StyledButton>
                 <div className="p-2 overflow-scroll scroll-smooth max-h-40 scrollbar-hide">
-                    
-                {
-                    drugs.length===0? <p>Add drug </p>:null
-                }
-                {drugs.map((option) => {
-                return (<div className='grid grid-cols-3 p-2 my-2 border rounded-md'>
-                <div
-                        key={option.id}
-                    className='col-span-2'
-                    
-                    >
-                        <p className='text-[1.05rem] text-gray-600' > {option.name}</p>
-                        <p className='text-[1rem] text-gray-500' > {"Dose: "+option.dose}</p>
-                        <p className='text-[1rem] text-gray-500' > {"Amount: "+option.amount}</p>
-                        
 
-                    </div>
-                    <div className='flex items-center justify-end h-full col-span-1' >
-                        <Button size='small' danger type='primary' onClick={()=>{removeItem(option.id)}}  >X</Button>
-                    </div>
-                    </div>
-                )})}
+                    {
+                        drugs.length === 0 ? <p>Add drug </p> : null
+                    }
+                    {drugs.map((option) => {
+                        return (<div key={option._id} className='grid grid-cols-3 p-2 my-2 border rounded-md'>
+                            <div
+
+                                className='col-span-2'
+
+                            >
+                                <p className='text-[1.05rem] text-gray-600' > {option.drugName}</p>
+                                <p className='text-[1rem] text-gray-500' > {"Dose: " + option.dose + "mg"}</p>
+                                <p className='text-[1rem] text-gray-500' > {"Amount: " + option.amount}</p>
+
+
+                            </div>
+                            <div className='flex items-center justify-end h-full col-span-1' >
+                                <Button size='small' danger type='primary' onClick={() => { removeItem(option.id) }}  >X</Button>
+                            </div>
+                        </div>
+                        )
+                    })}
                 </div>
-            
+
             </Box>
             <StyledPopper id={id} open={open} anchorEl={anchorEl} placement="bottom-start">
                 <ClickAwayListener onClickAway={handleClose}>
@@ -237,7 +238,7 @@ console.log(drugs)
 
                                 PopperComponent={PopperComponent}
                                 renderTags={() => null}
-                                noOptionsText="No labels"
+                                noOptionsText="No drugs"
                                 renderOption={(props, option, { selected }) => (
                                     <li {...props}>
 
@@ -250,15 +251,15 @@ console.log(drugs)
                                                 },
                                             }}
                                         >
-                                            {option.name}
+                                            {option.drugName}
                                             <br />
-                                            <span>{option.brand}</span>
+                                            <span>{option.drugName}</span>
                                         </Box>
 
                                     </li>
                                 )}
-                                options={labels.filter(label => !drugs.some(drugss => label.name === drugss.name))}
-                                getOptionLabel={(option) => option.name}
+                                options={labels.filter(label => !drugs.some(drugss => label.drugName === drugss.drugName))}
+                                getOptionLabel={(option) => option.drugName}
                                 renderInput={(params) => (
                                     <StyledInput
                                         ref={params.InputProps.ref}
@@ -271,16 +272,16 @@ console.log(drugs)
                         </div>
                         <div className='flex flex-col p-5 pt-20 space-y-3 ' >
                             <Form
-                            onFinish={(drugss)=>{
-                                
-                                let newDrug= pendingdrugs
-                            drugs.length<1? newDrug.id=1: newDrug.id = drugs[drugs.length-1].id+1
-                                newDrug.dose=drugss.dose
-                                newDrug.amount=drugss.amount
-                                setPendingdrugs(newDrug)
-                                handleAdd()
-                        
-                            }}
+                                onFinish={(drugss) => {
+
+                                    let newDrug = pendingdrugs
+                                    newDrug.dose = drugss.dose
+                                    
+                                    newDrug.amount = drugss.amount
+                                    setPendingdrugs(newDrug)
+                                    handleAdd()
+
+                                }}
                             >
                                 <Form.Item
                                     name="dose"

@@ -12,6 +12,7 @@ import {
     Typography,
     Button,
     Input,
+
 } from "@mui/material";
 
 import dayjs from 'dayjs';
@@ -23,8 +24,7 @@ import { GetCookie } from './cookies';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import { Form } from "antd";
-import { Radio, RadioGroup } from "@mui/joy";
+import { Form,Radio } from "antd";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AddDrug from "./addDrug";
@@ -50,13 +50,14 @@ async function addVisit(values, patientId, userId) {
     //     "daysBeforeNextVisit":5
     //     }
 
-
+    console.log(values)
 
     let newVisit = { ...values }
     newVisit.visitDate = values.visitDate ? values.visitDate : dayjs().format("DD / MMM / YYYY")
     newVisit.patientId = patientId
     newVisit.userId = userId
-    newVisit.otherDrug = convertStringToArray(values.otherDrug)
+    if (newVisit.otherDrug)
+        values.otherDrug = convertStringToArray(values.otherDrug)
 
     const response = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/visit/createVisitHistory", newVisit, "post")
     if (response)
@@ -100,8 +101,13 @@ const NewVIsit = (props) => {
         let res = await addVisit(values, paitentId, userId)
         setSubmitLoading(false)
 
-        res ? toast.success("Sucessfully added visit") : toast.error("Error , try again")
-        form.resetFields();
+        if (res) {
+            toast.success("Sucessfully added visit")
+            form.resetFields();
+        }
+        else {
+            toast.error("Error , try again")
+        }
 
 
     };
@@ -132,9 +138,11 @@ const NewVIsit = (props) => {
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <Form.Item
                                     name="visitDate"
-                                    rules={[{ required: false }]}
+                                    rules={[{ required: true }]}
+                                    initialValue={dayjs()}
+
                                 >
-                                    <DatePicker className="w-full" label={"Visit date"} defaultValue={dayjs()} />
+                                    <DatePicker className="w-full" label={"Visit date"} />
 
 
 
@@ -149,20 +157,25 @@ const NewVIsit = (props) => {
                                     <label htmlFor="reasonGroup">
                                         <p className="mb-3 text-[1rem] text-gray-600">Reason for Visit</p>
                                     </label>
+                                   
+
                                     <Form.Item
-                                        name="visitReason"
+                                        name="reason"
                                         rules={[{ required: true }]}
-                                        valuePropName="reasonGroup"
                                     >
 
-                                        <RadioGroup name="reasonGroup">
-                                            <Radio value="Start" label="Start" />
-                                            <Radio value="Refil" label="Refil" />
-                                            <Radio value="Switch" label="Switch" />
-                                        </RadioGroup>
-
+                                        <Radio.Group  name="reasonGroup">
+                                          
+                                          <div className="flex flex-col">
+                                          <Radio value="Start" > Start</Radio>
+                                            <Radio value="Refil">Refil</Radio>
+                                            <Radio value="Switch">Switch</Radio>
+                                          </div>
+                                        </Radio.Group>
                                     </Form.Item>
+
                                 </div>
+
                                 <Form.Item
                                     name="weight"
                                     rules={[{ required: true }]}
@@ -181,14 +194,18 @@ const NewVIsit = (props) => {
                                     </label>
 
                                     <Form.Item
-                                        name="inoutpaitent"
+                                        name="inout"
                                         rules={[{ required: true }]}
                                     >
 
-                                        <RadioGroup name="inoutpaitentgroup">
-                                            <Radio value="Start" label="Start" />
-                                            <Radio value="Refil" label="Refil" />
-                                        </RadioGroup>
+                                        <Radio.Group name="inoutpaitentgroup">
+                                        <div className="flex flex-col">
+
+                                            <Radio value="Start">Start</Radio>
+                                            <Radio value="Refil">Refil</Radio>
+                                            </div>
+                                        </Radio.Group>
+                                        
 
                                     </Form.Item>
                                 </div>
@@ -200,6 +217,27 @@ const NewVIsit = (props) => {
                                 >
 
                                     <TextField className="w-[90%]" size="small" label="Days until next appointment" type="number" placeholder="Days" />
+
+                                </Form.Item>
+
+
+                                <Form.Item
+                                    name="drugs"
+                                    rules={[{ required: true }]}
+
+
+                                >
+                                    <AddDrug options={data} />
+                                </Form.Item>
+
+                                <Form.Item
+                                    name="otherDrug"
+                                    rules={[{ required: false }]}
+
+
+                                >
+
+                                    <TextField size="small" label="Other drugs" placeholder="Other drugs" />
 
                                 </Form.Item>
 
@@ -242,10 +280,13 @@ const NewVIsit = (props) => {
                                         rules={[{ required: true }]}
                                     >
 
-                                        <RadioGroup name="TBPreventiveTherapygroup">
-                                            <Radio value="Yes" label="Yes" />
-                                            <Radio value="No" label="No" />
-                                        </RadioGroup>
+                                        <Radio.Group name="TBPreventiveTherapygroup">
+                                        <div className="flex flex-col">
+
+                                            <Radio value="Yes">Yes</Radio>
+                                            <Radio value="No" >No</Radio>
+                                            </div>
+                                        </Radio.Group>
 
                                     </Form.Item>
                                 </div>
@@ -259,10 +300,13 @@ const NewVIsit = (props) => {
                                         name="cotrimoxazoleProphylaxis"
                                         rules={[{ required: true }]}
                                     >
-                                        <RadioGroup name="cotrimoxazoleProphylaxisgroup">
-                                            <Radio value="Yes" label="Yes" />
-                                            <Radio value="No" label="No" />
-                                        </RadioGroup>
+                                        <Radio.Group name="cotrimoxazoleProphylaxisgroup">
+                                        <div className="flex flex-col">
+
+                                            <Radio value="Yes">Yes</Radio>
+                                            <Radio value="No">No</Radio>
+                                            </div>
+                                        </Radio.Group>
 
                                     </Form.Item>
                                 </div>
@@ -278,38 +322,18 @@ const NewVIsit = (props) => {
                                 <TextField size="small" className="w-[70%]" label="Service Delivery(Other, ASM, FTR,CAG,etc)" type="number" placeholder="Strength" />
 
                             </Form.Item>
-                        </div>
-                        <div className="grid grid-cols-2" >
-
-
-                        <Form.Item
-                                name="drugs"
-                                rules={[{ required: true }]}
-
-
-                            >
-                            <AddDrug options={[{
-                                name: 'Timolol',
-                                brand: 'La Sante',
-                            },
-                            {
-                                name: 'Mebendazole',
-                                brand: 'X Farma',
-                            }
-                            ]} />
-                            </Form.Item>
-
                             <Form.Item
-                                name="otherDrug"
-                                rules={[{ required: true }]}
+                                name="remarks"
+                                rules={[{ required: false }]}
 
 
                             >
 
-                                <TextField size="small" label="Other drugs"  placeholder="Other drugs" />
+                                <TextField multiline size="small" className="w-[70%]" label="Additional notes" placeholder="Remarks" />
 
                             </Form.Item>
                         </div>
+
 
 
                     </div>
