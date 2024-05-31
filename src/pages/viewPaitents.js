@@ -202,14 +202,7 @@ function ViewPaitents(props) {
     },
 
 
-    {
-      field: 'Medicine',
-      headerName: 'Medicine',
-      sortable: false,
-      minWidth: 80,
-      flex: 1,
-      renderCell: renderMedicine
-    },
+    
     {
       field: 'onTime',
       headerName: 'ontime',
