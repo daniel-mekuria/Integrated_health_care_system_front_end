@@ -107,7 +107,7 @@ if(props.onSelect)
         disableMultipleRowSelection={props.tableProps.disableMultipleRowSelection}
         disableColumnSelector={props.tableProps.disableColumnSelector}
         
-        slots={{ toolbar:props.toolBar?props.toolBar :QuickSearchToolbar }}
+        slots={!props.noToolBar?{ toolbar:props.toolBar?props.toolBar :QuickSearchToolbar }:null}
 
 
         slotProps={{

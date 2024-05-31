@@ -375,7 +375,7 @@ const [missedCount, setMissedCount]=useState(0)
     },
     {
       key: '2',
-      label:  <Badge color="green"  showZero count={missedCount} offset={[10,0]}>Missed appointments</Badge>,
+      label:  <Badge color="red"  showZero count={missedCount} offset={[10,0]}>Missed appointments</Badge>,
       children: <MissedAppointments setCount={setMissedCount}  />
       ,
     },

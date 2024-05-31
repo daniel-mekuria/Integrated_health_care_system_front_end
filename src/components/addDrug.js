@@ -10,7 +10,7 @@ import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import ButtonBase from '@mui/material/ButtonBase';
 import InputBase from '@mui/material/InputBase';
 import Box from '@mui/material/Box';
-import { Button, Form } from 'antd';
+import { Badge, Button, Form } from 'antd';
 import { TextField } from '@mui/material';
 import { Add } from '@mui/icons-material';
 
@@ -146,7 +146,7 @@ export default function AddDrug({ value, onChange, options }) {
     }, [drugs])
 
     const removeItem = (id) => {
-        setdrugs(drugs.filter(item => item.id !== id));
+        setdrugs(drugs.filter(item => item._id !== id));
     };
 
     const handleAdd = () => {
@@ -175,10 +175,13 @@ export default function AddDrug({ value, onChange, options }) {
     return (
         <div className="p-2 overflow-hidden border rounded-lg max-h-[11rem] w-fit ">
             <Box sx={{ width: 221, fontSize: 13 }}>
+            <Badge color="green"  className='w-full'  count={drugs.length} offset={[-30,8]}>
+
                 <StyledButton disableRipple aria-describedby={id} onClick={handleClick}>
-                    <span>Drugs</span> {drugs.length ? <p className='bg-green-500 text-white rounded-[50%] w-6 h-6  flex justify-center items-center'>{drugs.length}</p> : null}
+                    <span>Drugs</span> 
                     <Add />
                 </StyledButton>
+                </Badge>
                 <div className="p-2 overflow-scroll scroll-smooth max-h-40 scrollbar-hide">
 
                     {
@@ -198,7 +201,7 @@ export default function AddDrug({ value, onChange, options }) {
 
                             </div>
                             <div className='flex items-center justify-end h-full col-span-1' >
-                                <Button size='small' danger type='primary' onClick={() => { removeItem(option.id) }}  >X</Button>
+                                <Button size='small' danger type='primary' onClick={() => { removeItem(option._id) }}  >X</Button>
                             </div>
                         </div>
                         )

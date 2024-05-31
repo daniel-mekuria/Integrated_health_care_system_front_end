@@ -120,7 +120,7 @@ function renderStatus(params) {
 async function GetHistory(id) {
   let visits = [];
   const allvisits = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/visit/getPatientVisits/" + id)
-
+  console.log(allvisits)
 
   allvisits.visitHistories.forEach(async visit => {
 
@@ -128,7 +128,10 @@ async function GetHistory(id) {
     NewVisit.id = visit._id
     NewVisit.onTime = visit.onTime ? "Yes" : "No"
     NewVisit.user = visit.user.name
-    NewVisit.drug = visit.drug.drugName + `(dose:${visit.drug.dose} , amount:${visit.drug.amount} )`
+    NewVisit.drug = visit.drugs.length+"("+arrayTOstring(visit.drugs.map(item => item.drugName))+")";
+
+    
+    NewVisit.otherDrug = visit.otherDrug.length+"("+arrayTOstring(visit.otherDrug)+")";
 
 
 
@@ -136,6 +139,19 @@ async function GetHistory(id) {
   });
   return visits
 
+
+}
+function arrayTOstring(arr) {
+  let str = ""
+  arr.forEach((x, index) => {
+    str += x
+
+    if ((index + 1) < arr.length)
+      str += " , "
+
+    str+=" "
+  })
+  return str
 
 }
 function strTODate(date) {
