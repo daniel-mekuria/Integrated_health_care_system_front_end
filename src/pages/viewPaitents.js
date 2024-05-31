@@ -169,7 +169,6 @@ function ViewPaitents(props) {
     navigate('/paitentdetail',{state:{foundData:foundData}});
    }
 
-const x=httpRequest()
   const { data, isLoading, error } = useAsyncData(GetPaitents,[update]);
 
 

@@ -48,9 +48,8 @@ async function httpRequest(url, data, method = "get") {
 
         let response = await makeRequest(url, headers, data, method)
         if (response == null) {
-            console.log("no res")
 
-            return null
+            return {sucess:0}
         }
         else if (response.status == 401) {
             const headers = {
@@ -65,7 +64,7 @@ async function httpRequest(url, data, method = "get") {
             
              if (response.status == 401) {
                 window.location.href = "/login";
-                return(null)
+                return {sucess:0}
 
             }
             else if (response.status <300 && response.status >=200) {
@@ -77,10 +76,10 @@ async function httpRequest(url, data, method = "get") {
             }
             else if (response == null) {
 
-                return null
+                return {sucess:0}
             }
             else{
-                return null
+                return {sucess:0}
 
 
 
@@ -88,10 +87,14 @@ async function httpRequest(url, data, method = "get") {
         }
         else if (response.status <300 && response.status >=200) {
             let resData= await response.json()
-            return resData
+            return {sucess:1 ,...resData}
         }
         else
-            return null
+    {
+        let resData= await response.json()
+
+        return {sucess:0 ,...resData}
+    }
 
 
 

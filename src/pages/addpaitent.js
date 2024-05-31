@@ -36,9 +36,8 @@ async function addPaitent(patient) {
 
 
     let res = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/patient/atrRegister", patient, "post")
-    if (res)
-        return 1
-    return 0
+   
+    return res
 
 
 
@@ -117,12 +116,12 @@ function AddPaitent(props) {
                             setAddLoading(true)
                             const res = await addPaitent(x)
                             setAddLoading(false)
-                            if (res) {
+                            if (res.sucess) {
                                 props.setIsAddModalOpen(false)
                                 props.saveNew()
                             }
                             else {
-                                toast.error("Regstration failed");
+                                toast.error(res.message);
 
                             }
 

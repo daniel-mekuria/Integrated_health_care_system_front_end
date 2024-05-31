@@ -38,17 +38,7 @@ function convertStringToArray(str) {
     });
 }
 async function addVisit(values, patientId, userId) {
-    // {
-    //     "userId":"662538d6145fa9526ee24a85",
-    //     "patientId":"663a7d42d9dfeea5fdd27d4e",
-    //     "drugId":"66391e1aff4447a4c49949cb",
-    //     "dosage":"12",
-    //     "otherDrug":["Panadol","parastamol"],
-    //     "pillNumber":30,
-    //     "visitDate":"2024-04-05",
-    //     "remark":"this Patient is in good condition",
-    //     "daysBeforeNextVisit":5
-    //     }
+   
 
     console.log(values)
 
@@ -60,10 +50,7 @@ async function addVisit(values, patientId, userId) {
         values.otherDrug = convertStringToArray(values.otherDrug)
 
     const response = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/visit/createVisitHistory", newVisit, "post")
-    if (response)
-        return 1
-
-    return 0
+    return response
 
 
 
@@ -78,7 +65,7 @@ async function addVisit(values, patientId, userId) {
 async function getDrugs() {
 
     const drugs = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/drug/getAllDrugs")
-    return drugs
+    return drugs.drugs
 
 
 
@@ -101,12 +88,12 @@ const NewVIsit = (props) => {
         let res = await addVisit(values, paitentId, userId)
         setSubmitLoading(false)
 
-        if (res) {
+        if (res.sucess) {
             toast.success("Sucessfully added visit")
             form.resetFields();
         }
         else {
-            toast.error("Error , try again")
+            toast.error(res.message)
         }
 
 
@@ -167,9 +154,9 @@ const NewVIsit = (props) => {
                                         <Radio.Group  name="reasonGroup">
                                           
                                           <div className="flex flex-col">
-                                          <Radio value="Start" > Start</Radio>
-                                            <Radio value="Refil">Refil</Radio>
-                                            <Radio value="Switch">Switch</Radio>
+                                          <Radio value="start" > Start</Radio>
+                                            <Radio value="refil">Refil</Radio>
+                                            <Radio value="switch">Switch</Radio>
                                           </div>
                                         </Radio.Group>
                                     </Form.Item>
@@ -201,8 +188,8 @@ const NewVIsit = (props) => {
                                         <Radio.Group name="inoutpaitentgroup">
                                         <div className="flex flex-col">
 
-                                            <Radio value="Start">Start</Radio>
-                                            <Radio value="Refil">Refil</Radio>
+                                            <Radio value="start">Start</Radio>
+                                            <Radio value="refil">Refil</Radio>
                                             </div>
                                         </Radio.Group>
                                         
@@ -210,7 +197,7 @@ const NewVIsit = (props) => {
                                     </Form.Item>
                                 </div>
                                 <Form.Item
-                                    name="daysUntilNextAppointment"
+                                    name="daysBeforeNextVisit"
                                     rules={[{ required: true }]}
 
 
