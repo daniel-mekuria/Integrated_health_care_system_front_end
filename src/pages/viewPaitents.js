@@ -204,14 +204,6 @@ function ViewPaitents(props) {
 
     
     {
-      field: 'onTime',
-      headerName: 'ontime',
-      sortable: true,
-      minWidth: 80,
-      flex: 1,
-      renderCell: renderStatus
-    },
-    {
       field: 'LastAptDate',
       type: "date",
       headerName: 'Last apt.date',
