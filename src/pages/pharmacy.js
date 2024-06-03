@@ -54,25 +54,14 @@ const initialDrugs = [
 
 const Pharmacy = () => {
   const [drugs, setDrugs] = useState(initialDrugs);
-  const [openAdd, setOpenAdd] = useState(false);
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [openBulkAdd, setOpenBulkAdd] = useState(false);
-  const [bulkDrugs, setBulkDrugs] = useState('');
-  const [openBulkRemove, setOpenBulkRemove] = useState(false);
-
-  const [openEdit, setOpenEdit] = useState(false);
-  const [update, setupdate] = useState(false);
-  const [openRefill, setOpenRefill] = useState(false);
-  const [openRemove, setOpenRemove] = useState(false);
-  const [selectedDrug, setSelectedDrug] = useState('');
-  const [drugInfo, setDrugInfo] = useState({
-    id: '',
-    name: '',
-    brandName: '',
-    quantity: ''
-  });
   const [selectedDrugs, setSelectedDrugs] = useState([]);
+
+ 
+ 
+  const [update, setupdate] = useState(false);
+  
   const [addLoading, setAddLoading] = useState(false);
 
 
@@ -87,39 +76,6 @@ const Pharmacy = () => {
 
 
 
-
-  const handleOpenAdd = () => setOpenAdd(true);
-  const handleCloseAdd = () => setOpenAdd(false);
-  const handleOpenEdit = () => setOpenEdit(true);
-  const handleCloseEdit = () => setOpenEdit(false);
-  const handleOpenRefill = () => setOpenRefill(true);
-  const handleCloseRefill = () => setOpenRefill(false);
-  const handleOpenRemove = () => setOpenRemove(true);
-  const handleCloseRemove = () => setOpenRemove(false);
-
-
-
-  const handleCloseBulkAdd = () => setOpenBulkAdd(false);
-  const handleOpenBulkAdd = () => setOpenBulkAdd(true);
-  const handleCloseBulkRemove = () => setOpenBulkRemove(false);
-  const handleOpenBulkRemove = () => setOpenBulkRemove(true);
-  const handleBulkChange = (e) => setBulkDrugs(e.target.value);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setDrugInfo({
-      ...drugInfo,
-      [name]: value,
-    });
-  };
-  const theme = createTheme({
-    palette: {
-      primary: {
-        main: '#047857',
-      },
-
-    },
-  });
 
 
 
@@ -148,27 +104,8 @@ const Pharmacy = () => {
   };
 
 
-  const handleEditDrug = () => {
-    setDrugs(drugs.map((drug) =>
-      drug.id === selectedDrug.id ? { ...selectedDrug, ...drugInfo } : drug
-    ));
-    setDrugInfo({ id: '', name: '', brandName: '', quantity: '' });
-    handleCloseEdit();
-  };
 
-  const handleRefillDrug = () => {
-    setDrugs(drugs.map((drug) =>
-      drug.id === selectedDrug ? { ...drug, quantity: parseInt(drug.quantity) + parseInt(drugInfo.quantity) } : drug
-    ));
-    setDrugInfo({ id: '', name: '', brandName: '', quantity: '' });
-    handleCloseRefill();
-  };
-
-  const handleRemoveDrug = () => {
-    setDrugs(drugs.filter(drug => drug.id !== selectedDrug));
-    handleCloseRemove();
-  };
-
+ 
 
 
   const totalMedicine = drugs.reduce((acc, drug) => acc + parseInt(drug.quantity), 0);
@@ -183,21 +120,6 @@ const Pharmacy = () => {
     );
   });
 
-  const handleBulkAddDrugs = () => {
-    const newDrugs = bulkDrugs.split('\n').map(line => {
-      const [id, name, brandName, quantity] = line.split(',');
-      return { id, name, brandName, quantity: parseInt(quantity) };
-    });
-    setDrugs([...drugs, ...newDrugs]);
-    setBulkDrugs('');
-    handleCloseBulkAdd();
-  };//adding bulk amount of drug
-
-  const handleBulkRemoveDrugs = () => {
-    setDrugs(drugs.filter(drug => !selectedDrugs.includes(drug.id)));
-    setSelectedDrugs([]);
-    handleCloseBulkRemove();
-  };
   const handleToggleDrug = (id) => {
     setSelectedDrugs((prevSelected) =>
       prevSelected.includes(id) ? prevSelected.filter((drugId) => drugId !== id) : [...prevSelected, id]
@@ -346,16 +268,16 @@ function strTODate(date) {
         </Box>
 
         <Box mt={3}>
-          <Button variant="contained" color="primary" onClick={handleOpenAdd} style={{ marginRight: '8px' }}>
+          <Button variant="contained" color="primary" style={{ marginRight: '8px' }}>
             Add Drug
           </Button>
-          <Button variant="contained" color="secondary" onClick={handleOpenEdit} style={{ marginRight: '8px' }}>
+          <Button variant="contained" color="secondary"  style={{ marginRight: '8px' }}>
             Edit Drug
           </Button>
-          <Button variant="contained" onClick={handleOpenRefill} style={{ marginRight: '8px' }}>
+          <Button variant="contained"  style={{ marginRight: '8px' }}>
             Refill Drug
           </Button>
-          <Button variant="contained" color="error" onClick={handleOpenRemove}>
+          <Button variant="contained" color="error">
             Remove Drug
           </Button>
 
@@ -387,7 +309,7 @@ function strTODate(date) {
         </Box>
 
         {/* Add Drug Dialog */}
-        <Dialog open={openAdd} onClose={handleCloseAdd}>
+        <Dialog >
           <DialogTitle>Add Drug</DialogTitle>
           <Form
             onFinish={
@@ -418,7 +340,6 @@ function strTODate(date) {
                     label="Name"
                     type="text"
                     fullWidth
-                    value={drugInfo.name}
                   />
                 </Form.Item>
 
@@ -447,16 +368,15 @@ function strTODate(date) {
                     label="Quantity"
                     type="number"
                     fullWidth
-                    value={drugInfo.quantity}
                   />
                 </Form.Item>
               </div>
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleCloseAdd} color="primary">
+              <Button  color="primary">
                 Cancel
               </Button>
-              <Button onClick={handleOpenBulkAdd} style={{ marginRight: '8px' }}>
+              <Button  style={{ marginRight: '8px' }}>
                 Bulk Add Drugs
               </Button>
               <LoadingButton LoadingButton
@@ -476,7 +396,7 @@ function strTODate(date) {
         </Dialog>
 
         {/* bulk add drugs */}
-        <Dialog open={openBulkAdd} onClose={handleCloseBulkAdd}>
+        <Dialog >
           <DialogTitle>Bulk Add Drugs</DialogTitle>
           <DialogContent>
             <Typography variant="body1">
@@ -488,15 +408,13 @@ function strTODate(date) {
               multiline
               rows={10}
               fullWidth
-              value={bulkDrugs}
-              onChange={handleBulkChange}
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseBulkAdd} color="primary">
+            <Button  color="primary">
               Cancel
             </Button>
-            <Button onClick={handleBulkAddDrugs} color="primary">
+            <Button color="primary">
               Add Drugs
             </Button>
           </DialogActions>
@@ -504,17 +422,14 @@ function strTODate(date) {
 
 
         {/* Edit Drug Dialog */}
-        <Dialog open={openEdit} onClose={handleCloseEdit}>
+        <Dialog>
           <DialogTitle>Edit Drug</DialogTitle>
           <DialogContent>
             <FormControl fullWidth>
               <InputLabel>Select Drug</InputLabel>
               <Select
-                value={selectedDrug}
                 onChange={(e) => {
                   const selected = drugs.find(drug => drug.id === e.target.value);
-                  setSelectedDrug(selected);
-                  setDrugInfo(selected);
                 }}
               >
                 {drugs.map((drug) => (
@@ -530,8 +445,6 @@ function strTODate(date) {
               label="Name"
               type="text"
               fullWidth
-              value={drugInfo.name}
-              onChange={handleChange}
             />
             <TextField
               margin="dense"
@@ -539,8 +452,6 @@ function strTODate(date) {
               label="Brand Name"
               type="text"
               fullWidth
-              value={drugInfo.brandName}
-              onChange={handleChange}
             />
             <TextField
               margin="dense"
@@ -548,32 +459,27 @@ function strTODate(date) {
               label="Quantity"
               type="number"
               fullWidth
-              value={drugInfo.quantity}
-              onChange={handleChange}
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseEdit} color="primary">
+            <Button  color="primary">
               Cancel
             </Button>
-            <Button onClick={handleEditDrug} color="primary">
+            <Button  color="primary">
               Save
             </Button>
           </DialogActions>
         </Dialog>
 
         {/* Refill Drug Dialog */}
-        <Dialog open={openRefill} onClose={handleCloseRefill}>
+        <Dialog  >
           <DialogTitle>Refill Drug</DialogTitle>
           <DialogContent>
             <FormControl fullWidth>
               <InputLabel>Select Drug</InputLabel>
               <Select
-                value={selectedDrug}
                 onChange={(e) => {
                   const selected = drugs.find(drug => drug.id === e.target.value);
-                  setSelectedDrug(selected.id);
-                  setDrugInfo({ ...selected, quantity: '' });
                 }}
               >
                 {drugs.map((drug) => (
@@ -589,29 +495,27 @@ function strTODate(date) {
               label="Refill Quantity"
               type="number"
               fullWidth
-              value={drugInfo.quantity}
-              onChange={handleChange}
+             
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseRefill} color="primary">
+            <Button color="primary">
               Cancel
             </Button>
-            <Button onClick={handleRefillDrug} color="primary">
+            <Button color="primary">
               Refill
             </Button>
           </DialogActions>
         </Dialog>
 
         {/* Remove Drug Dialog */}
-        <Dialog open={openRemove} onClose={handleCloseRemove}>
+        <Dialog >
           <DialogTitle>Remove Drug</DialogTitle>
           <DialogContent>
             <FormControl fullWidth>
               <InputLabel>Select Drug</InputLabel>
               <Select
-                value={selectedDrug}
-                onChange={(e) => setSelectedDrug(e.target.value)}
+                
               >
                 {drugs.map((drug) => (
                   <MenuItem key={drug.id} value={drug.id}>
@@ -622,20 +526,20 @@ function strTODate(date) {
             </FormControl>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseRemove} color="primary">
+            <Button  color="primary">
               Cancel
             </Button>
-            <Button onClick={handleOpenBulkRemove}>
+            <Button>
               Bulk Remove Drugs
             </Button>
-            <Button variant="contained" onClick={handleRemoveDrug} color="primary">
+            <Button variant="contained"  color="primary">
               Remove
             </Button>
           </DialogActions>
         </Dialog>
 
         {/* {bulk remove drugs} */}
-        <Dialog open={openBulkRemove} onClose={handleCloseBulkRemove}>
+        <Dialog>
           <DialogTitle>Bulk Remove Drugs</DialogTitle>
           <DialogContent>
             <FormGroup>
@@ -654,10 +558,10 @@ function strTODate(date) {
             </FormGroup>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseBulkRemove} color="primary">
+            <Button color="primary">
               Cancel
             </Button>
-            <Button onClick={handleBulkRemoveDrugs} color="primary">
+            <Button  color="primary">
               Remove Drugs
             </Button>
           </DialogActions>

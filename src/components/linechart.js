@@ -104,12 +104,12 @@ const dsd = [{
 ]
 
 
-function generateData(data,x, y, startDate, endDate, timeScale = null) {
+function generateData(data,dataLabel,x, y, startDate, endDate, timeScale = null) {
     if (x == "time") {
-        return (countEntriesbydate(data, startDate, endDate, timeScale, y))
+        return (countEntriesbydate(data, dataLabel,startDate, endDate, timeScale, y))
     }
     else {
-        return (countTotalEntries(data, startDate, endDate, x, y))
+        return (countTotalEntries(data, dataLabel,startDate, endDate, x, y))
 
     }
 
@@ -119,9 +119,9 @@ function generateData(data,x, y, startDate, endDate, timeScale = null) {
 }
 
 
-let set=""
 
-async function fetchdata(){
+
+async function fetchdata(set){
 
 
     if (set=="drug"){
@@ -138,9 +138,10 @@ async function fetchdata(){
 
 function Linechart(props) {
     let rawData=[]
-    set=props.set
     
-    const { data, isLoading, error } = useAsyncData(fetchdata,[props]);
+    const { data, isLoading, error } = useAsyncData(()=>{
+return fetchdata(props.set)
+    },[props]);
 
     
     let xData = [{data:[0]}]
@@ -149,7 +150,7 @@ function Linechart(props) {
 
     rawData=data
    
-    let result = generateData(rawData,props.x, props.y, props.startDate, props.endDate, props.timeScale);
+    let result = generateData(rawData,props.set,props.x, props.y, props.startDate, props.endDate, props.timeScale);
     xData = [{ scaleType: 'band', data: result.x }]
     yData=result.y
 

@@ -1,219 +1,251 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-import ReportProblemIcon from "@mui/icons-material/ReportProblem";
-import DoneIcon from "@mui/icons-material/Done";
-import Chip from "@mui/material/Chip";
-import { styled } from "@mui/material/styles";
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
+import DoneIcon from '@mui/icons-material/Done';
+import Chip from '@mui/material/Chip';
+import { styled } from '@mui/material/styles';
 import { jsx as _jsx } from "react/jsx-runtime";
-import Tooltip from "@mui/material/Tooltip";
-import Box from "@mui/material/Box";
-import InfoIcon from "@mui/icons-material/Info";
+import Tooltip from '@mui/material/Tooltip';
+import Box from '@mui/material/Box';
+import InfoIcon from '@mui/icons-material/Info';
 import { jsxs as _jsxs } from "react/jsx-runtime";
 
-import DataTable from "./DataTable";
 
-const Medicine = /*#__PURE__*/ React.memo(function Medicine(props) {
-  const { value } = props;
+import DataTable from "../components/DataTable";
+import httpRequest from "../components/httpRequest";
+import useAsyncData from "../components/useAsyncData";
+import LoadingSpinners from "../components/loadingSpinners";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
+
+
+
+const Medicine = /*#__PURE__*/React.memo(function Medicine(props) {
+  const {
+    value
+  } = props;
   if (!value) {
     return null;
   }
   const valueStr = value.toString();
-  const tooltip = valueStr.slice(
-    valueStr.indexOf("(") + 1,
-    valueStr.indexOf(")")
-  );
-  const code = valueStr.slice(0, valueStr.indexOf("(")).trim();
-  return /*#__PURE__*/ _jsxs(Box, {
+  const tooltip = valueStr.slice(valueStr.indexOf('(') + 1, valueStr.indexOf(')'));
+  const code = valueStr.slice(0, valueStr.indexOf('(')).trim();
+  return /*#__PURE__*/_jsxs(Box, {
     sx: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between'
     },
-    children: [
-      /*#__PURE__*/ _jsx("span", {
-        children: code,
-      }),
-      /*#__PURE__*/ _jsx(Tooltip, {
-        title: tooltip,
-        children: /*#__PURE__*/ _jsx(InfoIcon, {
-          sx: {
-            color: "#2196f3",
-            alignSelf: "center",
-            ml: "8px",
-          },
-        }),
-      }),
-    ],
+    children: [/*#__PURE__*/_jsx("span", {
+      children: code
+    }), /*#__PURE__*/_jsx(Tooltip, {
+      title: tooltip,
+      children: /*#__PURE__*/_jsx(InfoIcon, {
+        sx: {
+          color: '#2196f3',
+          alignSelf: 'center',
+          ml: '8px'
+        }
+      })
+    })]
   });
 });
 export function renderMedicine(params) {
-  return /*#__PURE__*/ _jsx(Medicine, {
-    value: params.value,
+  return /*#__PURE__*/_jsx(Medicine, {
+    value: params.value
   });
 }
 
-const StyledChip = styled(Chip)(({ theme }) => ({
-  justifyContent: "left",
-  "& .icon": {
-    color: "inherit",
+
+
+
+
+
+const StyledChip = styled(Chip)(({
+  theme
+}) => ({
+  justifyContent: 'left',
+  '& .icon': {
+    color: 'inherit'
   },
-  "&.Yes": {
+  '&.Yes': {
     color: (theme.vars || theme).palette.success.dark,
-    border: `1px solid ${(theme.vars || theme).palette.success.main}`,
+    border: `1px solid ${(theme.vars || theme).palette.success.main}`
   },
-  "&.No": {
+  '&.No': {
     color: (theme.vars || theme).palette.error.dark,
-    border: `1px solid ${(theme.vars || theme).palette.error.main}`,
-  },
+    border: `1px solid ${(theme.vars || theme).palette.error.main}`
+  }
 }));
-const Status = /*#__PURE__*/ React.memo((props) => {
-  const { status } = props;
+const Status = /*#__PURE__*/React.memo(props => {
+  const {
+    status
+  } = props;
   let icon = null;
-  if (status === "No") {
-    icon = /*#__PURE__*/ _jsx(ReportProblemIcon, {
-      className: "icon",
+  if (status === 'No') {
+    icon = /*#__PURE__*/_jsx(ReportProblemIcon, {
+      className: "icon"
     });
-  } else if (status === "Yes") {
-    icon = /*#__PURE__*/ _jsx(DoneIcon, {
-      className: "icon",
+  } else if (status === 'Yes') {
+    icon = /*#__PURE__*/_jsx(DoneIcon, {
+      className: "icon"
     });
   }
   let label = status;
 
-  return /*#__PURE__*/ _jsx(StyledChip, {
+  return /*#__PURE__*/_jsx(StyledChip, {
     className: status,
     icon: icon,
     size: "small",
     label: label,
-    variant: "outlined",
+    variant: "outlined"
   });
 });
 function renderStatus(params) {
   if (params.value == null) {
-    return "";
+    return '';
   }
-  return /*#__PURE__*/ _jsx(Status, {
-    status: params.value,
+  return /*#__PURE__*/_jsx(Status, {
+    status: params.value
   });
 }
 
-function strTODate(date) {
-  return new Date(date);
+
+
+async function GetPaitents() {
+  let atrPaitents = [];
+  const allPaitents = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/patient/allAtrPatients")
+
+  allPaitents.patients.forEach(async paitent => {
+    const today = new Date();
+    const birthDate = new Date(paitent.birthDate)
+    const age = today.getFullYear() - birthDate.getFullYear() - (today.getMonth() < birthDate.getMonth() || (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate()));
+
+
+    atrPaitents.push({
+      _id:paitent._id,id: paitent.atrNumber, fullName:paitent.fullName, age: age, PhoneNumber: paitent.phoneNumber, onTime: "No", Medicine: "cod(codine)",  LastAptDate: paitent.visitDate, NextAptDate: paitent.nextAppointmentDate
+    },
+
+    )
+  });
+
+  return atrPaitents
+
+
 }
 
-function PaitentTable(props) {
-  let rows = [
-    {
-      id: 1,
-      lastName: "Snow",
-      firstName: "Jon",
-      age: 12,
-      PhoneNumber: "0910000000",
-      onTime: "No",
-      Medicine: "cod(codine)",
-      LastAptDate: "10/12/2020",
-      NextAptDate: "10/12/2020",
-    },
-    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 31 },
-    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 31 },
-    { id: 4, lastName: "Stark", firstName: "Arya", age: 11 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: 12 },
-    { id: 6, lastName: "Melisandre", firstName: "null", age: 150 },
-    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-  ];
+
+
+
+
+function strTODate(date) {
+  
+
+  return new Date(date)
+}
+
+function PatientsTable(props) {
+
+  const navigate = useNavigate()
+
+  
+
+  function handleSelect(foundData){
+    console.log(foundData)
+    navigate('/paitentdetail',{state:{foundData:foundData}});
+   }
+
+
+
 
   const columns = [
-    { field: "id", headerName: "ID", minWidth: 90 },
+    { field: 'id', headerName: 'Atr No', minWidth: 90 },
     {
-      field: "firstName",
-      headerName: "First name",
+      field: 'fullName',
+      headerName: 'Full name',
       minWidth: 100,
       flex: 1,
       editable: false,
     },
+   
     {
-      field: "lastName",
-      headerName: "Last name",
-      minWidth: 100,
-      flex: 1,
-      editable: false,
-    },
-    {
-      field: "age",
-      headerName: "Age",
-      type: "number",
-      minWidth: 40,
+      field: 'age',
+      headerName: 'Age',
+      type: 'number',
+      minWidth: 60,
       flex: 1,
       editable: false,
     },
 
+
     {
-      field: "ReasonForLastVisit",
-      headerName: "reason for last visit",
-      sortable: false,
-      flex: 1,
-      minWidth: 150,
-    },
-    {
-      field: "PhoneNumber",
-      headerName: "Phone number",
+      field: 'PhoneNumber',
+      headerName: 'Phone number',
       minWidth: 120,
       flex: 1,
       editable: false,
     },
 
+
+    
     {
-      field: "Medicine",
-      headerName: "Medicine",
-      sortable: false,
-      minWidth: 100,
-      flex: 1,
-      renderCell: renderMedicine,
-    },
-    {
-      field: "onTime",
-      headerName: "ontime",
-      sortable: true,
-      minWidth: 80,
-      flex: 1,
-      renderCell: renderStatus,
-    },
-    {
-      field: "LastAptDate",
+      field: 'LastAptDate',
       type: "date",
-      headerName: "Last apt.date",
+      headerName: 'Last apt.date',
       sortable: true,
-      minWidth: 160,
+      minWidth: 140,
       valueGetter: strTODate,
       flex: 1,
     },
     {
-      field: "NextAptDate",
+      field: 'NextAptDate',
       type: "date",
-      headerName: "Next apt.date",
+      headerName: 'Next apt.date',
       sortable: true,
-      minWidth: 160,
+      minWidth: 140,
       valueGetter: strTODate,
       flex: 1,
     },
   ];
 
-  let data = { columns: columns, rows: rows };
+
+
+
+
+
+  let tableData = { "columns": columns, "rows": props.data }
+
+ 
+
 
   return (
     <div className={props.className} style={props.style}>
-      <DataTable tableProps={{
-          checkboxSelection: false,
-          disableRowSelectionOnClick: true,
-          disableDensitySelector: true,
-          disableMultipleRowSelection: true,
-          disableColumnSelector: true
-        }}
-      data={data} pageSize={5} className={" w-full h-full"} />
+     
+      <DataTable tableProps={{ checkboxSelection:true,
+        disableRowSelectionOnClick:true,
+        disableDensitySelector:true,
+        disableMultipleRowSelection:true,
+        disableColumnSelector:true}} onSelect={handleSelect}  data={tableData} pageSize={5}className={" w-full h-full"} />
+
+
+      <ToastContainer
+                    position="top-center"
+                    autoClose={2000}
+                    limit={2}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
     </div>
   );
 }
 
-export default PaitentTable;
+export default PatientsTable;
