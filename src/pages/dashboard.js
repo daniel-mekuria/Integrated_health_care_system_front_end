@@ -1,31 +1,80 @@
 import React from "react";
-import Line_chart from "../components/Line_Chart";
-import Pie from "../components/Pie";
-import Navigation from "../components/Navigation";
-import Header from "../components/Header";
-import Buttons_Dashboard from "../components/Buttons_Dashboard";
+import Pie from "../components/pieChartDash";
+
 import PaitentTable from "../components/PaitentsTable";
+import Line_Chart from "../components/lineChartDash";
+import useAsyncData from "../components/useAsyncData";
+import LoadingSpinners from "../components/loadingSpinners";
+import httpRequest from "../components/httpRequest";
+
+
+
+async function GetPaitents() {
+  const allPaitents = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/patient/allAtrPatients")
+
+  allPaitents.patients.forEach(async paitent => {
+    const today = new Date();
+    const birthDate = new Date(paitent.birthDate)
+    const age = today.getFullYear() - birthDate.getFullYear() - (today.getMonth() < birthDate.getMonth() || (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate()));
+
+paitent.id=paitent.atrNumber
+paitent.age=age
+
+paitent.LastAptDate=paitent.visitDate
+paitent.NextAptDate= paitent.nextAppointmentDate
+   
+  });
+
+  return allPaitents.patients
+
+
+}
+
 
 function Dashboard(props) {
-  return (
-    <div  className={props.className} style={props.style}>
 
-    <div className="flex h-screen">
-      <div className="flex flex-col justify-start flex-1 ml-0 ">
-        {/* Adjust the value as needed */}
-        <div className="flex flex-row mt-2 gap-2 h-[calc(100vh - 100px)]">
-          {" "}
-          {/* Adjust the value as needed */}
-          <Line_chart className="flex-1 h-[300px]" />{" "}
-          {/* Adjust the value as needed */}
-          <Pie className="flex-1 h-full" /> {/* Adjust the value as needed */}
+
+  const { data, isLoading, error } = useAsyncData(GetPaitents,[]);
+
+
+
+  if (isLoading || error) {
+    return (
+      <LoadingSpinners size={3} className={"w-full h-full"} />
+    )
+  }
+  return (
+    <div className={props.className} style={props.style}>
+
+      <div className="flex flex-col w-full h-full space-y-2">
+
+          
+            <div className="grid h-[30%] w-full grid-cols-2 ">
+              <Line_Chart data={data}/>
+              <Pie  data={data} />
+            </div>
+
+        <div className=" h-[65%]">
+          <PaitentTable data={data} />
         </div>
-        <PaitentTable className="w-full h-40" />
-        {/* Adjust the value as needed */}
+
       </div>
-    </div>
     </div>
   );
 }
 
 export default Dashboard;
+
+
+
+
+
+
+
+
+
+
+
+
+
+  

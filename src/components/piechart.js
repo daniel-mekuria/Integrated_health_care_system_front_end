@@ -103,21 +103,13 @@ const dsd = [{
 }
 ]
 
-function totalsum(arr) {
-    let sum = 0;
-    for(let i = 0; i < arr.length; i++) {
-        sum += arr[i];
-    }
-    return sum;
-}
-function generateData(data,x, y, startDate, endDate, timeScale = null) {
-    if (x == "time") {
-        return (countEntriesbydate(data, startDate, endDate, timeScale, y))
-    }
-    else {
-        return (countTotalEntries(data, startDate, endDate, x, y))
 
-    }
+function generateData(data,x, y, startDate, endDate, timeScale = null) {
+    console.log(countTotalEntries(data, set,startDate, endDate, x, y))
+    return (countTotalEntries(data, set,startDate, endDate, x, y))
+
+
+    
 
 
 
@@ -162,12 +154,11 @@ function Piechart(props) {
     yData = [
         {
             data: yData.map((x)=>{
-return({ value:totalsum(x.data) , label: x.label })
+return({ value:(x.data) , label: x.label })
             })
         },
     ]
 
-    console.log(yData)
 }
 
 
