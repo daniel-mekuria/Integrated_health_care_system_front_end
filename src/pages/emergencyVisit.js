@@ -75,7 +75,7 @@ async function getDrugs() {
 
 }
 
-const NewVIsit = (props) => {
+const EmergencyVisit = (props) => {
   const navigate = useNavigate()
   const [form] = Form.useForm();
   const [submitLoading, setSubmitLoading] = useState(false)
@@ -105,7 +105,7 @@ const NewVIsit = (props) => {
 
   if (isLoading || error) {
     return (
-      <LoadingSpinners size={3} className={"w-full h-full"} />
+      <div></div>
     )
   }
 
@@ -117,7 +117,7 @@ const NewVIsit = (props) => {
     className="!w-[70vw]"
     closable={false}
     title={"Emergency dispensing"}
-    open={props.isOpen||true}
+    open={props.isOpen}
     footer={
 
       <div className='flex justify-end space-x-3'>
@@ -242,4 +242,4 @@ const NewVIsit = (props) => {
   );
 };
 
-export default NewVIsit;
+export default EmergencyVisit;
