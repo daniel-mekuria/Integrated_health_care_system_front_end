@@ -19,10 +19,15 @@ import { Form, Modal, Popconfirm, Select } from "antd";
 
 
 
-async function verifyUser() {
+async function verifyUser(x,id) {
 
-  const drugs = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/drug/getAllDrugs")
-  return drugs.drugs
+  let user=x
+
+
+  user.userId=id
+  
+  const res = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/user/veryfyUser",user,"post")
+return res
 
 
 
@@ -31,7 +36,21 @@ async function verifyUser() {
 
 
 }
+async function rjectUser(id) {
+  let user={}
 
+
+  user.userId=id
+  
+  const res = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/user/rejectUser",user,"post")
+return res
+
+
+
+
+
+
+}
 const VerifyUser = (props) => {
   let data = props.data
   const navigate = useNavigate()
@@ -77,7 +96,21 @@ const VerifyUser = (props) => {
                 okButtonProps={{ danger: true }}
                 title={"are you sure"}
                 okText={"Reject"}
-                onConfirm={() => {
+                onConfirm={async () => {
+                  setAddLoading(true)
+                  const res = await rjectUser(data.id)
+                  setAddLoading(false)
+                  if (res.sucess) {
+                    toast.success("Rejected successfully");
+                    props.setIsOpen(false)
+                    setTimeout(() => {
+                      props.update()
+                    }, 2000);
+                  }
+                  else {
+                    toast.error(res.message);
+  
+                  }
 
                 }}
               >
@@ -140,10 +173,10 @@ const VerifyUser = (props) => {
 
               async (x) => {
                 setAddLoading(true)
-                const res = await verifyUser()
+                const res = await verifyUser(x,data.id)
                 setAddLoading(false)
                 if (res.sucess) {
-                  toast.success("Added successfully");
+                  toast.success("Approved successfully");
                   props.setIsOpen(false)
                   setTimeout(() => {
                     props.update()
@@ -161,7 +194,7 @@ const VerifyUser = (props) => {
             <div className='flex flex-col '>
 
               <Form.Item
-                name="Role"
+                name="role"
                 rules={[{ required: true }]}
                 initialValue={data.role}
 

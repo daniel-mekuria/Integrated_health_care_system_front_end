@@ -13,6 +13,23 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { LoadingButton } from "@mui/lab";
 import { Form } from "antd";
+import { Password } from "@mui/icons-material";
+
+
+async function handleLogin(x) {
+
+  const res = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/user/login", x, "post")
+
+  return res
+}
+async function handleSignUp(x) {
+  x.roleName = "Staff"
+
+
+  const res = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/user/signup", x, "post")
+
+  return res
+}
 
 
 const Login = (props) => {
@@ -20,6 +37,8 @@ const Login = (props) => {
 
   const [isLoginvisible, setIsLoginvisible] = useState(true);
   const [loginLoading, setLoginLoading] = useState(false);
+  const [password, setPassword] = useState(null);
+  const [signUpForm] = Form.useForm()
 
 
   return (
@@ -51,186 +70,251 @@ const Login = (props) => {
 
 
           </div>
-          <div className="relative overflow-hidden w-96 h-80">
+          <div className="relative overflow-scroll scrollbar-hide w-96 h-[52vh]">
             <div className={`absolute w-full h-full transition-all  ease-in-out ${isLoginvisible ? "translate-x-0 duration-700" : "-translate-x-full duration-500"}`}   >
-                <Form className="flex flex-col p-3 " onFinish={async (event) => {
-                  console.log(event)
-                  setLoginLoading(true)
-                  console.log(process.env.REACT_APP_BASE_URL)
-                  const result = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/user/login", {
-                    "username": event.username,
-                    "password": event.password,
-                  }, "post")
-                  if (result !== null) {
-
-                    SetCookie("accessToken", result.accessToken);
-                    SetCookie("refreshToken", result.refreshToken);
-
-                    SetCookie("user", JSON.stringify({
-                      "id": result.id,
-                      "name": result.targetName,
-                      "role": result.role,
-                    }));
-
-                    navigate("/")
-                    setLoginLoading(false)
+              <Form className="flex flex-col p-3 " onFinish={async (x) => {
+                setLoginLoading(true)
 
 
-                  }
-                  else {
+                setLoginLoading(true)
+                const res = await handleLogin(x)
+                setLoginLoading(false)
+                if (res.sucess) {
+                  toast.success("Welcome");
+                  if (x.password === "password")
+                    SetCookie("passwordReset", "true");
+                  else
+                    SetCookie("passwordReset", "false");
 
 
-                    console.log("err")
-                    toast.error("Wrong credentials");
-                    setLoginLoading(false)
-
-                  }
 
 
-                }} >
-                  <Form.Item
-                    name="username"
-                    rules={[{ required: true }]}
+                  SetCookie("accessToken", res.accessToken);
+                  SetCookie("refreshToken", res.refreshToken);
+
+                  SetCookie("user", JSON.stringify({
+                    "id": res.id,
+                    "name": res.targetName,
+                    "role": res.role,
+                  }));
+
+                  navigate("/")
+                  setLoginLoading(false)
+
+
+                }
+                else {
+                  toast.error(res.message);
+
+                }
+
+
+
+              }} >
+                <Form.Item
+                  name="username"
+                  rules={[{ required: true }]}
+
+                >
+                  <TextField
+                    className="w-[100%]"
+
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <PersonIcon />
+                        </InputAdornment>
+                      )
+                    }}
+                    placeholder="Username"
+                    label="Username"
+
+                  />
+
+                </Form.Item>
+                <Form.Item
+                  name="password"
+                  rules={[{ required: true }]}
+
+                >
+
+                  <TextField
+                    className="w-[100%]"
+
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <LockIcon />
+                        </InputAdornment>
+                      )
+                    }}
+                    placeholder="Password"
+                    label="Password"
+                    type="password"
+
+                  />
+                </Form.Item>
+                <div className="flex self-center justify-center py-7">
+                  <LoadingButton
+                    loading={loginLoading}
+                    variant="contained"
+                    className="w-40 "
+                    type="submit"
 
                   >
-                    <TextField
-                      className="w-[100%]"
 
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <PersonIcon />
-                          </InputAdornment>
-                        )
-                      }}
-                      placeholder="Username"
-                      label="Username"
+                    <span>Login</span>
+                  </LoadingButton>
+                </div>
+              </Form>
 
-                    />
-
-                  </Form.Item>
-                  <Form.Item
-                    name="password"
-                    rules={[{ required: true }]}
-
-                  >
-
-                    <TextField
-                      className="w-[100%]"
-
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <LockIcon />
-                          </InputAdornment>
-                        )
-                      }}
-                      placeholder="Password"
-                      label="Password"
-                      type="password"
-
-                    />
-                  </Form.Item>
-                  <div className="flex self-center justify-center py-7">
-                    <LoadingButton
-                      loading={loginLoading}
-                      variant="contained"
-                      className="w-40 "
-                      type="submit"
-
-                    >
-
-                      <span>Login</span>
-                    </LoadingButton>
-                  </div>
-                </Form>
-
-              </div>
+            </div>
 
 
             <div className={`absolute w-full h-full transition-all  ease-in-out ${isLoginvisible ? "translate-x-full duration-500" : "-translate-x-0 duration-700 "}`}  >
 
 
 
-              <Form className="flex flex-col p-3 ">
+              <Form className="flex flex-col p-3 "
+                form={signUpForm}
+                onFinish={
+                  async (x) => {
+                    setLoginLoading(true)
 
-                  <Form.Item
-                    name="username"
-                    rules={[{ required: true }]}
-
-                  >
-
-                    <TextField
-                      className="w-[100%]"
-
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <PersonIcon />
-                          </InputAdornment>
-                        )
-                      }}
-                      placeholder="Username"
-                      label="Username"
+                    const res = await handleSignUp(x)
+                    setLoginLoading(false)
+                    if (res.sucess) {
+                      toast.success("Registration is pending");
+                      setLoginLoading(false)
+                      signUpForm.resetFields()
 
 
+                    }
+                    else {
+                      toast.error(res.message);
 
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    name="password"
-                    rules={[{ required: true }]}
-                  >
-                    <TextField
-                      className="w-[100%]"
-
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <LockIcon />
-                          </InputAdornment>
-                        )
-                      }}
-                      placeholder="Password"
-                      label="Password"
+                    }
 
 
-                      type="password"
 
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    name="repeatPassword"
-                    rules={[{ required: true }]}
-                  >
-                    <TextField
-                      className="w-[100%]"
+                  }
+                }
+              >
 
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <LockIcon />
-                          </InputAdornment>
-                        )
-                      }}
-                      placeholder="Repeat password"
-                      label="Repeat password"
+                <Form.Item
+                  name="name"
+                  rules={[{ required: true }]}
+
+                >
+
+                  <TextField
+                    className="w-[100%]"
+
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <PersonIcon />
+                        </InputAdornment>
+                      )
+                    }}
+                    placeholder="Full name"
+                    label="Full name"
 
 
-                      type="password"
 
-                    />
-                  </Form.Item>
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="username"
+                  rules={[{ required: true }]}
+
+                >
+
+                  <TextField
+                    className="w-[100%]"
+
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <PersonIcon />
+                        </InputAdornment>
+                      )
+                    }}
+                    placeholder="Username"
+                    label="Username"
+
+
+
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="password"
+                  rules={[{ required: true }]}
+                >
+                  <TextField
+                    className="w-[100%]"
+                    onChange={(x) => {
+                      setPassword(x.target.value)
+                    }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <LockIcon />
+                        </InputAdornment>
+                      )
+                    }}
+                    placeholder="Password"
+                    label="Password"
+
+
+                    type="password"
+
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="repeatPassword"
+
+                  rules={[{
+                    message: "Passwords don't match",
+                    validator: (_, value) => {
+                      if (value === password) {
+                        return Promise.resolve(); // Validation passed
+                      } else {
+                        return Promise.reject('Some custom error message'); // Validation failed
+                      }
+                    },
+                  },]}
+                >
+                  <TextField
+                    className="w-[100%]"
+
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <LockIcon />
+                        </InputAdornment>
+                      )
+                    }}
+                    placeholder="Repeat password"
+                    label="Repeat password"
+
+
+                    type="password"
+
+                  />
+                </Form.Item>
 
                 <div className="flex self-center justify-center py-7">
-                  <Button
+                  <LoadingButton
+                    loading={loginLoading}
                     variant="contained"
                     className="w-40 "
                     type="submit"
+
                   >
 
-                    Register
-                  </Button>
+                    <span>Register</span>
+                  </LoadingButton>
                 </div>
               </Form>
 

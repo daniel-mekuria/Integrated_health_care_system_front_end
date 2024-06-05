@@ -19,10 +19,21 @@ import { Form, Modal, Popconfirm, Select } from "antd";
 
 
 
-async function updateUser() {
+async function updateUser(x,id) {
 
-  const drugs = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/drug/getAllDrugs")
-  return drugs.drugs
+
+    let user= x
+    user.userId=id
+    if (user.role==="Deactivated")
+        {
+            const res = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/user/unVerifyUser",user,"post")
+  return res
+
+        }
+  else{
+    const res = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/user/updateUserInfo",user,"put")
+  return res
+  }
 
 
 
@@ -32,11 +43,29 @@ async function updateUser() {
 
 }
 
+async function resetUser(id) {
+    let user={}
+
+
+    user.userId=id
+    
+    const res = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/user/resetPassword",user,"post")
+  return res
+
+
+
+
+
+
+}
+
+
+
 const UpdateUser = (props) => {
   let data = props.data
   const navigate = useNavigate()
-  const [submitLoading, setSubmitLoading] = useState(false)
   const [addLoading, setAddLoading] = useState(false)
+  const [resetLoading, setResetLoading] = useState(false)
 
 
   const editFormRef = useRef()
@@ -70,15 +99,29 @@ const UpdateUser = (props) => {
 
               className='!rounded-xl' variant='outlined' color='error'>Cancel</Button>
 
-{data.role==="Staff"||userRole==="SuperAdmin"?
+{data.role==="Staff"||(userRole==="SuperAdmin"&&data.role!=="SuperAdmin")?
     <>
             <Popconfirm
             
             okButtonProps={{danger:true}}
             title={"are you sure"}
             okText={"Reset"}
-            onConfirm={()=>{
-              
+            onConfirm={async ()=>{
+
+                setAddLoading(true)
+                const res = await resetUser(data.id)
+                setAddLoading(false)
+                if (res.sucess) {
+                  toast.success("Password reset successfully");
+                  props.setIsOpen(false)
+                  setTimeout(() => {
+                    props.update()
+                  }, 2000);
+                }
+                else {
+                  toast.error(res.message);
+
+                }
             }}
             >
               <LoadingButton
@@ -142,10 +185,10 @@ const UpdateUser = (props) => {
 
               async (x) => {
                 setAddLoading(true)
-                const res = await updateUser()
+                const res = await updateUser(x,data.id)
                 setAddLoading(false)
                 if (res.sucess) {
-                  toast.success("Added successfully");
+                  toast.success("updated successfully");
                   props.setIsOpen(false)
                   setTimeout(() => {
                     props.update()
@@ -163,7 +206,7 @@ const UpdateUser = (props) => {
             <div className='flex flex-col '>
 
               <Form.Item
-                name="Role"
+                name="role"
                 rules={[{ required: true }]}
                 initialValue={data.role}
 
@@ -172,7 +215,7 @@ const UpdateUser = (props) => {
                 <Select
                   size="large"
                   placeholder={"Role"}
-                  disabled={!(data.role==="Staff"||userRole==="SuperAdmin")}
+                  disabled={!(data.role==="Staff"||(userRole==="SuperAdmin"&&data.role!=="SuperAdmin"))}
                   options={[
                     {
                       value: 'Admin',

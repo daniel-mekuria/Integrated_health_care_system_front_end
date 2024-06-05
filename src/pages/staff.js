@@ -14,6 +14,8 @@ import UpComingAppointments from "../components/upcomingAppointments";
 import MissedAppointments from "../components/missedAppointments";
 import Users from "../components/users";
 import PendingUsers from "../components/pendingUsers";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -120,6 +122,19 @@ function runUpdate(){
       <div className="p-4">
         <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
       </div>
+      
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        limit={2}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   )
 }

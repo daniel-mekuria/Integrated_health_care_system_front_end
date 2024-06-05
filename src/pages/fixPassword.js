@@ -31,7 +31,7 @@ async function handleChange(x) {
   x.oldPassword="password"
   
 
-  const res = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/user/changePassword")
+  const res = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/user/changePassword",x,"post")
   return res
 
 
@@ -42,7 +42,7 @@ async function handleChange(x) {
 
 }
 
-const UpdateUser = (props) => {
+const FixPassword = (props) => {
   const navigate = useNavigate()
   const [submitLoading, setSubmitLoading] = useState(false)
   const [password, setPassword] = useState(null)
@@ -189,4 +189,4 @@ const UpdateUser = (props) => {
   );
 };
 
-export default UpdateUser;
+export default FixPassword;
