@@ -37,6 +37,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import dayjs from 'dayjs';
 import EmergencyVisit from './emergencyVisit';
+import EmergencyHistory from '../components/emergencyHistory';
 
 
 
@@ -45,6 +46,7 @@ async function getPharmacy() {
   totaldrugs = totaldrugs.totalAmount
 
   let drugs = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/drug/getAllDrugs")
+  const allvisits = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/emergency/AllEmergencyPatients" )
 
 
   drugs = drugs.drugs
@@ -77,7 +79,7 @@ async function getPharmacy() {
 
   })
 
-  return { drugs: drugs, batches: batchesArray, totaldrugs: totaldrugs }
+  return { emergencyCount:allvisits.emergency.length,drugs: drugs, batches: batchesArray, totaldrugs: totaldrugs }
 
 
 }
@@ -293,7 +295,7 @@ const PharmacyMain = (props) => {
         <Card className='w-[30%]'>
           <CardContent>
             <Typography variant="h5" component="div" fontWeight="bold" color="textPrimary">
-              Total Drugs Dispensed
+              Total Drugs Dispensed this month
             </Typography>
             <Typography variant="h2" component="div" fontWeight="bold" color="textPrimary">
               {props.totaldrugs}
@@ -1303,6 +1305,7 @@ function Pharmacy(props) {
 
 
   const [expiringCount, setExpiringCount] = useState(0)
+  const [emergencyCount, setEmergencyCount] = useState(0)
   const [update, setupdate] = useState(false);
   const [drugs, setDrugs] = useState(false);
 function runUpdate(){
@@ -1332,6 +1335,12 @@ setupdate(!update)
       children: <ExpiredBatches data={drugs.expiring} />
       ,
     },
+    {
+      key: '4',
+      label: <Badge color="orange" showZero count={emergencyCount} offset={[10, 0]}>Emergency dispensed</Badge>,
+      children: < EmergencyHistory setCount={setEmergencyCount} />
+      ,
+    },
 
   ];
 
@@ -1344,6 +1353,8 @@ setupdate(!update)
     setExpiringCount(Expiringdrug.length)
     result.expiring = Expiringdrug
     setDrugs(result)
+    setEmergencyCount(result.emergencyCount)
+
   }, [update]);
 
   if (isLoading || error) {

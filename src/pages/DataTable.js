@@ -103,14 +103,10 @@ function DataTable(props) {
           onRowSelectionModelChange={(ids) => {
             const selectedIDs = new Set(ids);
             let foundData = rows.find(item => item.id === ids[0]);
-            
             if (props.onSelect)
               props.onSelect(foundData)
 
-            
-
           }}
-          
           checkboxSelection={props.tableProps.checkboxSelection}
           disableRowSelectionOnClick={props.tableProps.disableRowSelectionOnClick}
           disableDensitySelector={props.tableProps.disableDensitySelector}
