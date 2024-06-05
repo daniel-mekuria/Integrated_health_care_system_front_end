@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 
 import httpRequest from "../components/httpRequest";
@@ -13,7 +13,8 @@ import { Tabs } from 'antd';
 import ViewHistory from "../components/visitHistory";
 import NewVIsit from "../components/newVisit";
 
-
+import { GlobalContext } from "../globalContext"; 
+import { GetCookie } from "../components/cookies";
 
 
 
@@ -104,10 +105,11 @@ function PersonalDetail(props) {
 function PaitentDetail(props) {
 
 
-  let location = useLocation();
-  let foundData= location.state.foundData
-  console.log(foundData)
-  let atrNo = foundData.id;
+const navigate= useNavigate()
+  if (!GetCookie("patient"))
+  navigate("/")
+const user = JSON.parse(GetCookie("patient"))
+  let atrNo = user.id;
   
 
   
@@ -121,12 +123,12 @@ function PaitentDetail(props) {
     {
       key: '2',
       label: 'History',
-      children: <ViewHistory  paitent={foundData} />,
+      children: <ViewHistory  paitent={user} />,
     },
     {
       key: '3',
       label: 'New visit',
-      children: <NewVIsit paitent={foundData} />,
+      children: <NewVIsit paitent={user} />,
     },
   ];
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import DoneIcon from '@mui/icons-material/Done';
@@ -19,6 +19,8 @@ import { useNavigate } from "react-router-dom";
 import AddPaitent from "./addpaitent";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { GlobalContext } from "../globalContext";
+import { SetCookie } from "../components/cookies";
 
 
 
@@ -150,10 +152,12 @@ function strTODate(date) {
 }
 
 function ViewPaitents(props) {
+  
 
   const navigate = useNavigate()
   const [isAddModalOpen,setIsAddModalOpen] =useState(false)
   const [update,setUpdate] =useState(false)
+
 
    async function saveNew (){
      toast.success(" Registered succesfuly");
@@ -165,8 +169,8 @@ function ViewPaitents(props) {
   }
 
   function handleSelect(foundData){
-    console.log(foundData)
-    navigate('/paitentdetail',{state:{foundData:foundData}});
+    SetCookie("patient",JSON.stringify(foundData))
+    navigate('/paitentdetail');
    }
 
   const { data, isLoading, error } = useAsyncData(GetPaitents,[update]);

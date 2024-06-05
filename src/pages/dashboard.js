@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Pie from "../components/pieChartDash";
 
 import PaitentTable from "../components/PaitentsTable";
@@ -6,6 +6,8 @@ import Line_Chart from "../components/lineChartDash";
 import useAsyncData from "../components/useAsyncData";
 import LoadingSpinners from "../components/loadingSpinners";
 import httpRequest from "../components/httpRequest";
+import { GetCookie } from "../components/cookies";
+import FixPassword from "./fixPassword";
 
 
 
@@ -35,6 +37,12 @@ function Dashboard(props) {
 
 
   const { data, isLoading, error } = useAsyncData(GetPaitents,[]);
+  const [isFixModalOpen, setIsFixModalOpen]= useState(
+
+    GetCookie("passwordReset")?JSON.parse(GetCookie("passwordReset")):false
+
+    
+  )
 
 
 
@@ -45,6 +53,8 @@ function Dashboard(props) {
   }
   return (
     <div className={props.className} style={props.style}>
+
+<FixPassword isOpen={isFixModalOpen} setIsOpen={setIsFixModalOpen}  />
 
       <div className="flex flex-col w-full h-full space-y-2">
 

@@ -24,11 +24,19 @@ import Test from "./pages/test";
 import ExportForm from "./components/exportForm";
 import BedManagement from "./pages/bedManagment";
 import Staff from "./pages/staff";
+import { GlobalContext } from "./globalContext";
+
 
 
 const { Content, Sider } = Layout;
 
 const App = () => {
+  const [state, setState] = useState({});
+  function updateState(x){
+    let newState={...x,...state}
+    setState(newState)
+  }
+
  
   const theme = createTheme({
     palette: {
@@ -60,11 +68,15 @@ const App = () => {
       },
     }}
   >
+      <GlobalContext.Provider value={{ state, updateState }}>
 
       <Router>
-        
+
       <App_/>
+
       </Router>
+      </GlobalContext.Provider>
+
       <ToastContainer
 position="top-center"
 autoClose={2000}

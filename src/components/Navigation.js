@@ -15,11 +15,11 @@ import {
 import PersonIcon from '@mui/icons-material/Person'; import Header from "./Header";
 import { GetCookie, RemoveCookie, SetCookie } from "./cookies";
 import { Button, Divider, Menu } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Navigation = () => {
   const navigate = useNavigate()
-
+const location= useLocation()
   const user = GetCookie("user") ? JSON.parse(GetCookie("user")) : { "name": null }
   return (
     <div className="h-full py-0 mx-2 mt-0 font-sans text-black w-60">
@@ -32,7 +32,7 @@ const Navigation = () => {
 
             navigate('/' + x.key)
           }}
-          defaultSelectedKeys={['']}
+          defaultSelectedKeys={[location.pathname.slice(1)]}
           items={[
 
             {
