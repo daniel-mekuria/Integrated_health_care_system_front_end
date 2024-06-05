@@ -37,19 +37,18 @@ function convertStringToArray(str) {
     return item !== '';
   });
 }
-async function addVisit(values, patientId, userId) {
+async function addVisit(values, userId) {
 
 
   console.log(values)
 
   let newVisit = { ...values }
   newVisit.visitDate = values.visitDate ? values.visitDate : dayjs().format("DD / MMM / YYYY")
-  newVisit.patientId = patientId
   newVisit.userId = userId
   if (newVisit.otherDrug)
     values.otherDrug = convertStringToArray(values.otherDrug)
 
-  const response = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/visit/createVisitHistory", newVisit, "post")
+  const response = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/emergency/AddEmergencyPatient", newVisit, "post")
   return response
 
 
@@ -85,7 +84,7 @@ const EmergencyVisit = (props) => {
   const onFinish = async (values) => {
     setSubmitLoading(true)
 
-    let res = await addVisit(values, "1", userId)
+    let res = await addVisit(values, userId)
     setSubmitLoading(false)
 
     if (res.sucess) {
@@ -94,6 +93,10 @@ const EmergencyVisit = (props) => {
     }
     else {
       toast.error(res.message)
+      setTimeout(() => {
+        // form.resetFields()
+        props.setIsOpen(false)
+      }, 2000);
     }
 
 
@@ -124,6 +127,8 @@ const EmergencyVisit = (props) => {
 
 
         <Button onClick={() => {
+          form.resetFields()
+          
           props.setIsOpen(false)
         }}
 
@@ -133,7 +138,7 @@ const EmergencyVisit = (props) => {
 
 
         <LoadingButton
-          loading={addLoading}
+          loading={submitLoading}
           variant="contained"
           className="w-40 "
 
@@ -198,7 +203,7 @@ const EmergencyVisit = (props) => {
 
             </Form.Item>
             <Form.Item
-              name="healthFacilityAdress"
+              name="patientRegularHospital"
               rules={[{ required: true }]}
 
 

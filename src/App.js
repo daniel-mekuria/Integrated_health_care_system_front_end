@@ -8,7 +8,6 @@ import ViewPaitents from "./pages/viewPaitents";
 import Navigation from "./components/Navigation";
 import Login from "./pages/login";
 import Dashboard from "./pages/dashboard";
-import Emergency_Drug_Dispensal from "./pages/Emergency_Drug_Dispensal";
 import Analytics from "./pages/analytics";
 import { GetCookie } from "./components/cookies";
 import AddPaitent from "./pages/addpaitent";
@@ -24,6 +23,7 @@ import Pharmacy from "./pages/pharmacy";
 import Test from "./pages/test";
 import ExportForm from "./components/exportForm";
 import BedManagement from "./pages/bedManagment";
+import Staff from "./pages/staff";
 
 
 const { Content, Sider } = Layout;
@@ -153,6 +153,10 @@ console.log(x)
                   <Route
                     path="/test"
                     element={<Test />}
+                  />
+                  <Route
+                    path="/staff"
+                    element={<Staff />}
                   />
                   ;
                   <Route

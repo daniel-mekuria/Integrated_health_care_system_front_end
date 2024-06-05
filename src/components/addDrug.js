@@ -10,7 +10,7 @@ import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import ButtonBase from '@mui/material/ButtonBase';
 import InputBase from '@mui/material/InputBase';
 import Box from '@mui/material/Box';
-import { Badge, Button, Form } from 'antd';
+import { Badge, Button, Form, InputNumber } from 'antd';
 import { TextField } from '@mui/material';
 import { Add } from '@mui/icons-material';
 
@@ -71,21 +71,20 @@ const StyledPopper = styled(Popper)(({ theme }) => ({
 const StyledInput = styled(InputBase)(({ theme }) => ({
     padding: 10,
     width: '100%',
-    borderBottom: `1px solid ${theme.palette.mode === 'light' ? '#eaecef' : '#30363d'
-        }`,
+   
     '& input': {
         borderRadius: 4,
         backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#0d1117',
         padding: 8,
         transition: theme.transitions.create(['border-color', 'box-shadow']),
-        border: `1px solid ${theme.palette.mode === 'light' ? '#eaecef' : '#30363d'}`,
+        border: `1px solid ${theme.palette.mode === 'light' ? '#00A86B' : '#30363d'}`,
         fontSize: 14,
         '&:focus': {
             boxShadow: `0px 0px 0px 3px ${theme.palette.mode === 'light'
-                ? 'rgba(3, 102, 214, 0.3)'
+                ? 'rgba(0,168,107, 0.3)'
                 : 'rgb(12, 45, 107)'
                 }`,
-            borderColor: theme.palette.mode === 'light' ? '#0366d6' : '#388bfd',
+            borderColor: theme.palette.mode === 'light' ? '#00A86B' : '#388bfd',
         },
     },
 }));
@@ -98,7 +97,7 @@ const StyledButton = styled(ButtonBase)(({ theme }) => ({
     color: theme.palette.mode === 'light' ? '#586069' : '#8b949e',
     fontWeight: 600,
     '&:hover,&:focus': {
-        color: theme.palette.mode === 'light' ? '#0366d6' : '#58a6ff',
+        color: theme.palette.mode === 'light' ? '#00A86B' : '#58a6ff',
     },
     '& span': {
         width: '100%',
@@ -111,6 +110,15 @@ const StyledButton = styled(ButtonBase)(({ theme }) => ({
 
 export default function AddDrug({ value, onChange, options }) {
     let labels = options
+    labels.map((label)=>{
+let quantity=0
+label.batch.map((batch)=>{
+    quantity+=batch.quantity
+})
+label.quantity=quantity
+
+
+    })
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [drugs, setdrugs] = React.useState([]);
     const [pendingdrugs, setPendingdrugs] = React.useState(null);
@@ -175,12 +183,12 @@ export default function AddDrug({ value, onChange, options }) {
     return (
         <div className="p-2 overflow-hidden border rounded-lg max-h-[11rem] w-fit ">
             <Box sx={{ width: 221, fontSize: 13 }}>
-            <Badge color="green"  className='w-full'  count={drugs.length} offset={[-30,8]}>
+                <Badge color="green" className='w-full' count={drugs.length} offset={[-30, 8]}>
 
-                <StyledButton disableRipple aria-describedby={id} onClick={handleClick}>
-                    <span>Drugs</span> 
-                    <Add />
-                </StyledButton>
+                    <StyledButton disableRipple aria-describedby={id} onClick={handleClick}>
+                        <span>Drugs</span>
+                        <Add />
+                    </StyledButton>
                 </Badge>
                 <div className="p-2 overflow-scroll scroll-smooth max-h-40 scrollbar-hide">
 
@@ -279,7 +287,7 @@ export default function AddDrug({ value, onChange, options }) {
 
                                     let newDrug = pendingdrugs
                                     newDrug.dose = drugss.dose
-                                    
+
                                     newDrug.amount = drugss.amount
                                     setPendingdrugs(newDrug)
                                     handleAdd()
@@ -292,7 +300,13 @@ export default function AddDrug({ value, onChange, options }) {
 
 
                                 >
-                                    <TextField className='w-[100%]' size='small' label="Dose" placeholder='Dosage in mg' type='number' />
+                                    <label className='flex flex-col'>
+                                        Dose   
+                                        <InputNumber disabled={!pendingdrugs} onChange={()=>{
+                                        }} className='w-full' placeholder='Dosage in mg' min={0} />
+
+                                    </label>
+
                                 </Form.Item>
                                 <Form.Item
                                     name="amount"
@@ -300,7 +314,12 @@ export default function AddDrug({ value, onChange, options }) {
 
 
                                 >
-                                    <TextField className='w-[100%]' size='small' label="Amount" placeholder='Number of pills/injections' type='number' />
+                                    <label className='flex flex-col'>
+                                    Amount    
+                                        <InputNumber  disabled={!pendingdrugs} max={pendingdrugs?pendingdrugs.quantity:2} className='w-full' placeholder='Number of pills/injections' min={0} />
+
+                                    </label>
+                                  
                                 </Form.Item>
                                 <div className='flex justify-center'>
                                     <Form.Item

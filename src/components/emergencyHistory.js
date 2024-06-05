@@ -12,10 +12,10 @@ import { jsxs as _jsxs } from "react/jsx-runtime";
 
 import dayjs from 'dayjs';
 
-import DataTable from "../components/DataTable";
-import httpRequest from "../components/httpRequest";
-import useAsyncData from "../components/useAsyncData";
-import LoadingSpinners from "../components/loadingSpinners";
+import DataTable from "./DataTable";
+import httpRequest from "./httpRequest";
+import useAsyncData from "./useAsyncData";
+import LoadingSpinners from "./loadingSpinners";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -117,21 +117,18 @@ function renderStatus(params) {
 
 
 
-async function GetHistory(id) {
+async function GetHistory() {
   let visits = [];
-  const allvisits = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/visit/getPatientVisits/" + id)
-  console.log(allvisits)
+  const allvisits = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/emergency/AllEmergencyPatients" )
 
-  allvisits.visitHistories.forEach(async visit => {
+  allvisits.emergency.forEach(async visit => {
 
     let NewVisit = { ...visit }
     NewVisit.id = visit._id
-    NewVisit.onTime = visit.onTime ? "Yes" : "No"
     NewVisit.user = visit.user.name
     NewVisit.drug = visit.drugs.length+"("+arrayTOstring(visit.drugs.map(item => item.name))+")";
 
     
-    NewVisit.otherDrug = visit.otherDrug.length+"("+arrayTOstring(visit.otherDrug)+")";
 
 
 
@@ -160,7 +157,7 @@ function strTODate(date) {
   return new Date(date)
 }
 
-function ViewHistory(props) {
+function EmergencyHistory(props) {
 
   const navigate = useNavigate()
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
@@ -168,7 +165,7 @@ function ViewHistory(props) {
 
   const x = httpRequest()
   const { data, isLoading, error } = useAsyncData(async () => {
-    return await GetHistory(props.paitent._id)
+    return await GetHistory()
   }, []);
 
 
@@ -192,22 +189,7 @@ function ViewHistory(props) {
       flex: 1,
       renderCell: renderMedicine
     },
-    {
-      field: 'otherDrug',
-      headerName: 'Other medicine',
-      sortable: false,
-      minWidth: 80,
-      flex: 1,
-      renderCell: renderMedicine
-    },
-    {
-      field: 'onTime',
-      headerName: 'ontime',
-      sortable: true,
-      minWidth: 80,
-      flex: 1,
-      renderCell: renderStatus
-    },
+   
     {
       field: 'visitDate',
       type: "date",
@@ -217,24 +199,13 @@ function ViewHistory(props) {
       valueGetter: strTODate,
       flex: 1,
     },
-    {
-      field: 'nextAppointmentDate',
-      type: "date",
-      headerName: 'Next apt.date',
-      sortable: true,
-      minWidth: 140,
-      valueGetter: strTODate,
-      flex: 1,
-    },
+   
   ];
 
 
 
 
 
-  let rows = [
-
-  ]
   let tableData = { "columns": columns, "rows": data }
 
   if (isLoading || error) {
@@ -247,15 +218,7 @@ function ViewHistory(props) {
     <div className={props.className} style={props.style}>
       <div className="flex flex-col w-full space-y-3">
 
-        <div className='flex space-x-1'>
-          <p className='text-sm font-medium text-gray-500'> Visit history of : </p>
-          <p className='text-sm text-gray-900'> {props.paitent.fullName}</p>
-
-        </div>
-        <div className='flex space-x-1'>
-          <p className='text-sm font-medium text-gray-500'> ATR NO : </p>
-          <p className='text-sm text-gray-900'> {props.paitent.id}</p>
-        </div>
+        
 
 
         <DataTable tableProps={{
@@ -283,4 +246,4 @@ function ViewHistory(props) {
   );
 }
 
-export default ViewHistory;
+export default EmergencyHistory;
