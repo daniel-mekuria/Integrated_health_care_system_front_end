@@ -39,7 +39,6 @@ async function getBeds() {
   
 occupied=occupied.bookedBeds.sort((a, b) => a.bed.bedNumber.localeCompare(b.bed.bedNumber));
 free= free.unoccupiedBeds.sort((a, b) => a.bedNumber.localeCompare(b.bedNumber));
-free.map(())
 
 return({occupied:occupied,free:free})
 
