@@ -1,299 +1,300 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from "react";
+
+import Checkbox from "@mui/material/Checkbox";
 import {
-  Box,
-  Card,
-  CardContent,
-  Grid,
-  Typography,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
+
   Button,
-  ButtonGroup,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   TextField,
-  IconButton,
-} from '@mui/material';
-import BedIcon from '@mui/icons-material/Hotel';
-import PersonIcon from '@mui/icons-material/Person';
-import EmptyBedIcon from '@mui/icons-material/AirlineSeatIndividualSuite';
-import EditIcon from '@mui/icons-material/Edit';
-import { styled } from '@mui/system';
 
-const initialBeds = [
-  { id: 1, status: 'In Use', patient: 'Michael Scott', admissionDate: '09/12/2019', age: 67, sex: 'Male', department: 'Oncology' },
-  { id: 2, status: 'Reserved', patient: 'Steve Smith', admissionDate: '01/20/2020', age: 43, sex: 'Male', department: 'Neurology' },
-  { id: 3, status: 'In Use', patient: 'James Smith', admissionDate: '12/27/2019', age: 73, sex: 'Male', department: 'Cardiology' },
-  { id: 4, status: 'In Use', patient: 'Cindy Love', admissionDate: '12/12/2019', age: 36, sex: 'Female', department: 'Oncology' },
-  { id: 5, status: 'In Use', patient: 'James Johnson', admissionDate: '11/12/2019', age: 37, sex: 'Male', department: 'Cardiology' },
-  { id: 6, status: 'In Use', patient: 'Maria Garcia', admissionDate: '01/15/2020', age: 64, sex: 'Female', department: 'Neurology' },
-  { id: 7, status: 'Empty', patient: '', admissionDate: '', age: '', sex: '', department: 'Oncology' },
-  { id: 8, status: 'In Use', patient: 'Robert Scott', admissionDate: '01/01/2020', age: 84, sex: 'Male', department: 'Cardiology' },
-];
+} from "@mui/material";
 
-const StyledButton = styled(Button)({
-  backgroundColor: '#047857',
-  color: '#fff',
-  '&:hover': {
-    backgroundColor: '#065f46',
-  },
-});
+import dayjs from 'dayjs';
+import { LoadingButton } from '@mui/lab';
+import httpRequest from "../components/httpRequest";
+import { GetCookie, SetCookie } from "../components/cookies";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
+import { Badge, Card, Form, Input, Modal, Popconfirm, Radio, Select } from "antd";
+import { Hotel, Person } from "@mui/icons-material";
+import useAsyncData from "../components/useAsyncData";
+import LoadingSpinners from "../components/loadingSpinners";
+import { ReactSVG } from "react-svg";
+import { AddBed, AssignBed, EditBed } from "../components/editBed";
 
-const BedManagement = () => {
-  const [beds, setBeds] = useState(initialBeds);
-  const [department, setDepartment] = useState('All Departments');
-  const [status, setStatus] = useState('All');
-  const [openAddBed, setOpenAddBed] = useState(false);
-  const [openAssignBed, setOpenAssignBed] = useState(false);
-  const [newBed, setNewBed] = useState({ department: '', status: 'Empty' });
-  const [assignDepartment, setAssignDepartment] = useState('');
-  const [assignBedId, setAssignBedId] = useState('');
-  const [atrNumber, setAtrNumber] = useState('');
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [selectedBed, setSelectedBed] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
 
-  const handleDepartmentChange = (event) => {
-    setDepartment(event.target.value);
-  };
-
-  const handleStatusChange = (status) => {
-    setStatus(status);
-  };
-
-  const handleOpenAddBed = () => {
-    setOpenAddBed(true);
-  };
-
-  const handleCloseAddBed = () => {
-    setOpenAddBed(false);
-  };
-
-  const handleOpenAssignBed = () => {
-    setOpenAssignBed(true);
-  };
-
-  const handleCloseAssignBed = () => {
-    setOpenAssignBed(false);
-  };
-
-  const handleAddBed = () => {
-    setBeds([...beds, { id: beds.length + 1, ...newBed }]);
-    handleCloseAddBed();
-  };
-
-  const handleAssignBed = () => {
-    // Here you would fetch patient info based on the ATR number from your database
-    const patientInfo = {
-      patient: 'John Doe', // Example patient data
-      admissionDate: '05/10/2023',
-      age: 45,
-      sex: 'Male',
-    };
-
-    const updatedBeds = beds.map((bed) => {
-      if (bed.id === parseInt(assignBedId, 10)) {
-        return {
-          ...bed,
-          status: 'In Use',
-          ...patientInfo,
-        };
-      }
-      return bed;
-    });
-
-    setBeds(updatedBeds);
-    handleCloseAssignBed();
-  };
-
-  const filteredBeds = beds.filter((bed) => {
-    const matchesDepartment = department === 'All Departments' || bed.department === department;
-    const matchesStatus = status === 'All' || bed.status === status;
-    const matchesSearch = searchTerm === '' || bed.patient.toLowerCase().includes(searchTerm.toLowerCase());
-
-    return matchesDepartment && matchesStatus && matchesSearch;
+function convertStringToArray(str) {
+  return str.split(',').map(function (item) {
+    return item.trim();
+  }).filter(function (item) {
+    return item !== '';
   });
+}
 
-  const handleStatusToggle = (id) => {
-    setSelectedBed(id);
-    setConfirmDialogOpen(true);
-  };
 
-  const handleConfirmStatusChange = () => {
-    const updatedBeds = beds.map((bed) => {
-      if (bed.id === selectedBed) {
-        if (bed.status === 'In Use') {
-          return {
-            ...bed,
-            status: 'Empty',
-            patient: '',
-            admissionDate: '',
-            age: '',
-            sex: '',
-          };
-        } else if (bed.status === 'Empty' || bed.status === 'Reserved') {
-          setAssignBedId(bed.id);
-          setOpenAssignBed(true);
-          return bed;
-        }
+async function getBeds() {
+
+
+  let occupied = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/bed/getAllBookedBeds")
+
+  let free = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/bed/getUnoccupiedBeds")
+  let patients = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/patient/allAtrPatients")
+
+  occupied = occupied.bookedBeds.sort((a, b) => a.bed.bedNumber.localeCompare(b.bed.bedNumber));
+  free = free.unoccupiedBeds.sort((a, b) => a.bedNumber.localeCompare(b.bedNumber));
+  free.map((x, index) => {
+    free[index] = { bed: x, occupied: false }
+
+
+  })
+  occupied.map((x, index) => {
+    x.occupied = true
+    x.patient.age = calculateAge(x.patient.birthdate)
+    x.admissionDate = dayjs(x.createdAt).format("DD-MMM-YYYY")
+
+  })
+
+  patients = patients.patients
+  const patientIds = occupied.map(item => item.patient._id);
+
+  const filteredPatients = patients.filter(item => !patientIds.includes(item._id));
+
+  console.log(filteredPatients)
+  return ({ occupied: occupied, free: free, patients: filteredPatients })
+
+
+
+
+
+
+
+}
+
+const calculateAge = (birthdate) => {
+  const today = dayjs();
+  const birth = dayjs(birthdate);
+  const age = today.diff(birth, 'year');
+  return age;
+};
+
+const UpdateUser = (props) => {
+  const navigate = useNavigate()
+  const [submitLoading, setSubmitLoading] = useState(false)
+  const [update, setupdate] = useState(false)
+  const [bedCounts, setBedCounts] = useState([])
+  const [filteredBeds, setFilteredBeds] = useState([])
+  const [selectedBeds, setSelectedBeds] = useState([])
+  const [isEditBedModalOpen, setIsEditBedModalOpen] = useState(false)
+  const [isAssignBedModalOpen, setIsAssignBedModalOpen] = useState(false)
+  const [isAddBedModalOpen, setIsAddBedModalOpen] = useState(false)
+  const [bedToEdit, setBedToEdit] = useState(null)
+
+
+  const [loginLoading, setLoginLoading] = useState(false)
+
+
+  function runUpdate() {
+    setupdate(!update)
+  }
+
+
+
+  const { data, isLoading, error } = useAsyncData(async () => {
+
+    const x = await getBeds()
+
+    setFilteredBeds(x.free.concat(x.occupied))
+    setSelectedBeds(x.free.concat(x.occupied))
+    setBedCounts([x.occupied.length + x.free.length, x.occupied.length, x.free.length])
+    console.log(x.patients)
+    return x
+  }, [update])
+
+
+  function changeType(x) {
+    if (x === "All") {
+      setFilteredBeds(data.free.concat(data.occupied))
+      setSelectedBeds(data.free.concat(data.occupied))
+
+    }
+    else if (x === "Free") {
+      setFilteredBeds(data.free)
+      setSelectedBeds(data.free)
+
+    }
+    else if (x === "Occupied") {
+      setFilteredBeds(data.occupied)
+      setSelectedBeds(data.occupied)
+
+    }
+
+
+  }
+
+
+
+  function handleEditBed(bed) {
+    setBedToEdit(bed)
+    bed.occupied ? setIsEditBedModalOpen(true) : setIsAssignBedModalOpen(true)
+
+
+  }
+
+
+
+
+  const requestSearch = (searchString) => {
+    searchString = searchString.toLowerCase();
+
+    function containsSearchString(value) {
+      if (typeof value === 'string') {
+        return value.toLowerCase().includes(searchString);
+      } else if (typeof value === 'object' && value !== null) {
+        return Object.values(value).some(containsSearchString);
       }
-      return bed;
-    });
+      return false;
+    }
 
-    setBeds(updatedBeds);
-    setConfirmDialogOpen(false);
-    setSelectedBed(null);
-  };
+    setFilteredBeds(selectedBeds.filter(obj => containsSearchString(obj)))
+  }
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
+
+
+
+  if (isLoading) {
+    return (
+      <LoadingSpinners size={3} className={"w-full h-full"} />
+    )
+  }
+
 
   return (
-    <Box display="flex" height="100vh">
-      <Box width="250px" bgcolor="#f5f5f5" p={2} flexShrink={0}>
-        <FormControl fullWidth>
-          <InputLabel>Room</InputLabel>
-          <Select value={department} onChange={handleDepartmentChange}>
-            <MenuItem value="All Departments">All Departments</MenuItem>
-            <MenuItem value="Oncology">Oncology</MenuItem>
-            <MenuItem value="Neurology">Neurology</MenuItem>
-            <MenuItem value="Cardiology">Cardiology</MenuItem>
-          </Select>
-        </FormControl>
-        <Box mt={2}>
-          <StyledButton onClick={handleOpenAddBed} fullWidth>Add Bed</StyledButton>
-          <StyledButton onClick={handleOpenAssignBed} fullWidth sx={{ mt: 2 }}>Assign Bed</StyledButton>
-        </Box>
-      </Box>
-      <Box flexGrow={1} p={4} overflow="auto">
-        <Box mb={4}>
-          <TextField
-            fullWidth
-            label="Search by Patient Name"
-            variant="outlined"
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-        </Box>
+    <div className={props.className} style={props.style} >
+      <div className="flex flex-col h-full space-y-6">
 
-        <ButtonGroup variant="contained" aria-label="outlined primary button group" sx={{ mb: 4 }}>
-          <StyledButton onClick={() => handleStatusChange('All')} variant={status === 'All' ? 'contained' : 'outlined'}>All</StyledButton>
-          <StyledButton onClick={() => handleStatusChange('In Use')} variant={status === 'In Use' ? 'contained' : 'outlined'}>Occupied</StyledButton>
-          <StyledButton onClick={() => handleStatusChange('Empty')} variant={status === 'Empty' ? 'contained' : 'outlined'}>Not Occupied</StyledButton>
-          <StyledButton onClick={() => handleStatusChange('Reserved')} variant={status === 'Reserved' ? 'contained' : 'outlined'}>Reserved</StyledButton>
-        </ButtonGroup>
+        {bedToEdit ? !bedToEdit.occupied ? <AssignBed patients={data.patients} update={runUpdate} data={bedToEdit} isOpen={isAssignBedModalOpen} setIsOpen={setIsAssignBedModalOpen} /> : <EditBed update={runUpdate} data={bedToEdit} isOpen={isEditBedModalOpen} setIsOpen={setIsEditBedModalOpen} /> : null}
+        <AddBed update={runUpdate} isOpen={isAddBedModalOpen} setIsOpen={setIsAddBedModalOpen} />
 
-        <Grid container spacing={4}>
-          {filteredBeds.map((bed) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={bed.id}>
-              <Card>
-                <CardContent>
-                  <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                    <Typography variant="h6">Bed {bed.id}</Typography>
-                    <IconButton onClick={() => handleStatusToggle(bed.id)}>
-                      {bed.status === 'In Use' ? <PersonIcon color="error" /> : <EmptyBedIcon color="primary" />}
-                    </IconButton>
-                  </Box>
-                  <Typography color="textSecondary">Status: {bed.status}</Typography>
-                  {bed.patient && (
-                    <>
-                      <Typography color="textSecondary">Patient: {bed.patient}</Typography>
-                      <Typography color="textSecondary">Admission Date: {bed.admissionDate}</Typography>
-                      <Typography color="textSecondary">Age: {bed.age}</Typography>
-                      <Typography color="textSecondary">Sex: {bed.sex}</Typography>
-                      <Typography color="textSecondary">Department: {bed.department}</Typography>
-                    </>
-                  )}
-                </CardContent>
-              </Card>
-            </Grid>
+        <div className="flex w-full pr-4">
+
+          <Input className="w-[70%]" placeholder="Search ...." onChange={(x) => {
+            requestSearch(x.target.value)
+          }} />
+
+          <Button className="!ml-auto" variant="contained" onClick={() => {
+            setIsAddBedModalOpen(true)
+          }} >+ Add bed </Button>
+        </div>
+        <Radio.Group
+          buttonStyle='solid'
+          className='w-full space-x-8'
+          defaultValue={"All"}
+
+          onChange={(x) => {
+            changeType(x.target.value)
+          }}
+        >
+          {['All', 'Free', 'Occupied'].map((type) => (
+
+            <Badge key={type}
+              color={type === "All" ? "orange" : type === "Occupied" ? "red" : "green"} className="w-[10%]"
+              showZero count={type === "All" ? bedCounts[0] : type === "Occupied" ? bedCounts[1] : bedCounts[2]} offset={[10, 0]}>
+
+              <Radio.Button
+                className="w-full"
+
+                value={type}
+
+
+              >
+
+                {type}
+
+
+              </Radio.Button>
+            </Badge>
           ))}
-        </Grid>
 
-        <Dialog open={openAddBed} onClose={handleCloseAddBed}>
-          <DialogTitle>Add Bed</DialogTitle>
-          <DialogContent>
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Department</InputLabel>
-              <Select
-                value={newBed.department}
-                onChange={(e) => setNewBed({ ...newBed, department: e.target.value })}
-              >
-                <MenuItem value="Oncology">Oncology</MenuItem>
-                <MenuItem value="Neurology">Neurology</MenuItem>
-                <MenuItem value="Cardiology">Cardiology</MenuItem>
-              </Select>
-            </FormControl>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseAddBed} color="primary">Cancel</Button>
-            <StyledButton onClick={handleAddBed}>Add</StyledButton>
-          </DialogActions>
-        </Dialog>
+        </Radio.Group>
+        <div className="grid w-full h-full grid-cols-4 gap-6 p-4 overflow-y-scroll scrollbar-hide ">
 
-        <Dialog open={openAssignBed} onClose={handleCloseAssignBed}>
-          <DialogTitle>Assign Bed</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Select the department and available bed, and enter the ATR number to assign a patient to a bed.
-            </DialogContentText>
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Department</InputLabel>
-              <Select
-                value={assignDepartment}
-                onChange={(e) => setAssignDepartment(e.target.value)}
-              >
-                <MenuItem value="Oncology">Oncology</MenuItem>
-                <MenuItem value="Neurology">Neurology</MenuItem>
-                <MenuItem value="Cardiology">Cardiology</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Available Beds</InputLabel>
-              <Select
-                value={assignBedId}
-                onChange={(e) => setAssignBedId(e.target.value)}
-              >
-                {beds.filter(bed => bed.department === assignDepartment && bed.status === 'Empty').map(bed => (
-                  <MenuItem key={bed.id} value={bed.id}>Bed {bed.id}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="ATR Number"
-              type="text"
-              fullWidth
-              value={atrNumber}
-              onChange={(e) => setAtrNumber(e.target.value)}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseAssignBed} color="primary">Cancel</Button>
-            <StyledButton onClick={handleAssignBed}>Assign</StyledButton>
-          </DialogActions>
-        </Dialog>
+          {
+            filteredBeds.map((bed) =>
+              <Card
+                key={bed.bed._id}
 
-        <Dialog open={confirmDialogOpen} onClose={() => setConfirmDialogOpen(false)}>
-          <DialogTitle>Confirm Status Change</DialogTitle>
-          <DialogContent>
-            <DialogContentText>Are you sure you want to change the status of this bed?</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setConfirmDialogOpen(false)} color="primary">Cancel</Button>
-            <StyledButton onClick={handleConfirmStatusChange}>Confirm</StyledButton>
-          </DialogActions>
-        </Dialog>
-      </Box>
-    </Box>
+                onClick={() => {
+                  handleEditBed(bed)
+
+
+
+                }}
+                hoverable
+                className="shadow-md "
+              >
+                <div className="flex flex-col space-y-2">
+                  <div className="flex w-full space-x-2">
+                    <p>Bed: {bed.bed.bedNumber}</p>
+                    <div className="pt-3">
+                      {bed.occupied ? <ReactSVG beforeInjection={(svg) => {
+                        svg.setAttribute('style', 'width: 5.3rem; height: 5.3rem; color:#F96950;');
+                      }} src="Bed.svg" /> :
+                        <ReactSVG beforeInjection={(svg) => {
+                          svg.setAttribute('style', 'width: 5.3rem; height: 5.3rem; color:#7EF598;');
+                        }} src="BedEmpty.svg" />
+                      }</div>
+                    <p className='text-sm font-semibold text-gray-600'> {bed.occupied ? "In Use" : "Free"}</p>
+
+
+
+                  </div>
+
+                  <div className="flex space-x-2">
+                    <p className='text-sm font-medium text-gray-500'> Room:</p>
+                    <p className='text-sm text-gray-900'> {bed.bed.room}</p>
+
+
+                  </div>
+                  <div className="flex space-x-2">
+                    <p className='text-sm font-medium text-gray-500'> Patient Name:</p>
+                    <p className='text-sm text-gray-900'> {bed.occupied ? bed.patient.fullName : null}</p>
+
+
+                  </div>
+                  <div className="flex space-x-2">
+                    <p className='text-sm font-medium text-gray-500'> Sex:</p>
+                    <p className='text-sm text-gray-900'> {bed.occupied ? bed.patient.sex : null}</p>
+
+
+                  </div>
+                  <div className="flex space-x-2">
+                    <p className='text-sm font-medium text-gray-500'> Age:</p>
+                    <p className='text-sm text-gray-900'> {bed.occupied ? bed.patient.age : null}</p>
+
+
+                  </div>
+                  <div className="flex space-x-2">
+                    <p className='text-sm font-medium text-gray-500'> Admission Date:</p>
+                    <p className='text-sm text-gray-900'> {bed.occupied ? bed.admissionDate : null}</p>
+
+
+                  </div>
+
+                </div>
+
+
+              </Card>
+            )
+          }
+
+
+
+        </div>
+
+      </div >
+    </div>
+
   );
 };
 
-export default BedManagement;
+export default UpdateUser;
