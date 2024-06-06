@@ -141,7 +141,7 @@ async function getTable(option, startDate, endDate, timeScale = null) {
   }
 
   if (option.x == "time") {
-    count = (countEntriesbydate(rawdata, startDate, endDate, timeScale, option.y))
+    count = (countEntriesbydate(rawdata,option.set, startDate, endDate, timeScale, option.y))
     let column = []
     column.push(option.x)
     count.y.map((y) => {
@@ -156,7 +156,7 @@ async function getTable(option, startDate, endDate, timeScale = null) {
 
   }
   else {
-    count = (countEntries(rawdata, startDate, endDate, option.x, option.y))
+    count = (countEntries(rawdata,option.set, startDate, endDate, option.x, option.y))
     let column = []
     column.push(option.x)
     count.y.map((y) => {

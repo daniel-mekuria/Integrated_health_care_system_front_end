@@ -17,8 +17,13 @@ import { GetCookie, RemoveCookie, SetCookie } from "./cookies";
 import { Button, Divider, Menu } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 
+
 const Navigation = () => {
   const navigate = useNavigate()
+
+  const userRole = JSON.parse(GetCookie("user")).role
+
+    
 const location= useLocation()
   const user = GetCookie("user") ? JSON.parse(GetCookie("user")) : { "name": null }
   return (
@@ -72,15 +77,14 @@ const location= useLocation()
               ,
               label: 'Monitor Patients',
             },
-           
-            {
+           (userRole!=="Staff")?{
               key: 'staff',
               icon: <FontAwesomeIcon className="mr-2 font-sans" icon={faUserMd} />
 
 
               ,
               label: 'Staff',
-            },
+            }:null,
             {
               key: 'analytics',
               icon: <FontAwesomeIcon className="mr-2 font-sans" icon={faChartSimple} />

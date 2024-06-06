@@ -16,6 +16,7 @@ import Users from "../components/users";
 import PendingUsers from "../components/pendingUsers";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { GetCookie } from "../components/cookies";
 
 
 
@@ -70,6 +71,10 @@ function Staff(props) {
   const [update, SetUpdate] = useState(false)
   const [userCount, setUserCount]=useState(0)
   const [pendingCount, setPendingCount]=useState(0)
+  const userRole = JSON.parse(GetCookie("user")).role
+
+  if (userRole==="Staff")
+    navigate("/")
 
 
 function runUpdate(){
