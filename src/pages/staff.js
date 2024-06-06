@@ -116,6 +116,7 @@ function runUpdate(){
  
   ];
 
+  console.log(data)
   return (
     <div className={props.className} style={props.style}>
 

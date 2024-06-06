@@ -55,7 +55,6 @@ const App = () => {
   });
   
 
-
   return (
     <ThemeProvider theme={theme}>
     <ConfigProvider
@@ -106,9 +105,10 @@ console.log(x)
 
     if (!GetCookie("user") || !GetCookie("accessToken") || !GetCookie("refreshToken"))
     navigate("/login")
+    toast.play()
+
   } ,[] )
 
- 
   return (
       
       <Routes>

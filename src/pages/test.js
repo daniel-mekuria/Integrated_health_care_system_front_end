@@ -15,7 +15,10 @@ import { GetCookie, SetCookie } from "../components/cookies";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import { Form, Modal, Popconfirm, Select } from "antd";
+import { Card, Form, Modal, Popconfirm, Radio, Select } from "antd";
+import { Hotel, Person } from "@mui/icons-material";
+import useAsyncData from "../components/useAsyncData";
+import LoadingSpinners from "../components/loadingSpinners";
 
 
 function convertStringToArray(str) {
@@ -27,12 +30,18 @@ function convertStringToArray(str) {
 }
 
 
-async function handleChange(x) {
-  x.oldPassword="password"
-  
+async function getBeds() {
 
-  const res = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/user/changePassword")
-  return res
+
+  let occupied = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/bed/getAllBookedBeds")
+  
+  let free = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/bed/getUnoccupiedBeds")
+  
+occupied=occupied.bookedBeds.sort((a, b) => a.bed.bedNumber.localeCompare(b.bed.bedNumber));
+free= free.unoccupiedBeds.sort((a, b) => a.bedNumber.localeCompare(b.bedNumber));
+free.map(())
+
+return({occupied:occupied,free:free})
 
 
 
@@ -45,145 +54,123 @@ async function handleChange(x) {
 const UpdateUser = (props) => {
   const navigate = useNavigate()
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [password, setPassword] = useState(null)
+  const [update, setupdate] = useState(false)
   const [loginLoading, setLoginLoading] = useState(false)
 
 
-
+function runUpdate (){
+  setupdate(!update)
+}
 
   const [signUpForm] = Form.useForm()
 
 
+  const { data, isLoading, error } = useAsyncData(async () => {
+
+    const x = await getBeds()
+   
+
+    return x
+  }, [update])
+
+  
+  
+   
+
+
+  if (isLoading) {
+    return (
+      <LoadingSpinners size={3} className={"w-full h-full"} />
+    )
+  }
 
 
 
   return (
-    <div>
-      <Modal
+    <div className={props.className} style={props.style} >
+      <div className="flex flex-col space-y-3">
 
-        destroyOnClose
-        closable={false}
-        title={"Update password"}
-        
-
-        open={props.isOpen}
-        footer={
-
-          <div className='flex justify-end space-x-3'>
+        <Radio.Group
+          buttonStyle='solid'
+          className='w-full space-x-1'
+          defaultValue={"All"}
 
 
-            <Button onClick={() => {
-              props.setIsOpen(false)
-
-            }}
-
-
-              className='!rounded-xl' variant='outlined' color='error'>Skip</Button>
-
-              
-
-
-                <LoadingButton
-                  loading={loginLoading}
-                  variant="contained"
-                  className="w-40 "
-
-                  onClick={
-                    () => {
-
-                      signUpForm.submit()
-                    }
-                  }
-                >
-
-                  <span>Update</span>
-                </LoadingButton>
-
-             
-          </div>
-
-        }
-      >
-
-        <Form className="flex flex-col p-3 "
-          form={signUpForm}
-          onFinish={
-            async (x) => {
-              setLoginLoading(true)
-
-              const res = await handleChange(x)
-              setLoginLoading(false)
-              if (res.sucess) {
-                toast.success("Password changed successfully");
-                setLoginLoading(false)
-                signUpForm.resetFields()
-                SetCookie("passwordReset", "false");
-                props.setIsOpen(false)
-
-
-
-
-              }
-              else {
-                toast.error(res.message);
-
-              }
-
-
-
-            }
-          }
         >
+          {['All', 'Free', 'Occupied'].map((type) => (
 
-          <Form.Item
-            name="password"
-            rules={[{ required: true }]}
+
+            <Radio.Button
+              className="w-[10%]"
+              key={type}
+
+              value={type}
+
+
+            >{type}</Radio.Button>
+
+          ))}
+
+        </Radio.Group>
+        <div className="grid w-full h-full grid-cols-4 gap-6 p-4 overflow-y-scroll ">
+
+          <Card
+          onClick={()=>{
+
+
+            
+          }}
+            hoverable
+            className="shadow-md "
           >
-            <TextField
-              className="w-[100%]"
-              onChange={(x) => {
-                setPassword(x.target.value)
-              }}
-
-              placeholder="New password"
-              label="New password"
+            <div className="flex flex-col space-y-4">
+              <div className="flex w-full space-x-2">
+                <p>Bed 1</p>
+                {true ? <Hotel className="!ml-auto" color="primary" /> :
+                  <Person className="!ml-auto" color="error" />}
 
 
-              type="password"
-
-            />
-          </Form.Item>
-          <Form.Item
-            name="repeatPassword"
-
-            rules={[{
-              message: "Passwords don't match",
-              validator: (_, value) => {
-                if (value === password) {
-                  return Promise.resolve(); // Validation passed
-                } else {
-                  return Promise.reject('Some custom error message'); // Validation failed
-                }
-              },
-            },]}
-          >
-            <TextField
-              className="w-[100%]"
+              </div>
+              <div className="flex space-x-2">
+                <p className='text-sm font-medium text-gray-500'> Status:</p>
+                <p className='text-sm text-gray-900'> {"asdad"}</p>
 
 
-              placeholder="Repeat password"
-              label="Repeat password"
+              </div>
+              <div className="flex space-x-2">
+                <p className='text-sm font-medium text-gray-500'> Patient Name:</p>
+                <p className='text-sm text-gray-900'> {"asdad"}</p>
 
 
-              type="password"
+              </div>
+              <div className="flex space-x-2">
+                <p className='text-sm font-medium text-gray-500'> Sex:</p>
+                <p className='text-sm text-gray-900'> {"asdad"}</p>
 
-            />
-          </Form.Item>
+
+              </div>
+              <div className="flex space-x-2">
+                <p className='text-sm font-medium text-gray-500'> Age:</p>
+                <p className='text-sm text-gray-900'> {"asdad"}</p>
 
 
-        </Form>
+              </div>
+              <div className="flex space-x-2">
+                <p className='text-sm font-medium text-gray-500'> Admission Date:</p>
+                <p className='text-sm text-gray-900'> {"asdad"}</p>
 
-      </Modal>
+
+              </div>
+            </div>
+
+
+          </Card>
+          
+
+
+        </div>
+
+      </div >
     </div>
 
   );
