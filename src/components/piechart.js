@@ -168,6 +168,8 @@ return({ value:(x.data) , label: x.label })
 
     return (
         <PieChart
+        loading={isLoading}
+
             series={yData}
 
         />

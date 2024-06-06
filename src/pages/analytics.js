@@ -14,7 +14,6 @@ import Piechart from '../components/piechart';
 
 function Analytics(props) {
 
-    let dataset = [{ x: 1, y: 4, Z: 45 }, { x: 2, y: 41, Z: 45 }, { x: 3, y: 11, Z: 45 }, { x: 6, y: 18, Z: 45 }, { x: 9, y: 41 }, { x: 11, y: 45 },]
 
     const [graphType, setGraptype] = useState("Line")
     const [xData, setXData] = useState()
