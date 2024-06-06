@@ -80,6 +80,7 @@ const Login = (props) => {
                 const res = await handleLogin(x)
                 setLoginLoading(false)
                 if (res.sucess) {
+
                   toast.success("Welcome");
                   if (x.password === "password")
                     SetCookie("passwordReset", "true");
@@ -117,6 +118,8 @@ const Login = (props) => {
 
                 >
                   <TextField
+                    autoComplete="off"
+
                     className="w-[100%]"
 
                     InputProps={{
@@ -140,6 +143,7 @@ const Login = (props) => {
 
                   <TextField
                     className="w-[100%]"
+                    autoComplete="off"
 
                     InputProps={{
                       startAdornment: (
@@ -209,6 +213,7 @@ const Login = (props) => {
 
                   <TextField
                     className="w-[100%]"
+                    autoComplete="off"
 
                     InputProps={{
                       startAdornment: (
@@ -232,6 +237,7 @@ const Login = (props) => {
 
                   <TextField
                     className="w-[100%]"
+                    autoComplete="off"
 
                     InputProps={{
                       startAdornment: (
@@ -252,6 +258,8 @@ const Login = (props) => {
                   rules={[{ required: true }]}
                 >
                   <TextField
+                    autoComplete="off"
+
                     className="w-[100%]"
                     onChange={(x) => {
                       setPassword(x.target.value)
@@ -286,6 +294,8 @@ const Login = (props) => {
                   },]}
                 >
                   <TextField
+                    autoComplete="off"
+
                     className="w-[100%]"
 
                     InputProps={{
