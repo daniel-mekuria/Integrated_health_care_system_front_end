@@ -10,6 +10,12 @@ import ClearIcon from '@mui/icons-material/Clear';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 
+
+
+
+
+
+
 function QuickSearchToolbar(props) {
   return (
     <div className="flex px-6 py-2 font-sans justify-normal">
@@ -52,16 +58,70 @@ function QuickSearchToolbar(props) {
 
 
 function DataTable(props) {
+  console.log("Asddasd")
   const navigate = useNavigate()
   const [platform, setPlatform] = useState([]);
 
   const [rows, setRows] = useState([]);
 
+let onSelect=props.onSelect
+
+
+
+
+  function RenderView(props) {
+ 
+  
+
+
+    const { hasFocus, value } = props;
+    const buttonElement = React.useRef(null);
+    const rippleRef = React.useRef(null);
+  
+    React.useLayoutEffect(() => {
+      if (hasFocus) {
+        const input = buttonElement.current.querySelector('input');
+        input?.unfocus();
+      } else if (rippleRef.current) {
+        // Only available in @mui/material v5.4.1 or later
+        rippleRef.current.stop({});
+      }
+    }, [hasFocus]);
+  
+    return (
+      <strong className='before:focus:!border-none   focus-within:!border-none'>
+        
+        <Button
+          ref={buttonElement}
+          touchRippleRef={rippleRef}
+          variant="outlined"
+          size="small"
+          style={{ marginLeft: 16 }}
+          // Remove button from tab sequence when cell does not have focus
+          tabIndex={hasFocus ? 0 : -1}
+          onClick={()=>{
+            if (onSelect)
+              onSelect(value)
+          }}
+          onKeyDown={(event) => {
+           
+              // Prevent key navigation when focus is on button
+              event.stopPropagation();
+            
+          }}
+        >
+          View
+        </Button>
+      </strong>
+    );
+  }
+
+
 
 
   useEffect(() => {
     let rowsList = props.data.rows;
-
+   
 
     setPlatform(rowsList);
     setRows(rowsList);
@@ -69,6 +129,7 @@ function DataTable(props) {
 
 
   const columns = props.data.columns;
+ 
 
   function escapeRegExp(value) {
     return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
@@ -92,6 +153,21 @@ function DataTable(props) {
   };
 
 
+
+
+ if (columns[0].field!=="View"&&props.tableProps.checkboxSelection){
+  columns.unshift(
+    {
+      field: 'View',
+      headerName: '',
+      width: 150,
+      renderCell: RenderView,
+      
+    }
+  )
+ }
+ 
+let newRows=rows.map((row)=>({... row,View:row}))
   return (
     <div className={props.className} style={props.style} >
 
@@ -103,15 +179,11 @@ function DataTable(props) {
           onRowSelectionModelChange={(ids) => {
             const selectedIDs = new Set(ids);
             let foundData = rows.find(item => item.id === ids[0]);
-            
             if (props.onSelect)
               props.onSelect(foundData)
 
-            
-
           }}
-          
-          checkboxSelection={props.tableProps.checkboxSelection}
+          checkboxSelection={false}
           disableRowSelectionOnClick={props.tableProps.disableRowSelectionOnClick}
           disableDensitySelector={props.tableProps.disableDensitySelector}
           disableMultipleRowSelection={props.tableProps.disableMultipleRowSelection}
@@ -135,7 +207,7 @@ function DataTable(props) {
           }}
 
 
-          rows={rows}
+          rows={newRows}
           columns={columns}
           initialState={{
             pagination: {

@@ -13,3 +13,30 @@ body {
 ::after {
   border-width: 0;
 }
+.MuiDataGrid-cell,
+.MuiDataGrid-cell--textLeft {
+    border: none !important;
+    outline: none !important;
+}
+
+.MuiDataGrid-cell:hover,
+.MuiDataGrid-cell--textLeft:hover {
+    border: none !important;
+    outline: none !important;
+}
+
+.MuiDataGrid-cell:focus,
+.MuiDataGrid-cell--textLeft:focus {
+    border: none !important;
+    outline: none !important;
+}
+
+
+
+.even .MuiDataGrid-row .MuiDataGrid-row--firstVisible{
+    background-color: rgba(128, 128, 128, 0.163) !important;
+}
+.css-ljpx1l-MuiDataGrid-root .MuiDataGrid-virtualScrollerContent .MuiDataGrid-row:hover {
+  background-color: #00a86a20;
+}
+              
