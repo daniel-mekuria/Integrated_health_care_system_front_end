@@ -96,6 +96,7 @@ const Login = (props) => {
                   SetCookie("user", JSON.stringify({
                     "id": res.id,
                     "name": res.targetName,
+                    "userName": res.targetUsername,
                     "role": res.role,
                   }));
 
@@ -213,6 +214,8 @@ const Login = (props) => {
 
                   <TextField
                     className="w-[100%]"
+                   
+
                     autoComplete="off"
 
                     InputProps={{
@@ -255,7 +258,16 @@ const Login = (props) => {
                 </Form.Item>
                 <Form.Item
                   name="password"
-                  rules={[{ required: true }]}
+                  rules={[{
+                    message: 'Password too short ',
+                    validator: (_, value) => {
+                      if (value.length < 8) {
+                        return Promise.reject('Some custom error message');
+                      }
+                      return Promise.resolve();
+
+                    },
+                  },]}
                 >
                   <TextField
                     autoComplete="off"
@@ -334,7 +346,18 @@ const Login = (props) => {
 
         </div>
       </div>
-
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        limit={2}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
 
   );
