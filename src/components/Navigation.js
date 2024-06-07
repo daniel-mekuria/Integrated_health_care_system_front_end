@@ -22,7 +22,7 @@ import UpdateProfile from "./updateProfile";
 const Navigation = () => {
   const navigate = useNavigate()
 
-  const userRole = JSON.parse(GetCookie("user")).role
+  const userRole = GetCookie("user")?JSON.parse(GetCookie("user")).role:null
 const [isUpdateModalOpen,setIsUpdateModalOpen] =useState(false)
 
 const location= useLocation()
