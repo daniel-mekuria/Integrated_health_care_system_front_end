@@ -41,7 +41,7 @@ const UpdateProfile = (props) => {
   const editFormRef = useRef()
 
 
-  const user = JSON.parse(GetCookie("user"))
+  const user = GetCookie("user") ? JSON.parse(GetCookie("user")) : null
 
 
 
@@ -123,147 +123,149 @@ const UpdateProfile = (props) => {
           }
         >
 
-
-          <div className='flex flex-col '>
-            <Form.Item
-              name="fullName"
-              rules={[{ required: true }]}
-              initialValue={user.name}
-            >
-
-
-              <TextField label="Full name" size="small"
-                className="w-full"
+          { user?
+            <div className='flex flex-col '>
+              <Form.Item
+                name="fullName"
+                rules={[{ required: true }]}
+                initialValue={user.name}
+              >
 
 
-                placeholder="Full name" />
+                <TextField label="Full name" size="small"
+                  className="w-full"
 
 
-
-            </Form.Item>
-            <Form.Item
-              name="username"
-              rules={[{ required: true }]}
-              initialValue={user.userName}
-            >
-
-
-              <TextField label="Username" size="small"
-
-                className="w-full"
-
-                placeholder="Username" />
+                  placeholder="Full name" />
 
 
 
-            </Form.Item>
-            <div className='flex flex-col ' >
-              <div className='flex space-x-2'>
-                <p className='font-sans text-[1rem] mt-2 text-gray-600'>
-                  Change password
-                </p>
-
-                <Form.Item
-                  name="changePassword"
-                  rules={[{ required: false }]}
-
-                >
-                  <Checkbox onChange={(x) => {
-                    setChangePassword(x.target.checked)
-                  }} />
-                </Form.Item>
-
-              </div>
-              {changepassword ?
-                <div>
+              </Form.Item>
+              <Form.Item
+                name="username"
+                rules={[{ required: true }]}
+                initialValue={user.userName}
+              >
 
 
+                <TextField label="Username" size="small"
+
+                  className="w-full"
+
+                  placeholder="Username" />
+
+
+
+              </Form.Item>
+              <div className='flex flex-col ' >
+                <div className='flex space-x-2'>
+                  <p className='font-sans text-[1rem] mt-2 text-gray-600'>
+                    Change password
+                  </p>
 
                   <Form.Item
-                    name="oldPassword"
-                    rules={[{
-                      message: 'Password too short ',
-                      validator: (_, value) => {
-                        if (value.length < 8) {
-                          return Promise.reject('Some custom error message');
-                        }
-                        return Promise.resolve();
+                    name="changePassword"
+                    rules={[{ required: false }]}
 
-                      },
-                    },]} >
-
-                    <TextField label="Old password" size="small"
-                      className="w-full"
-
-                      type="password"
-                      placeholder="Old password" />
-
-
-
+                  >
+                    <Checkbox onChange={(x) => {
+                      setChangePassword(x.target.checked)
+                    }} />
                   </Form.Item>
-                  <Form.Item
-                    name="password"
-                    rules={[{
-                      message: 'Password too short ',
-                      validator: (_, value) => {
-                        if (value.length < 8) {
-                          return Promise.reject('Some custom error message');
-                        }
-                        return Promise.resolve();
-
-                      },
-                    },]} >
-
-                    <TextField className="w-full"
-                      onChange={(x) => {
-                        setNewPassword(x.target.value)
-                      }} label="New password" size="small"
-                      type="password"
-
-
-                      placeholder="New password" />
-
-
-
-                  </Form.Item>
-                  <Form.Item
-                    name="Repeatpassword"
-                    rules={[{
-                      message: 'Passwords dont match ',
-                      validator: (_, value) => {
-                        if (value !== newPassword) {
-                          return Promise.reject('Some custom error message');
-                        }
-                        return Promise.resolve();
-
-                      },
-                    },]} >
-
-                    <TextField label="Repeat password" size="small"
-                      type="password"
-
-                      className="w-full"
-
-                      placeholder="Repeat password" />
-
-
-
-                  </Form.Item>
-
-
-
 
                 </div>
-                : null
-              }
+                {changepassword ?
+                  <div>
 
 
+
+                    <Form.Item
+                      name="oldPassword"
+                      rules={[{
+                        message: 'Password too short ',
+                        validator: (_, value) => {
+                          if (value.length < 8) {
+                            return Promise.reject('Some custom error message');
+                          }
+                          return Promise.resolve();
+
+                        },
+                      },]} >
+
+                      <TextField label="Old password" size="small"
+                        className="w-full"
+
+                        type="password"
+                        placeholder="Old password" />
+
+
+
+                    </Form.Item>
+                    <Form.Item
+                      name="password"
+                      rules={[{
+                        message: 'Password too short ',
+                        validator: (_, value) => {
+                          if (value.length < 8) {
+                            return Promise.reject('Some custom error message');
+                          }
+                          return Promise.resolve();
+
+                        },
+                      },]} >
+
+                      <TextField className="w-full"
+                        onChange={(x) => {
+                          setNewPassword(x.target.value)
+                        }} label="New password" size="small"
+                        type="password"
+
+
+                        placeholder="New password" />
+
+
+
+                    </Form.Item>
+                    <Form.Item
+                      name="Repeatpassword"
+                      rules={[{
+                        message: 'Passwords dont match ',
+                        validator: (_, value) => {
+                          if (value !== newPassword) {
+                            return Promise.reject('Some custom error message');
+                          }
+                          return Promise.resolve();
+
+                        },
+                      },]} >
+
+                      <TextField label="Repeat password" size="small"
+                        type="password"
+
+                        className="w-full"
+
+                        placeholder="Repeat password" />
+
+
+
+                    </Form.Item>
+
+
+
+
+                  </div>
+                  : null
+                }
+
+
+
+
+              </div>
 
 
             </div>
-
-
-          </div>
+:null
+}
 
         </Form>
       </Modal>
