@@ -22,6 +22,7 @@ import autoTable from 'jspdf-autotable';
 import LoadingSpinners from './loadingSpinners';
 import { saveAs } from 'file-saver';
 import * as ExcelJS from 'exceljs';
+import { LoadingButton } from '@mui/lab';
 
 
 const exportToExcel = (data, fileName = "new_report.xlsx") => {
@@ -141,7 +142,7 @@ async function getTable(option, startDate, endDate, timeScale = null) {
   }
 
   if (option.x == "time") {
-    count = (countEntriesbydate(rawdata,option.set, startDate, endDate, timeScale, option.y))
+    count = (countEntriesbydate(rawdata, option.set, startDate, endDate, timeScale, option.y))
     let column = []
     column.push(option.x)
     count.y.map((y) => {
@@ -156,7 +157,7 @@ async function getTable(option, startDate, endDate, timeScale = null) {
 
   }
   else {
-    count = (countEntries(rawdata,option.set, startDate, endDate, option.x, option.y))
+    count = (countEntries(rawdata, option.set, startDate, endDate, option.x, option.y))
     let column = []
     column.push(option.x)
     count.y.map((y) => {
@@ -265,6 +266,7 @@ function ExportForm(props) {
   const [tablesList, setTablesList] = useState([]);
 
   const [timeScale, setTimeScale] = useState("Day")
+  const [addLoading, setAddLoading] = useState(false)
   const [startDate, setstartDate] = useState(dayjs())
   const [endDate, setendDate] = useState(dayjs())
   const [xData, setXData] = useState("tijme")
@@ -337,28 +339,58 @@ function ExportForm(props) {
 
         <Modal
           destroyOnClose
-          onOk={() => {
-            tableFormRef.current.submit()
-          }}
+
           title={("Select a table type")}
           centered
 
+
+          footer={
+
+            <div className='flex justify-end space-x-3'>
+
+
+              <Button onClick={() => {
+                setXData(null)
+                setIsTableModalOpen(false)
+              }}
+
+
+                className='!rounded-xl' variant='outlined' color='error'>Cancel</Button>
+
+
+              <LoadingButton
+                loading={addLoading}
+                variant="contained"
+                className="w-40 "
+
+                onClick={() => {
+                  tableFormRef.current.submit()
+
+                }}
+
+              >
+
+                <span>Ok</span>
+              </LoadingButton>
+            </div>
+
+          }
           open={isTableModalOpen}
-          onCancel={() => {
-            setXData(null)
-            setIsTableModalOpen(false)
-          }}
+
 
         >
           <div className='p-4'>
             <Form
               onFinish={async (x) => {
+                setAddLoading(true)
 
                 let newTable = await getTable(tableOptions[x.table], x.startDate, x.endDate, (xData === "time") ? x.timeScale : undefined)
 
                 if (newTable) {
                   setTablesList(prevTablesList => [...prevTablesList, newTable]);
                 }
+                setAddLoading(false)
+
 
                 setIsTableModalOpen(false)
                 setXData(null)
@@ -467,7 +499,7 @@ function ExportForm(props) {
 
 
 
-        </Modal>
+        </Modal >
         <Modal
           destroyOnClose
           onOk={() => {
@@ -604,12 +636,12 @@ function ExportForm(props) {
 
             </div>
             <Divider />
-           
+
           </div>
 
         </div>
 
-      </Modal>
+      </Modal >
       <ToastContainer
         position="top-center"
         autoClose={2000}
@@ -622,7 +654,7 @@ function ExportForm(props) {
         draggable
         pauseOnHover
       />
-    </div>
+    </div >
 
   )
 }
