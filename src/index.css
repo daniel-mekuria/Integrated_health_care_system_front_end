@@ -32,11 +32,11 @@ body {
 }
 
 
-
-.even .MuiDataGrid-row .MuiDataGrid-row--firstVisible{
-    background-color: rgba(128, 128, 128, 0.163) !important;
+.even.MuiDataGrid-row {
+  background-color: rgba(117, 128, 122, 0.08) ;
 }
-.css-ljpx1l-MuiDataGrid-root .MuiDataGrid-virtualScrollerContent .MuiDataGrid-row:hover {
-  background-color: #00a86a20;
+
+.MuiDataGrid-row:hover {
+  background-color: #00a86a20 !important;
 }
               

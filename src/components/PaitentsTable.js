@@ -18,6 +18,7 @@ import LoadingSpinners from "../components/loadingSpinners";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { SetCookie } from "./cookies";
 
 
 
@@ -154,10 +155,7 @@ function PatientsTable(props) {
 
   
 
-  function handleSelect(foundData){
-    console.log(foundData)
-    navigate('/paitentdetail',{state:{foundData:foundData}});
-   }
+  
 
 
 
@@ -220,12 +218,15 @@ function PatientsTable(props) {
   let tableData = { "columns": columns, "rows": props.data }
 
  
-
+  function handleSelect(foundData){
+    SetCookie("patient",JSON.stringify(foundData))
+    navigate('/paitentdetail');
+   }
 
   return (
     <div className={props.className} style={props.style}>
      
-      <DataTable tableProps={{ checkboxSelection:true,
+      <DataTable  tableProps={{ checkboxSelection:true,
         disableRowSelectionOnClick:true,
         disableDensitySelector:true,
         disableMultipleRowSelection:true,

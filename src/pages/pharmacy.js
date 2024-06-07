@@ -348,6 +348,9 @@ const PharmacyMain = (props) => {
 
 
       <DataGrid autoHeight
+       getRowClassName={(params) =>
+        params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+      } 
         className="font-sans"
         sx={{ fontFamily: "Poppins" }}
         checkboxSelection={false}

@@ -175,7 +175,9 @@ let newRows=rows.map((row)=>({... row,View:row}))
         <DataGrid autoHeight
           className="font-sans"
           sx={{ fontFamily: "Poppins" }}
-
+          getRowClassName={(params) =>
+            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+          } 
           onRowSelectionModelChange={(ids) => {
             const selectedIDs = new Set(ids);
             let foundData = rows.find(item => item.id === ids[0]);
