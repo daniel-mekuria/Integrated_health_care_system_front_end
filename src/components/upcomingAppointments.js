@@ -119,7 +119,7 @@ function renderStatus(params) {
 
 async function getAppointments() {
   let visits = [];
-  const allvisits = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/visit/getUpcomingAppointments/500" )
+  const allvisits = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/visit/getUpcomingAppointments/3" )
  visits=allvisits.patients
 visits.forEach(element => {
   element.id=element.atrNumber
