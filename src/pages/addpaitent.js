@@ -329,7 +329,7 @@ function AddPaitent(props) {
 
 
                                         <Form.Item
-                                            name="supporterSubCity"
+                                            name="supporterSubcity"
                                             rules={[{ required: true }]}
                                         >
                                             <TextField size="small" label="Sub city"
@@ -338,7 +338,7 @@ function AddPaitent(props) {
 
                                         </Form.Item>
                                         <Form.Item
-                                            name="SupporterWereda"
+                                            name="supporterWereda"
                                             rules={[{ required: true }]}
                                         >
                                             <TextField size="small" label="Wereda"
@@ -347,7 +347,7 @@ function AddPaitent(props) {
 
                                         </Form.Item>
                                         <Form.Item
-                                            name="Supporterkebele"
+                                            name="supporterkebele"
                                             rules={[{ required: true }]}
                                         >
                                             <TextField size="small" label="Kebele"
@@ -424,7 +424,7 @@ function AddPaitent(props) {
                                                 <p className="mb-3 text-[1rem] text-gray-600">Current status</p>
                                             </label>
                                             <Form.Item
-                                                name="PatientStatus"
+                                                name="patientStatus"
                                                 rules={[{ required: true }]}
                                             >
 
