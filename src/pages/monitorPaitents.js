@@ -54,11 +54,15 @@ async function GetPaitents(no = "T100") {
 
 
 }
+
 function strTODate(date) {
-
-
-  return new Date(date)
-}
+  
+  if(date)
+    return  new Date(date)
+  else
+  return null
+  }
+  
 
 function PersonalDetail(props) {
 

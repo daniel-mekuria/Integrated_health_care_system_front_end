@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import DoneIcon from '@mui/icons-material/Done';
@@ -18,7 +18,8 @@ import LoadingSpinners from "../components/loadingSpinners";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { SetCookie } from "./cookies";
+import { GlobalContext } from "../globalContext";
+import { SetCookie } from "../components/cookies";
 
 
 
@@ -145,18 +146,35 @@ async function GetPaitents() {
 
 function strTODate(date) {
   
-
-  return new Date(date)
+if(date)
+  return  new Date(date)
+else
+return null
 }
 
-function PatientsTable(props) {
+function ViewPaitents(props) {
+  
 
   const navigate = useNavigate()
+  const [isAddModalOpen,setIsAddModalOpen] =useState(false)
+  const [update,setUpdate] =useState(false)
 
-  
 
-  
+   async function saveNew (){
+     toast.success(" Registered succesfuly");
+     setTimeout(() => {
+      setUpdate(!update)
+     }, 3000);
 
+    
+  }
+
+  function handleSelect(foundData){
+    SetCookie("patient",JSON.stringify(foundData))
+    navigate('/paitentdetail');
+   }
+
+  const { data, isLoading, error } = useAsyncData(GetPaitents,[update]);
 
 
 
@@ -215,22 +233,23 @@ function PatientsTable(props) {
 
 
 
-  let tableData = { "columns": columns, "rows": props.data }
+  let tableData = { "columns": columns, "rows": data }
 
- 
-  function handleSelect(foundData){
-    SetCookie("patient",JSON.stringify(foundData))
-    navigate('/paitentdetail');
-   }
+  if (isLoading || error) {
+    return (
+      <LoadingSpinners size={3} className={"w-full h-full"} />
+    )
+  }
+
 
   return (
     <div className={props.className} style={props.style}>
      
-      <DataTable  tableProps={{ checkboxSelection:true,
+      <DataTable tableProps={{ checkboxSelection:true,
         disableRowSelectionOnClick:true,
         disableDensitySelector:true,
         disableMultipleRowSelection:true,
-        disableColumnSelector:true}} onSelect={handleSelect}  data={tableData} pageSize={5}className={" w-full h-full"} />
+        disableColumnSelector:true}} onSelect={handleSelect}  data={tableData} pageSize={4}  className={" w-full h-full"} />
 
 
       <ToastContainer
@@ -249,4 +268,4 @@ function PatientsTable(props) {
   );
 }
 
-export default PatientsTable;
+export default ViewPaitents;

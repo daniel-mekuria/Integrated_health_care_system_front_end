@@ -367,7 +367,7 @@ const PharmacyMain = (props) => {
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 4,
+              pageSize: 3,
             },
           },
         }}
@@ -1223,7 +1223,7 @@ function Batches(props) {
         disableDensitySelector: true,
         disableMultipleRowSelection: true,
         disableColumnSelector: true
-      }} data={tableData} pageSize={11} className={" w-full h-full"} />
+      }} data={tableData} pageSize={3} className={" w-full h-full"} />
 
     </div>
 
