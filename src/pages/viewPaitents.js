@@ -147,8 +147,10 @@ async function GetPaitents() {
 
 function strTODate(date) {
   
-
-  return new Date(date)
+if(date)
+  return  Date(date)
+else
+return null
 }
 
 function ViewPaitents(props) {

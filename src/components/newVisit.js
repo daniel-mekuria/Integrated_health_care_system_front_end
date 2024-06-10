@@ -203,7 +203,7 @@ const NewVIsit = (props) => {
 
                                 >
 
-                                    <TextField className="w-[90%]" size="small" label="Days until next appointment" type="number" placeholder="Days" />
+                                    <TextField className="w-[90%]" size="small"   label="Days until next appointment" type="number" placeholder="Days" />
 
                                 </Form.Item>
 

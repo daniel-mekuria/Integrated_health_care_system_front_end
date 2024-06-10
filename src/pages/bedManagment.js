@@ -12,7 +12,7 @@ import dayjs from 'dayjs';
 import { LoadingButton } from '@mui/lab';
 import httpRequest from "../components/httpRequest";
 import { GetCookie, SetCookie } from "../components/cookies";
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { Badge, Card, Form, Input, Modal, Popconfirm, Radio, Select } from "antd";
@@ -292,6 +292,18 @@ const UpdateUser = (props) => {
         </div>
 
       </div >
+      <ToastContainer
+                position="top-center"
+                autoClose={2000}
+                limit={2}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
     </div>
 
   );

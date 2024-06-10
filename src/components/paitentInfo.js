@@ -11,6 +11,7 @@ function PaitentInfo(props) {
   const [data, setdata] = useState(props.data)
 
 
+  
   async function saveEdit(x) {
     toast.success(" Saved succesfuly");
     setTimeout(() => {
