@@ -206,7 +206,7 @@ async function getTable(option, startDate, endDate, timeScale = null) {
 
     let title = option.name + dayjs(startDate).format("DD/MMM/YYYY") + " - " + dayjs(endDate).format("DD/MMM/YYYY")
 console.log(data)
-    return { data: data, title: title ,xLabel:option.x==="time"?timeScale:option.x==="birthDate"?"Age":option.x,yLabel:option.y }
+    return { data: data, title: title ,xLabel:option.x==="time"?timeScale:option.x==="birthDate"?"Age":option.x,yLabel:option.y==="time"?timeScale:option.y==="birthDate"?"Age":option.y}
 
   }
 

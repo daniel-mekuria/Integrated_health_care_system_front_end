@@ -89,7 +89,11 @@ const EmergencyVisit = (props) => {
 
     if (res.sucess) {
       toast.success("Sucessfully added Emergency visit")
-      form.resetFields();
+      setTimeout(() => {
+        // form.resetFields()
+        props.setIsOpen(false)
+        props.update()
+      }, 2000);      
     }
     else {
       toast.error(res.message)

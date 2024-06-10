@@ -1133,7 +1133,7 @@ const PharmacyMain = (props) => {
 
         </Form>
       </Modal>
-      <EmergencyVisit isOpen={isEmergencyModalOpen} setIsOpen={setIsEmergencyModalOpen} />
+      <EmergencyVisit update={props.update} isOpen={isEmergencyModalOpen} setIsOpen={setIsEmergencyModalOpen} />
 
 
 
@@ -1372,6 +1372,18 @@ setupdate(!update)
       <div className="p-4">
         <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
       </div>
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        limit={2}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   )
 }
