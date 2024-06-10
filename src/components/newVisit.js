@@ -155,7 +155,7 @@ const NewVIsit = (props) => {
                                           
                                           <div className="flex flex-col">
                                           <Radio value="start" > Start</Radio>
-                                            <Radio value="refil">Refil</Radio>
+                                            <Radio value="refill">Refill</Radio>
                                             <Radio value="switch">Switch</Radio>
                                           </div>
                                         </Radio.Group>
@@ -189,7 +189,7 @@ const NewVIsit = (props) => {
                                         <div className="flex flex-col">
 
                                             <Radio value="start">Start</Radio>
-                                            <Radio value="refil">Refil</Radio>
+                                            <Radio value="refill">Refill</Radio>
                                             </div>
                                         </Radio.Group>
                                         
