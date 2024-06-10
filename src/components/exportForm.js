@@ -24,7 +24,6 @@ import { saveAs } from 'file-saver';
 import * as ExcelJS from 'exceljs';
 import { LoadingButton } from '@mui/lab';
 
-
 const exportToExcel = (data, fileName = "new_report.xlsx") => {
   // Create a new workbook
   const wb = new ExcelJS.Workbook();
@@ -55,10 +54,34 @@ const exportToExcel = (data, fileName = "new_report.xlsx") => {
       return { name: colName, filterButton: true };
     });
 
+    // Calculate the range for merging cells based on the number of columns
+    const numColumns = columns.length;
+
+    // Add the xLabel and yLabel row
+    const labelRow = ws.addRow([tableData.yLabel, tableData.xLabel, ...Array(numColumns - 2).fill('')]);
+
+    // Merge cells for the xLabel to span across the remaining columns
+    ws.mergeCells(`B${labelRow.number}:${String.fromCharCode(65 + numColumns)}${labelRow.number}`);
+
+    // Apply formatting to the label row
+    labelRow.eachCell((cell, colNumber) => {
+      cell.font = {
+        bold: true,
+        size: 12,
+        color: { argb: 'FFFFFF' }
+      };
+      cell.alignment = { vertical: 'middle', horizontal: 'center' };
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: '4F81BD' }
+      };
+    });
+
     // Add the table to the worksheet
     ws.addTable({
       name: `MyTable${index}`,
-      ref: 'A3',
+      ref: 'A4',
       headerRow: true,
       totalsRow: false,
       style: {
@@ -79,28 +102,43 @@ const exportToExcel = (data, fileName = "new_report.xlsx") => {
 
 
 
-
 const exportToPdf = (data, fileName = "new_report.pdf") => {
   const doc = new jsPDF();
   let startY = 10;
 
-  data.forEach((table, index) => {
-    const { title, data: { column, row } } = table;
+  data.forEach((table) => {
+    const { title,xLabel,yLabel, data: { column, row } } = table;
+
+    
+
+    // Create a header with the x and y labels and the column headers
+    const tableHead = [
+      [{ content: xLabel, styles: { halign: 'start' } }, { content: yLabel, colSpan: column.length, styles: { halign: 'center' } }],
+      column // Column headers in the second row
+    ];
+
+    // Draw the table
     autoTable(doc, {
-      head: [column],
+      head: tableHead,
       body: row,
       startY: startY
     });
-    const finalY = doc.autoTable.previous.finalY; // Get the final Y coordinate of the table
-    doc.setTextColor(100); // Set the text color to a lighter shade
-    doc.setFontSize(12); // Set the font size to slightly larger
-    doc.text(`Table: ${title}`, 10, finalY + 10); // Position the title at the bottom of the table
-    startY = finalY + 30; // Update the starting Y coordinate for the next table
+
+    // Get the final Y position after the table is drawn
+    const finalY = doc.autoTable.previous.finalY;
+
+    // Add the table title below the table
+    doc.setTextColor(100);
+    doc.setFontSize(12);
+    doc.text(`Table: ${title}`, 10, finalY + 10); // Position the title
+
+    // Update the startY for the next table
+    startY = finalY + 30; // Adjust to ensure space between tables
   });
 
+  // Save the document
   doc.save(fileName);
 };
-
 
 
 
@@ -144,7 +182,7 @@ async function getTable(option, startDate, endDate, timeScale = null) {
   if (option.x == "time") {
     count = (countEntriesbydate(rawdata, option.set, startDate, endDate, timeScale, option.y))
     let column = []
-    column.push(option.x)
+    column.push(" ")
     count.y.map((y) => {
       column.push(y.label)
     })
@@ -153,13 +191,13 @@ async function getTable(option, startDate, endDate, timeScale = null) {
 
     let title = option.name + dayjs(startDate).format("DD/MMM/YYYY") + " - " + dayjs(endDate).format("DD/MMM/YYYY")
 
-    return { data: data, title: title }
+    return { data: data, title: title ,xLabel:option.x==="time"?timeScale:option.x==="birthDate"?"Age":option.x,yLabel:option.y==="time"?timeScale:option.y==="birthDate"?"Age":option.y }
 
   }
   else {
     count = (countEntries(rawdata, option.set, startDate, endDate, option.x, option.y))
     let column = []
-    column.push(option.x)
+    column.push("")
     count.y.map((y) => {
       column.push(y.label)
     })
@@ -168,7 +206,7 @@ async function getTable(option, startDate, endDate, timeScale = null) {
 
     let title = option.name + dayjs(startDate).format("DD/MMM/YYYY") + " - " + dayjs(endDate).format("DD/MMM/YYYY")
 
-    return { data: data, title: title }
+    return { data: data, title: title ,xLabel:option.x==="time"?timeScale:option.x==="birthDate"?"Age":option.x,yLabel:option.y }
 
   }
 
@@ -198,17 +236,25 @@ function TableGen(props) {
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label={props.title}>
           <TableHead>
+          <TableRow>
+            <TableCell>
+            {props.xLabel}
+            </TableCell>
+            <TableCell>
+            <div className='flex justify-center' >{props.yLabel}</div>
+            </TableCell>
+            </TableRow>
             <TableRow>
-              {props.data.column.map((col) => (
-                <TableCell>{col}</TableCell>
+              {props.data.column.map((col,index) => (
+                <TableCell key={index}>{col}</TableCell>
               ))}
-
 
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.data.row.map((row) => (
+            {props.data.row.map((row ,index) => (
               <TableRow
+              key={index}
 
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
@@ -624,7 +670,7 @@ function ExportForm(props) {
               {
                 tablesList.length > 0 ? tablesList.map((table => {
                   return (
-                    <TableGen data={table.data} title={table.title} />
+                    <TableGen data={table.data} xLabel={table.xLabel} yLabel={table.yLabel} title={table.title} />
 
                   )
                 })) :

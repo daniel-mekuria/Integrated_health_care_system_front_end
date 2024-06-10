@@ -31,7 +31,7 @@ async function handleChange(x) {
   x.oldPassword="password"
   
 
-  const res = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/user/changePassword",x,"post")
+  const res = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/user/updateProfile",x,"put")
   return res
 
 
