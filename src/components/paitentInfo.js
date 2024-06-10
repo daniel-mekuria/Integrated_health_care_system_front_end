@@ -60,7 +60,7 @@ function PaitentInfo(props) {
                   </div>
                   <div className='flex flex-col space-y-1'>
                     <p className='text-sm font-medium text-gray-500'> Date eligible</p>
-                    <p className='text-sm text-gray-900'> {data.dateEligible}</p>
+                    <p className='text-sm text-gray-900'> {dayjs(data.dateEligible).format("DD / MMM / YYYY")}</p>
                   </div>
                   <div className='flex flex-col space-y-1'>
                     <p className='text-sm font-medium text-gray-500'> Weight on start</p>
