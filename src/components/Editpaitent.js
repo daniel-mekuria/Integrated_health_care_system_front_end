@@ -51,6 +51,7 @@ function strTODate(date) {
 }
 
 function EditPaitent(props) {
+   
 
     const navigate = useNavigate()
 
@@ -122,6 +123,7 @@ function EditPaitent(props) {
                             if (res) {
                                 props.setIsEditModalOpen(false)
                                 props.saveEdit(res)
+
                             }
                             else {
                                 toast.error("Regstration failed");
@@ -363,7 +365,7 @@ function EditPaitent(props) {
                                         <Form.Item
                                             initialValue={patient.supporterSubCity}
 
-                                            name="supporterSubCity"
+                                            name="supporterSubcity"
                                             rules={[{ required: true }]}
                                         >
                                             <TextField size="small" label="Sub city"
