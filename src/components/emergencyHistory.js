@@ -126,9 +126,8 @@ async function GetHistory() {
     let NewVisit = { ...visit }
     NewVisit.id = visit._id
     NewVisit.user = visit.user.name
-    NewVisit.drug = visit.drugs.length+"("+arrayTOstring(visit.drugs.map(item => item.name))+")";
+    NewVisit.drug = visit.drugs.length+"("+arrayTOstring(visit.drugs.map(item => item.drugName))+")";
 
-    
 
 
 
@@ -185,7 +184,7 @@ function EmergencyHistory(props) {
       field: 'drug',
       headerName: 'Medicine',
       sortable: false,
-      minWidth: 80,
+      minWidth: 50,
       flex: 1,
       renderCell: renderMedicine
     },

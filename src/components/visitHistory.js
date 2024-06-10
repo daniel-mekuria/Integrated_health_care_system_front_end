@@ -128,7 +128,7 @@ async function GetHistory(id) {
     NewVisit.id = visit._id
     NewVisit.onTime = visit.onTime ? "Yes" : "No"
     NewVisit.user = visit.user.name
-    NewVisit.drug = visit.drugs.length+"("+arrayTOstring(visit.drugs.map(item => item.name))+")";
+    NewVisit.drug = visit.drugs.length+"("+arrayTOstring(visit.drugs.map(item => item.drugName))+")";
 
     
     NewVisit.otherDrug = visit.otherDrug.length+"("+arrayTOstring(visit.otherDrug)+")";
