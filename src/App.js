@@ -116,12 +116,12 @@ console.log(x)
         <Route
           path="*"
           element={
-            <Layout className="w-screen h-screen p-1 overflow-hidden font-sans bg-white ">
+            <Layout className="w-screen h-screen p-1 overflow-scroll font-sans bg-white scrollbar-hide ">
               <Sider theme="light" width={"fit-content"} className="font-sans bg-white ">
                 <Navigation />
               </Sider>
 
-              <Content className="py-5 overflow-hidden font-sans px-7">
+              <Content className="py-5 overflow-scroll font-sans scrollbar-hide px-7">
                 <Routes>
                   <Route
                     path="/patients"

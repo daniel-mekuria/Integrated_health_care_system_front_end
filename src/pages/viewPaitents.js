@@ -148,7 +148,7 @@ async function GetPaitents() {
 function strTODate(date) {
   
 if(date)
-  return  Date(date)
+  return  new Date(date)
 else
 return null
 }

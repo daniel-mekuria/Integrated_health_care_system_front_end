@@ -49,7 +49,7 @@ async function getBeds() {
   })
   occupied.map((x, index) => {
     x.occupied = true
-    x.patient.age = calculateAge(x.patient.birthdate)
+    x.patient.age = calculateAge(x.patient.birthDate)
     x.admissionDate = dayjs(x.createdAt).format("DD-MMM-YYYY")
 
   })
@@ -106,7 +106,6 @@ const UpdateUser = (props) => {
     setFilteredBeds(x.free.concat(x.occupied))
     setSelectedBeds(x.free.concat(x.occupied))
     setBedCounts([x.occupied.length + x.free.length, x.occupied.length, x.free.length])
-    console.log(x.patients)
     return x
   }, [update])
 
@@ -170,7 +169,7 @@ const UpdateUser = (props) => {
 
   return (
     <div className={props.className} style={props.style} >
-      <div className="flex flex-col h-full space-y-6">
+      <div className="flex flex-col h-[90vh] space-y-6">
 
         {bedToEdit ? !bedToEdit.occupied ? <AssignBed patients={data.patients} update={runUpdate} data={bedToEdit} isOpen={isAssignBedModalOpen} setIsOpen={setIsAssignBedModalOpen} /> : <EditBed update={runUpdate} data={bedToEdit} isOpen={isEditBedModalOpen} setIsOpen={setIsEditBedModalOpen} /> : null}
         <AddBed update={runUpdate} isOpen={isAddBedModalOpen} setIsOpen={setIsAddBedModalOpen} />
@@ -216,7 +215,7 @@ const UpdateUser = (props) => {
           ))}
 
         </Radio.Group>
-        <div className="grid w-full h-full grid-cols-4 gap-6 p-4 overflow-y-scroll scrollbar-hide ">
+        <div className="grid w-full h-[100%] grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-6 p-4 overflow-y-scroll scrollbar-hide ">
 
           {
             filteredBeds.map((bed) =>
@@ -293,17 +292,17 @@ const UpdateUser = (props) => {
 
       </div >
       <ToastContainer
-                position="top-center"
-                autoClose={2000}
-                limit={2}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
+        position="top-center"
+        autoClose={2000}
+        limit={2}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
 
   );

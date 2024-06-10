@@ -59,7 +59,7 @@ function Dashboard(props) {
       <div className="flex flex-col w-full h-full space-y-2">
 
           
-            <div className="grid h-[30%] w-full grid-cols-2 ">
+            <div className="grid h-[30%] w-full grid-cols-1  md:grid-cols-2 ">
               <Line_Chart data={data}/>
               <Pie  data={data} />
             </div>

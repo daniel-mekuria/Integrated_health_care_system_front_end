@@ -49,6 +49,8 @@ async function addVisit(values, patientId, userId) {
     if (newVisit.otherDrug)
         values.otherDrug = convertStringToArray(values.otherDrug)
 
+
+
     const response = await httpRequest(process.env.REACT_APP_BASE_URL + "/v1/visit/createVisitHistory", newVisit, "post")
     return response
 

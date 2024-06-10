@@ -264,7 +264,7 @@ label.quantity=quantity
                                         >
                                             {option.drugName}
                                             <br />
-                                            <span>{option.drugName}</span>
+                                            <span>{option.manufacturer}</span>
                                         </Box>
 
                                     </li>
@@ -288,7 +288,7 @@ label.quantity=quantity
                                     let newDrug = pendingdrugs
                                     newDrug.dose = drugss.dose
 
-                                    newDrug.amount = drugss.amount
+                                    newDrug.amount = Number(drugss.amount)
                                     setPendingdrugs(newDrug)
                                     handleAdd()
 

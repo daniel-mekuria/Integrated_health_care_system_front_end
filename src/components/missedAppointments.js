@@ -132,11 +132,15 @@ visits.forEach(element => {
 
 
 }
+
 function strTODate(date) {
-
-
-  return new Date(date)
-}
+  
+  if(date)
+    return  new Date(date)
+  else
+  return null
+  }
+  
 
 function UpComingAppointments(props) {
 
@@ -196,6 +200,8 @@ function UpComingAppointments(props) {
     )
   }
 
+
+  
   function handleSelect(foundData){
     console.log(foundData)
     navigate('/paitentdetail',{state:{foundData:foundData}});
