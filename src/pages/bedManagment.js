@@ -229,7 +229,7 @@ const UpdateUser = (props) => {
 
                 }}
                 hoverable
-                className="shadow-md "
+                className="shadow-md h-fit"
               >
                 <div className="flex flex-col space-y-2">
                   <div className="flex w-full space-x-2">
